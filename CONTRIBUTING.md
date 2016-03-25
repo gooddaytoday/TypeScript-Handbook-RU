@@ -1,12 +1,17 @@
 ## Contributing
 
-TypeScript-Handbook is accepting contributions. If you've submitted a PR for an existing issue, please post a comment in the issue to avoid duplication of effort.
+Этот репозиторий является переводом [TypeScript Handbook](https://github.com/Microsoft/TypeScript-Handbook).
+На данный момент перевод будет сделан для текущего импортированного коммита из официального репозитория (d07879c7c8d53990f732338c3a66caaf7592d37d).
+Далее правки руководства будут вноситься для новых коммитов.
+
+**Контрибьютеры будут вознаграждаться из donate фонда. Если в вашей компании заинтересованы в развитии Typescript, вы можете пополнить фонд. При создании вашего pull request отправьте мне на email kiselevgeorgy@gmail.com номер вашего Webmoney WMR или мобильного телефона и я перечислю вам вознаграждение из расчета 200 руб. за тысячу символов.**
+
+Если вы хотите принять участие, создайте issue с названием одной из тем, которой соответствует один из файлов документации (например, Basic Types, Advanced Types etc.) и в соответствующей ветке делайте перевод. Таким образом будет исключена возможность двойной работы.
+
+Рекоммендуется принимать участие только в случае вашей уверенности в хорошем качестве перевода.
 
 ## Housekeeping
 
-Your pull request should:
+Ваш пул-реквест должен:
 
-* Include a description of what your change intends to do.
-* Have a clear commit messages
-    * e.g. "New Topic", "Fix typo", "Add code samples"
-* For code samples, please make sure they compile against the latest released TypeScript compiler version.
+* Включать краткое описание изменений, которые вносятся.

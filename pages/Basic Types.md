@@ -1,11 +1,13 @@
-# Introduction
+# Введение
 
-For programs to be useful, we need to be able to work with some of the simplest units of data: numbers, strings, structures, boolean values, and the like.
-In TypeScript, we support much the same types as you would expected in JavaScript, with a convenient enumeration type thrown in to help things along.
+Typescript является языком со статической типизацией. Тип не может быть изменен в ходе выполнения программы. Это позволяет снизить большое количество ошибок и выявить многие из них еще на этапе компиляции.
+
+В Typescript есть несколько простых типов данных: numbers (числа), strings (строки), structures (структуры), boolean (логический). Он поддерживает все типы, которые есть в Javascript, дополняя удобным типом перечислений (enum).
+
 
 # Boolean
 
-The most basic datatype is the simple true/false value, which JavaScript and TypeScript call a `boolean` value.
+Наиболее базовым типом является логический ture/false, который в Javascript и Typescript называется boolean.
 
 ```ts
 let isDone: boolean = false;
@@ -13,9 +15,7 @@ let isDone: boolean = false;
 
 # Number
 
-As in JavaScript, all numbers in TypeScript are floating point values.
-These floating point numbers get the type `number`.
-In addition to hexadecimal and decimal literals, TypeScript also supports binary and octal literals introduced in ECMAScript 2015.
+Как и в Javascript, тип numbers в Typescript являются числом с плавающей точкой. Кроме десятичного и шестнадцатиричного формата, поддерживаются бинарный и восьмеричный, введенные в ECMAScript 2015. 
 
 ```ts
 let decimal: number = 6;
@@ -26,17 +26,14 @@ let octal: number = 0o744;
 
 # String
 
-Another fundamental part of creating programs in JavaScript for webpages and servers alike is working with textual data.
-As in other languages, we use the type `string` to refer to these textual datatypes.
-Just like JavaScript, TypeScript also uses the double quote (`"`) or single quote (`'`) to surround string data.
+Еще одна важная часть программ в веб-страницах и серверах это текстовые данные. Как и в других языках, в Typescript используется то же обозначение "string" для таких данных. Как и Javascript, в Typescript используются двойные (`"`) или одинарные (`'`) кавычки для обрамления текстовых данных.
 
 ```ts
 let name: string = "bob";
 name = 'smith';
 ```
 
-You can also use *template strings*, which can span multiple lines and have embedded expressions.
-These strings are surrounded by the backtick/backquote (`` ` ``) character, and embedded expressions are of the form `${ expr }`
+Вы также можете использовать *строки с шаблонами*, которые могут быть многострочными и иметь встроенные выражения. Эти строки окружаются обратными апострофами или кавычками(`` ` ``) и втроенные выражения обозначаются как `${ expr }`.
 
 ```ts
 let name: string = `Gene`;
@@ -45,8 +42,7 @@ let sentence: string = `Hello, my name is ${ name }.
 
 I'll be ${ age + 1 } years old next month.`
 ```
-
-This is equivalent to declaring `sentence` like so:
+Эквивалент этого объявления `sentence`: 
 
 ```ts
 let sentence: string = "Hello, my name is " + name + ".\n\n" +
@@ -71,65 +67,63 @@ let list: Array<number> = [1, 2, 3];
 
 # Tuple
 
-Tuple types allow you to express an array where the type of a fixed number of elements is known, but need not be the same.
-For example, you may want to represent a value as a pair of a `string` and a `number`:
+Тип Tuple дает вам возможность объявить массив с известным фиксированным количеством элементов, которые не обязаны быть одного типа. Например, вы хотите иметь значение Tuple как пару "строка" и "число":
 
 ```ts
-// Declare a tuple type
+// Объявление типа tuple
 let x: [string, number];
-// Initialize it
+// Его инициализация
 x = ['hello', 10]; // OK
-// Initialize it incorrectly
+// Некорректная инициализация вызовет ошибку
 x = [10, 'hello']; // Error
 ```
 
-When accessing an element with a known index, the correct type is retrieved:
+Когда вы получаете элемент с известным идексом, будет возвращен тип этого элемента:
 
 ```ts
 console.log(x[0].substr(1)); // OK
 console.log(x[1].substr(1)); // Error, 'number' does not have 'substr'
 ```
 
-When accessing an element outside the set of known indices, a union type is used instead:
+При получении элемента с идексом вне известного диапазона, будет возвращен тип Union:
 
 ```ts
-x[3] = 'world'; // OK, string can be assigned to (string | number)
+x[3] = 'world'; // OK, тип string может быть присвоен (string | number)
 
-console.log(x[5].toString()); // OK, 'string' and 'number' both have toString
+console.log(x[5].toString()); // OK, 'string' и 'number' оба имеют метод toString
 
-x[6] = true; // Error, boolean isn't (string | number)
+x[6] = true; // Ошибка, boolean это не (string | number)
 ```
 
-Union types are an advanced topic that we'll cover in a later chapter.
+Тип Union будет описан чуть позже, в разделе продвинутых типов.
 
-# Enum
+# Enum (Перечисления)
 
-A helpful addition to the standard set of datatypes from JavaScript is the `enum`.
-As in languages like C#, an enum is a way of giving more friendly names to sets of numeric values.
+Полезным дополнением к стандартному набору типов из Javascript является тип Enum.
+Как и в языках подобных C#, тип enum - это более удобный способ задания понятных имен набору численных значений.
 
 ```ts
 enum Color {Red, Green, Blue};
 let c: Color = Color.Green;
 ```
 
-By default, enums begin numbering their members starting at `0`.
-You can change this by manually setting the value of one of its members.
-For example, we can start the previous example at `1` instead of `0`:
+По умолчанию перечисления (Enum) начинаются с `0`.
+Вы можете изменить это путем прямого указания значения для одного из членов перечисления.
+Например, мы можем начать предыдущий пример с `1` вместо `0`:
 
 ```ts
 enum Color {Red = 1, Green, Blue};
 let c: Color = Color.Green;
 ```
 
-Or, even manually set all the values in the enum:
+Или даже задать значения для всех членов:
 
 ```ts
 enum Color {Red = 1, Green = 2, Blue = 4};
 let c: Color = Color.Green;
 ```
-
-A handy feature of enums is that you can also go from a numeric value to the name of that value in the enum.
-For example, if we had the value `2` but weren't sure what that mapped to in the `Color` enum above, we could look up the corresponding name:
+Удобная особенность перечислений состоит в том, что вы также можете получить имя члена перечисления передав его числовое значение.
+Например, если у нас есть значение `2` и мы хотим посмотреть, чему оно соответствует в перечислении `Color` описанном выше, мы можем сделать это так:
 
 ```ts
 enum Color {Red = 1, Green, Blue};
@@ -140,32 +134,29 @@ alert(colorName);
 
 # Any
 
-We may need to describe the type of variables that we do not know when we are writing an application.
-These values may come from dynamic content, e.g. from the user or a 3rd party library.
-In these cases, we want to opt-out of type-checking and let the values pass through compile-time checks.
-To do so, we label these with the `any` type:
+Нам может потребоваться описать тип переменных, который мы не знаем, когда пишем наше приложение. 
+Эти значения могут быть получены из динамического контента, например от пользователя или от сторонней библиотеки.
+В этих случаях мы хотим отключить проверку типов и позволить значениям пройти проверку на этапе компиляции.
+Чтобы это сделать, нужно использовать тип `any`:
 
 ```ts
 let notSure: any = 4;
 notSure = "maybe a string instead";
-notSure = false; // okay, definitely a boolean
+notSure = false; // ok, это определенно boolean
 ```
-
-The `any` type is a powerful way to work with existing JavaScript, allowing you to gradually opt-in and opt-out of type-checking during compilation.
-You might expect `Object` to play a similar role, as it does in other languages.
-But variables of type `Object` only allow you to assign any value to them -- you can't call arbitrary methods on them, even ones that actually exist:
+Тип `any` - это мощный способ работы с существующим Javascript, который позволяет вам постепенно включать все больше проверок типов на этапе компиляции.
+Вы можете ожидать, что `Object` будет играть такую же роль, какую и в других языках. Но переменные типа `Object` позволяют вам только присваивать им любое значение. Вы не можете вызывать у них необъявленные методы, даже те, которые могут существовать на этапе исполнения программы:
 
 ```ts
 let notSure: any = 4;
-notSure.ifItExists(); // okay, ifItExists might exist at runtime
-notSure.toFixed(); // okay, toFixed exists (but the compiler doesn't check)
+notSure.ifItExists(); // ifItExists может существовать на этапе исполнения
+notSure.toFixed(); // метод toFixed существует (но компилятор не проверяет это)
 
 let prettySure: Object = 4;
-prettySure.toFixed(); // Error: Property 'toFixed' doesn't exist on type 'Object'.
+prettySure.toFixed(); // Ошибка: Свойство 'toFixed' не существует у типа 'Object'.
 ```
-
-The `any` type is also handy if you know some part of the type, but perhaps not all of it.
-For example, you may have an array but the array has a mix of different types:
+Тип `any` может быть также полезен, если вы знаете некоторую часть типа переменной, но не весь.
+Например, у вас может быть массив с элементами различных типов:
 
 ```ts
 let list: any[] = [1, true, "free"];
@@ -175,8 +166,7 @@ list[1] = 100;
 
 # Void
 
-`void` is a little like the opposite of `any`: the absence of having any type at all.
-You may commonly see this as the return type of functions that do not return a value:
+`void` это нечто противоположное `any`: отсутствие каких-либо типов. Чаще всего он используется в качестве возвращаемого типа функций, который не возвращают никакого значения. 
 
 ```ts
 function warnUser(): void {
@@ -184,24 +174,24 @@ function warnUser(): void {
 }
 ```
 
-Declaring variables of type `void` is not useful because you can only assign `undefined` or `null` to them:
+Объявление переменных с типом `void` бесполезно, потому что вы можете присвоить им только значения `undefined` или `null`:
 
 ```ts
 let unusable: void = undefined;
 ```
 
-# Type assertions
+# Type assertions (Приведение к типу)
 
-Sometimes you'll end up in a situation where you'll know more about a value than TypeScript does.
-Usually this will happen when you know the type of some entity could be more specific than its current type.
+Иногда вы попадаете в ситуацию, когда знаете больше о значении переменной, чем Typescript.
+Обычно это случается, когда вы знаете, что тип некоторой сущности может быть более специфичным, чем ее текущий.
 
-*Type assertions* are a way to tell the compiler "trust me, I know what I'm doing."
-A type assertion is like a type cast in other languages, but performs no special checking or restructuring of data.
-It has has no runtime impact, and is used purely by the compiler.
-TypeScript assumes that you, the programmer, have performed any special checks that you need.
+*Type assertions* - это способ сказать компилятору "поверь мне, я знаю, что делаю".
+Type assertion это как приведение к типу в других языках, но оно не делает никаких специальных проверок или реструктуризаций данных.
+Приведение к типу не имеет никакого воздействия на этапе выполнения программы и используется только компилятором.
+Typescript предполагает, что программист сделает все необходимые проверки, которые потребуются.
 
-Type assertions have two forms.
-One is the "angle-bracket" syntax:
+Приведение к типу может быть сделано двумя способами.
+Первый это использование синтаксиса угловых скобок:
 
 ```ts
 let someValue: any = "this is a string";
@@ -209,7 +199,7 @@ let someValue: any = "this is a string";
 let strLength: number = (<string>someValue).length;
 ```
 
-And the other is the `as`-syntax:
+И другой - использование ключевого слова `as`:
 
 ```ts
 let someValue: any = "this is a string";
@@ -217,11 +207,10 @@ let someValue: any = "this is a string";
 let strLength: number = (someValue as string).length;
 ```
 
-The two samples are equivalent.
-Using one over the other is mostly a choice of preference; however, when using TypeScript with JSX, only `as`-style assertions are allowed.
+Эти два примера эквивалентны. Использование одного из них это просто выбор более предпочтительного варианта; тем не менее, когда вы используете Typescript с JSX, возможно только приведение к типу через `as`.
 
-# A note about `let`
+# Немного о `let`
 
-You may've noticed that so far, we've been using the `let` keyword instead of JavaScript's `var` keyword which you might be more familiar with.
-The `let` keyword is actually a newer JavaScript construct that TypeScript makes available.
-We'll discuss the details later, but many common problems in JavaScript are alleviated by using `let`, so you should use it instead of `var` whenever possible.
+Вы могли заметить, что недавно было введено новое ключевое слово `let` вместо `var` из JavaScript, с которым вы знакомы. 
+Ключевое слово `let` - это просто новый способ задания переменной в JavaScript, который уже доступен в Typescript.
+Мы обсудим детали позже, сейчас же просто знайте, что много проблем в Javascript можно избежать, используя  `let`. Поэтому вы должны использовать его вместо `var`, где это возможно.

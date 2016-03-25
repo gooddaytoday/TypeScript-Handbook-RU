@@ -1,7 +1,20 @@
-# TypeScript-Handbook
+# Руководство TypeScript на русском
 
 [![Build Status](https://travis-ci.org/Microsoft/TypeScript-Handbook.svg)](https://travis-ci.org/Microsoft/TypeScript-Handbook)
 
-The TypeScript Handbook is a comprehensive guide to the TypeScript language
+Этот репозиторий является переводом [TypeScript Handbook](https://github.com/Microsoft/TypeScript-Handbook).
+На данный момент перевод будет сделан для текущего импортированного коммита из официального репозитория (d07879c7c8d53990f732338c3a66caaf7592d37d).
+Далее правки руководства будут вноситься для новых коммитов.
 
-Please see the [latest TypeScript Language Specification](https://github.com/Microsoft/TypeScript/blob/master/doc/spec.md) for more details.
+
+**Контрибьютеры будут вознаграждаться из donate фонда. Если в вашей компании заинтересованы в развитии Typescript, вы можете пополнить фонд. При создании вашего pull request отправьте мне на email kiselevgeorgy@gmail.com номер вашего Webmoney WMR или мобильного телефона и я перечислю вам вознаграждение из расчета 200 руб. за тысячу символов.**
+
+Если вы хотите принять участие, создайте issue с названием одной из тем, которой соответствует один из файлов документации (например, Basic Types, Advanced Types etc.) и в соответствующей ветке делайте перевод. Таким образом будет исключена возможность двойной работы.
+
+Рекоммендуется принимать участие только в случае вашей уверенности в хорошем качестве перевода.
+
+Последнюю версию вы всегда сможете найти на сайте [документации Typescript на русском](http://typescript-lang.ru).
+
+
+
+[Официальная спецификация языка](https://github.com/Microsoft/TypeScript/blob/master/doc/spec.md).
