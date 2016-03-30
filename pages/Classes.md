@@ -211,13 +211,13 @@ We've consolidated the declarations and assignment into one location.
 Parameter properties are declared by prefixing a constructor parameter with an accessibility modifier.
 Using `private` for a parameter property declares and initializes a private member; likewise, the same is done for `public` and `protected`.
 
-# Accessors
+# Accessors (Геттеры/сетторы)
 
-TypeScript supports getters/setters as a way of intercepting accesses to a member of an object.
-This gives you a way of having finer-grained control over how a member is accessed on each object.
+TypeScript поддерживает геттеры и сетторы как способ перехвата обращений к свойствам объекта.
+Это дает вам больший контроль над моментом взаимодействия со свойствами объектов. 
 
-Let's convert a simple class to use `get` and `set`.
-First, let's start with an example without getters and setters.
+Давайте перепишем простой класс с использованием `get` и `set`.
+Для начала запишем пример без использования геттеров и сеттеров.
 
 ```ts
 class Employee {
@@ -230,12 +230,11 @@ if (employee.fullName) {
     console.log(employee.fullName);
 }
 ```
+Разрешать напрямую устанавливать `fullName` - довольно удобно, но это может привести к проблемам если кто-то захочет изменить имя по своему желанию.
 
-While allowing people to randomly set `fullName` directly is pretty handy, this might get us in trouble if people can change names on a whim.
-
-In this version, we check to make sure the user has a secret passcode available before we allow them to modify the employee.
-We do this by replacing the direct access to `fullName` with a `set` that will check the passcode.
-We add a corresponding `get` to allow the previous example to continue to work seamlessly.
+В этой версии мы проверяем наличие у пользователя секретного пароля, перед тем как позволить ему внести изменения.
+Мы делаем это заменяя прямой доступ к `fullName` и используем сеттер `set`, который проверяет пароль.
+Кроме того, добавляем соответствующий `get`, чтобы код работал также как и в предыдущем примере.
 
 ```ts
 let passcode = "secret passcode";
@@ -264,9 +263,9 @@ if (employee.fullName) {
 }
 ```
 
-To prove to ourselves that our accessor is now checking the passcode, we can modify the passcode and see that when it doesn't match we instead get the message warning us we don't have access to update the employee.
+Чтобы убедаиться, что наш метод доступа проверяет пароль, мы можем модифицировать его и увидеть, что при несовпадении мы получаем сообщение о том, что не можем модифицировать объект работника.
 
-Note: Accessors require you to set the compiler to output ECMAScript 5 or higher.
+Внимание: аксессоры требуют установки в комиляторе генерации кода по стандарту ECMAScript 5 или выше.
 
 # Static Properties
 

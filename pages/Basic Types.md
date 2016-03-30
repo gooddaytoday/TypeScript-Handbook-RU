@@ -51,15 +51,15 @@ let sentence: string = "Hello, my name is " + name + ".\n\n" +
 
 # Array
 
-TypeScript, like JavaScript, allows you to work with arrays of values.
-Array types can be written in one of two ways.
-In the first, you use the type of the elements followed by `[]` to denote an array of that element type:
+TypeScript, как и JavaScript, имеет массивы значений.
+Тип массива может быть определен одним из двх способов.
+Первый - обозначать тип элементов массива перед `[]`:
 
 ```ts
 let list: number[] = [1, 2, 3];
 ```
 
-The second way uses a generic array type, `Array<elemType>`:
+Второй способ - использовать обобщение `Array<elemType>`:
 
 ```ts
 let list: Array<number> = [1, 2, 3];
