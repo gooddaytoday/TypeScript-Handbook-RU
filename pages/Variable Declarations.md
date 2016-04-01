@@ -1,26 +1,26 @@
 # Variable Declarations
 
-`let` and `const` are two relatively new types of variable declarations in JavaScript.
-As we mentioned earlier, `let` is similar to `var` in some respects, but allows users to avoid some of the common "gotchas" that users run into in JavaScript.
-`const` is an augmentation of `let` in that it prevents re-assignment to a variable.
+`let` и `const` - относительно новые типы объявления переменных в JavaScript.
+Как мы упомянули ранее, `let` похож на `var`в некотором смысле, но позволяет пользователям избежать некоторые из общих ошибок, с которыми сталкиваются в JavaScript.
+`const` это расширение `let`, которое предотвращает переопределение переменных.
 
-With TypeScript being a superset of JavaScript, the language naturally supports `let` and `const`.
-Here we'll elaborate more on these new declarations and why they're preferable to `var`.
+Так как TypeScript является надстройкой над Javascript, язык также поддерживает `let` и `const`.
+Далее мы подробнее расскажем об этих новых объявлениях переменных и объясним, почему они более предпочтительны, чем `var`.
 
-If you've used JavaScript offhandedly, the next section might be a good way to refresh your memory.
-If you're intimately familiar with all the quirks of `var` declarations in JavaScript, you might find it easier to skip ahead.
+Если вы использовали JavaScript поверхностно, следующая секция секция поможет освежить некоторые важные моменты.
+Если вы хорошо знакомы со всеми причудами объявления `var` в JavaScript, вы можете пропустить эту часть.
 
-# `var` declarations
+# Объявления `var` 
 
-Declaring a variable in JavaScript has always traditionally been done with the `var` keyword.
+Объявление переменной в JavaScript всегда происходит с помощью ключевого слова `var`.
 
 ```ts
 var a = 10;
 ```
 
-As you might've figured out, we just declared a variable named `a` with the value `10`.
+Как вы наверняка поняли, мы только что объявили переменную с именем `a` и значением `10`.
 
-We can also declare a variable inside of a function:
+Мы также можем объявить переменную внутри функции:
 
 ```ts
 function f() {
@@ -30,7 +30,7 @@ function f() {
 }
 ```
 
-and we can also access those same variables within other functions:
+и мы также имеем доступ к этим переменным внутри других функций:
 
 ```ts
 function f() {
@@ -42,12 +42,12 @@ function f() {
 }
 
 var g = f();
-g(); // returns 11;
+g(); // возвращает 11;
 ```
 
-In this above example, `g` captured the variable `a` declared in `f`.
-At any point that `g` gets called, the value of `a` will be tied to the value of `a` in `f`.
-Even if `g` is called once `f` is done running, it will be able to access and modify `a`.
+В примере выше `g` захватывает(замыкает в себе) переменную `a`, объявленную в `f`.
+В любой точке, где будет вызвана `g`, значение `a` будет связано со значением `a` в функции `f`.
+Даже если `g` вызвана однажды и `f` закончила выполнение, можно получить доступ и модифицировать `a`.
 
 ```ts
 function f() {
@@ -64,13 +64,13 @@ function f() {
     }
 }
 
-f(); // returns 2
+f(); // возвращает 2
 ```
 
-## Scoping rules
+## Правила области видимости (Scoping)
 
-`var` declarations have some odd scoping rules for those used to other languages.
-Take the following example:
+Объявление `var` имеет несколько странных правил области видимости для тех, кто использует другие языки программирования.
+Посмотрите не следующий пример:
 
 ```ts
 function f(shouldInitialize: boolean) {
@@ -85,14 +85,14 @@ f(true);  // returns '10'
 f(false); // returns 'undefined'
 ```
 
-Some readers might do a double-take at this example.
-The variable `x` was declared *within the `if` block*, and yet we were able to access it from outside that block.
-That's because `var` declarations are accessible anywhere within their containing function, module, namespace, or global scope - all which we'll go over later on - regardless of the containing block.
-Some people call this *`var`-scoping* or *function-scoping*.
-Parameters are also function scoped.
+Некоторые могут повторно посмотреть на тот пример.
+Переменная `x` была объявлена *внутри блока `if`*, и мы можем получить к ней доступ вне этого блока. 
+Это потому что объявления `var` доступны где бы то ни было внутри содержащей их функции, модуля, пространства имен(namespace) или же глобальной области видимости несмотря на блок, в котором они содержатся.
+Некоторые называют это *`var`-видимость* or *function-видимость*.
+Параметры также видны внутри функции.
 
-These scoping rules can cause several types of mistakes.
-One problem they exacerbate is the fact that it is not an error to declare the same variable multiple times:
+Эти правила области видимости могут вызвать несколько тпиов ошибок.
+Одна из раздражающих проблем - это то, что не является ошибкой объявление переменной несколько раз:
 
 ```ts
 function sumMatrix(matrix: number[][]) {
@@ -108,12 +108,12 @@ function sumMatrix(matrix: number[][]) {
 }
 ```
 
-Maybe it was easy to spot out for some, but the inner `for`-loop will accidentally overwrite the variable `i` because `i` refers to the same function-scoped variable.
-As experienced developers know by now, similar sorts of bugs slip through code reviews and can be an endless source of frustration.
+Скорее всего несложно заметить, что внутренний цикл `for` случайно перезапишет переменную `i`,  потому что `i` имеет области видимости внутри функции sumMatrix. 
+Опытные разработчики знают, что похожие ошибки проскальзывают при code review и могут быть причиной бесконечной фрустрации.
 
 ## Variable capturing quirks
 
-Take a quick second to guess what the output of the following snippet is:
+Попробуйте быстро догадаться, какой будет вывод у этого кода:
 
 ```ts
 for (var i = 0; i < 10; i++) {
@@ -121,9 +121,10 @@ for (var i = 0; i < 10; i++) {
 }
 ```
 
-For those unfamiliar, `setTimeout` will try to execute a function after a certain number of milliseconds (though waiting for anything else to stop running).
+Для тех, кто незнаком, `setTimeout` пытается выполнить функцию после указанного количества миллисекунд (при это ожидая, пока какой-либо другой код прекратит выполняться)
 
-Ready? Take a look:
+
+Готовы? Вот результат::
 
 ```text
 10
@@ -137,9 +138,8 @@ Ready? Take a look:
 10
 10
 ```
-
-Many JavaScript developers are intimately familiar with this behavior, but if you're surprised, you're certainly not alone.
-Most people expect the output to be
+Многие JavaScript разработчики знакомы с таким поведением, но если вы удивлены, вы определенно не одиноки.
+Большинство ожидает, что вывод будет таким:
 
 ```text
 0
@@ -154,16 +154,16 @@ Most people expect the output to be
 9
 ```
 
-Remember what we mentioned earlier about variable capturing?
+Помните, что мы упомянули ранее о замыкании переменных?
 
-> At any point that `g` gets called, the value of `a` will be tied to the value of `a` in `f`.
+> В любой точке, где будет вызвана `g`, значение `a` будет связано со значением `a` в функции `f`.
 
-Let's take a minute to consider that in this context.
-`setTimeout` will run a function after some number of milliseconds, and also after the `for` loop has stopped executing.
-By the time the `for` loop has stopped executing, the value of `i` is `10`.
-So each time the given function gets called, it will print out `10`!
+Давайте рассмотрим это в контексте нашего примера.
+`setTimeout` запустит функцию через несколько миллисекунд, после завершения цикла `for`.
+К моменту, когда цикл `for` закончит выполнение, `i` бцдет равняться `10`.
+Поэтому каждый раз, когда отложенная функция будет вызвана, она возвратит `10`!
 
-A common work around is to use an IIFE - an Immediately Invoked Function Expression - to capture `i` at each iteration:
+Самый простой способ решить проблему - использовать немедленный запуск анонимной функции, чтобы захватить `i` на каждой итерации:
 
 ```ts
 for (var i = 0; i < 10; i++) {
