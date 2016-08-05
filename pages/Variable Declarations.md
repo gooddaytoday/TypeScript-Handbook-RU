@@ -175,12 +175,12 @@ for (var i = 0; i < 10; i++) {
 }
 ```
 
-This odd-looking pattern is actually a commonplace.
-The `i` in the parameter actually shadows the `i` declared in the `for` loop, but since we named it the same, we didn't have to modify the loop body too much.
+This odd-looking pattern is actually pretty common.
+The `i` in the parameter list actually shadows the `i` declared in the `for` loop, but since we named them the same, we didn't have to modify the loop body too much.
 
 # `let` declarations
 
-By now you've figured out that `var` has some problems, which is precisely why `let` statements are a new way to declare variables.
+By now you've figured out that `var` has some problems, which is precisely why `let` statements were introduced.
 Apart from the keyword used, `let` statements are written the same way `var` statements are.
 
 ```ts
@@ -304,8 +304,8 @@ function f(condition, x) {
     return x;
 }
 
-f(false, 0); // returns 0
-f(true, 0);  // returns 100
+f(false, 0); // returns '0'
+f(true, 0);  // returns '100'
 ```
 
 The act of introducing a new name in a more nested scope is called *shadowing*.
@@ -335,7 +335,7 @@ While there are some scenarios where it may be fitting to take advantage of it, 
 
 When we first touched on the idea of variable capturing with `var` declaration, we briefly went into how variables act once captured.
 To give a better intuition of this, each time a scope is run, it creates an "environment" of variables.
-That environment and its can exist even after everything within its scope has finished executing.
+That environment and its captured variables can exist even after everything within its scope has finished executing.
 
 ```ts
 function theCityThatAlwaysSleeps() {
@@ -417,6 +417,8 @@ kitty.numLives--;
 ```
 
 Unless you take specific measures to avoid it, the internal state of a `const` variable is still modifiable.
+Fortunately, TypeScript allows you to specify that members of an object are `readonly`.
+The [chapter on Interfaces](./Interfaces.md) has the details.
 
 # `let` vs. `const`
 

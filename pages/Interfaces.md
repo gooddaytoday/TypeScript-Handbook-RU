@@ -98,6 +98,49 @@ function createSquare(config: SquareConfig): { color: string; area: number } {
 let mySquare = createSquare({color: "black"});
 ```
 
+# Readonly properties
+
+Some properties should only be modifiable when an object is first created.
+You can specify this by putting `readonly` before the name of the property:
+
+```ts
+interface Point {
+    readonly x: number;
+    readonly y: number;
+}
+```
+
+You can construct a `Point` by assigning an object literal.
+After the assignment, `x` and `y` can't be changed.
+
+```ts
+let p1: Point = { x: 10, y: 20 };
+p1.x = 5; // error!
+```
+
+TypeScript comes with a `ReadonlyArray<T>` type that is the same as `Array<T>` with all mutating methods removed, so you can make sure you don't change your arrays after creation:
+
+```ts
+let a: number[] = [1, 2, 3, 4];
+let ro: ReadonlyArray<number> = a;
+ro[0] = 12; // error!
+ro.push(5); // error!
+ro.length = 100; // error!
+a = ro; // error!
+```
+
+On the last line of the snippet you can see that even assigning the entire `ReadonlyArray` back to a normal array is illegal.
+You can still override it with a type assertion, though:
+
+```ts
+a = ro as number[];
+```
+
+## `readonly` vs `const`
+
+The easiest way to remember whether to use readonly or const is to ask whether you're using it on a variable or a property.
+Variables use `const` whereas properties use `readonly`.
+
 # Excess Property Checks
 
 In our first example using interfaces, TypeScript let us pass `{ size: number; label: string; }` to something that only expected a `{ label: string; }`.
@@ -140,7 +183,7 @@ The easiest method is to just use a type assertion:
 let mySquare = createSquare({ width: 100, opacity: 0.5 } as SquareConfig);
 ```
 
-However, a better approach to might to add a string index signature if you're sure that the object can have some extra properties that are used in some special way.
+However, a better approach might be to add a string index signature if you're sure that the object can have some extra properties that are used in some special way.
 If `SquareConfig`s can have `color` and `width` properties with the above types, but could *also* have any number of other properties, then we could define it like so:
 
 ```ts
@@ -196,7 +239,7 @@ mySearch = function(source: string, subString: string) {
 }
 ```
 
-For function types to correctly type-check, the name of the parameters do not need to match.
+For function types to correctly type-check, the names of the parameters do not need to match.
 We could have, for example, written the above example like this:
 
 ```ts
@@ -281,6 +324,18 @@ interface NumberDictionary {
     name: string;      // error, the type of 'name' is not a subtype of the indexer
 }
 ```
+
+Finally, you can make index signatures readonly in order to prevent assignment to their indices:
+
+```ts
+interface ReadonlyStringArray {
+    readonly [index: number]: string;
+}
+let myArray: ReadonlyStringArray = ["Alice", "Bob"];
+myArray[2] = "Mallory"; // error!
+```
+
+You can't set `myArray[2]` because the index signature is readonly.
 
 # Class Types
 
@@ -478,10 +533,10 @@ class Location {
 }
 ```
 
-In the above example, 'SelectableControl' contains all of the members of 'Control', including the private 'state' property.
-Since 'state' is a private member it is only possible for descendants of 'Control' to implement 'SelectableControl'.
-This is because only descendants of 'Control' will have a 'state' private member that originates in the same declaration, which is a requirement for private members to be compatible.
+In the above example, `SelectableControl` contains all of the members of `Control`, including the private `state` property.
+Since `state` is a private member it is only possible for descendants of `Control` to implement `SelectableControl`.
+This is because only descendants of `Control` will have a `state` private member that originates in the same declaration, which is a requirement for private members to be compatible.
 
-Within the 'Control' class it is possible to access the 'state' private member through an instance of 'SelectableControl'.
-Effectively, a 'SelectableControl' acts like a 'Control' that is known to have a 'select' method.
-The 'Button' and 'TextBox' classes are subtypes of 'SelectableControl' (because they both inherit from 'Control' and have a 'select' method), but the 'Image' and 'Location' classes are not.
+Within the `Control` class it is possible to access the `state` private member through an instance of `SelectableControl`.
+Effectively, a `SelectableControl` acts like a `Control` that is known to have a `select` method.
+The `Button` and `TextBox` classes are subtypes of `SelectableControl` (because they both inherit from `Control` and have a `select` method), but the `Image` and `Location` classes are not.
