@@ -1,7 +1,6 @@
-# Enums
+# Перечисления
 
-Enums allow us to define a set of named numeric constants.
-An enum can be defined using the `enum` keyword.
+Перечисления позволяют определить набор именованных числовых констант. Они определяется используя ключевое слово `enum`.
 
 ```ts
 enum Direction {
@@ -12,41 +11,31 @@ enum Direction {
 }
 ```
 
-The body of an enum consists of zero or more enum members.
-Enum members have numeric value associated with them and can be either *constant* or *computed*.
-An enum member is considered constant if:
+Тело перечисления состоит из нуля или более элементов. Элементы перечисления имеют численное значение ассоциированное с именем, и могут быть либо *константой*, либо могут быть *вычислены*. Элемент перечисления считается константой, если:
 
-* It does not have an initializer and the preceding enum member was constant.
-    In this case the value of the current enum member will be the value of the preceding enum member plus one.
-    One exception to this rule is the first element on an enum.
-    If it does not have initializer it is assigned the value `0`.
-* The enum member is initialized with a constant enum expression.
-    A constant enum expression is a subset of TypeScript expressions that can be fully evaluated at compile time.
-    An expression is a constant enum expression if it is either:
-    * numeric literal
-    * reference to previously defined constant enum member (it can be defined in different enum).
-        If member is defined in the same enum it can be referenced using unqualified name.
-    * parenthesized constant enum expression
-    * `+`, `-`, `~` unary operators applied to constant enum expression
-    * `+`, `-`, `*`, `/`, `%`, `<<`, `>>`, `>>>`, `&`, `|`, `^` binary operators with constant enum expressions as operands
-    It is a compile time error for constant enum expressions to be evaluated to `NaN` or `Infinity`.
+* Он не имеет инициализатора, предшествующий элемент перечисления был константой. В этом случае значение текущего элемента перечисления будет равняться значению предшествующего элемента перечисления плюс единица. Исключением является первый элемент перечисления. Если элемент не имеет инициализатора, ему присваивается значение `0`.
+* Элемент перечисления инициализирован с константным выражением перечисления. Константное выражение перечисления - это подмножество TypeScript выражений, которое может быть полностью вычислено во время компиляции. Выражение является константным выражением перечисления, если оно является либо:
+    * численным литералом
+    * ссылкой к прежде определённому константному элементу перечисления (она может быть определёна в различных перечислениях). Если элемент определён в том же перечислении, на него можно сослаться, используя неквалифицированное имя.
+    * константным выражением перечисления, взятым в круглые скобки
+    * унарным оператором `+`, `-`, `~`, применённым к константному выражению перечисления
+    * бинарным оператором `+`, `-`, `*`, `/`, `%`, `<<`, `>>`, `>>>`, `&`, `|`, `^` с константным выражением перечисления как операнд. Константное выражение перечисления, вычисляемое в `NaN` или `Infinity`, приводит к ошибке во время компиляции
 
-In all other cases enum member is considered computed.
+Во всех остальных случаях считается, что элемент перечисления вычисляем.
 
 ```ts
 enum FileAccess {
-    // constant members
+    // константные члены
     None,
     Read    = 1 << 1,
     Write   = 1 << 2,
     ReadWrite  = Read | Write,
-    // computed member
+    // вычисляемые члены
     G = "123".length
 }
 ```
 
-Enums are real objects that exist at runtime.
-One reason is the ability to maintain a reverse mapping from enum values to enum names.
+Перечисления - это действительные объекты, существующие во время выполнения. Одной из причин этого является способность поддерживать обратное отображение из значений перечисления к именам перечисления.
 
 ```ts
 enum Enum {
@@ -56,7 +45,7 @@ let a = Enum.A;
 let nameOfA = Enum[Enum.A]; // "A"
 ```
 
-is compiled to:
+компилируется в:
 
 ```js
 var Enum;
@@ -67,12 +56,7 @@ var a = Enum.A;
 var nameOfA = Enum[Enum.A]; // "A"
 ```
 
-In generated code an enum is compiled into an object that stores both forward (`name` -> `value`) and reverse (`value` -> `name`) mappings.
-References to enum members are always emitted as property accesses and never inlined.
-In lots of cases this is a perfectly valid solution.
-However sometimes requirements are tighter.
-To avoid paying the cost of extra generated code and additional indirection when accessing enum values it is possible to use const enums.
-Const enums are defined using the `const` modifier that precedes the `enum` keyword.
+В сгенерированном коде перечисление скомпилировано в объект, который хранит прямое (`имя` -> `значение`) и обратное (`значение` -> `имя`) отображения. Ссылки к элементам перечисления всегда выполняются как доступы к свойству и никогда не встраиваются. Во многих случаях это является правильным решением. Однако, иногда требования жёстче. Чтобы избежать оплаты стоимости дополнительного сгенерированного кода и косвенного обращения при получении доступа к значениям перечисления можно использовать константные перечисления. Константые перечисления определяются используя модификатор `const`, предшествующий ключевому слову `enum`.
 
 ```ts
 const enum Enum {
@@ -81,9 +65,7 @@ const enum Enum {
 }
 ```
 
-Const enums can only use constant enum expressions and unlike regular enums they are completely removed during compilation.
-Const enum members are inlined at use sites.
-This is possible since const enums cannot have computed members.
+Константные перечисления могут только использовать константные выражения перечисления, и в отличие обычных перечислений они полностью удаляются в течение компиляции. Элементы константного перечисления встраиваются в местах использования. Это возможно, поскольку константные перечисления не могут иметь вычисляемых элементов.
 
 ```ts
 const enum Directions {
@@ -96,15 +78,15 @@ const enum Directions {
 let directions = [Directions.Up, Directions.Down, Directions.Left, Directions.Right]
 ```
 
-in generated code will become
+в сгенерированном коде превратится в
 
 ```js
 var directions = [0 /* Up */, 1 /* Down */, 2 /* Left */, 3 /* Right */];
 ```
 
-# Ambient enums
+# Окружающие перечисления
 
-Ambient enums are used to describe the shape of already existing enum types.
+Окружающие перечисления используются для описания формы уже существующих перечислений.
 
 ```ts
 declare enum Enum {
@@ -114,5 +96,4 @@ declare enum Enum {
 }
 ```
 
-One important difference between ambient and non-ambient enums is that, in regular enums, members that don't have an initializer are considered constant members.
-For non-const ambient enums member that does not have initializer is considered computed.
+Одно важное отличие между окружающим и не окружающим перечислениями в том, что в обычных перечислениях элементы, не имеющие инициализатора, считаются константными элементами. Для элемента не константного окружающего перечисления, не имеющего инициализатора, элемент считается вычисляемым.
