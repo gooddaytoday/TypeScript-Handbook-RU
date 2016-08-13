@@ -25,12 +25,12 @@ enum Direction {
 
 ```ts
 enum FileAccess {
-    // константные члены
+    // константные элементы
     None,
     Read    = 1 << 1,
     Write   = 1 << 2,
     ReadWrite  = Read | Write,
-    // вычисляемые члены
+    // вычисляемые элементы
     G = "123".length
 }
 ```
