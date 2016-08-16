@@ -1,30 +1,30 @@
-# Introduction
+# Введение
 
-Functions are the fundamental building block of any applications in JavaScript.
-They're how you build up layers of abstraction, mimicking classes, information hiding, and modules.
-In TypeScript, while there are classes, namespaces, and modules, functions still play the key role in describing how to *do* things.
-TypeScript also adds some new capabilities to the standard JavaScript functions to make them easier to work with.
+Функции — фундаментальные строительные блоки каждого приложения на JavaScript.
+С их помощью строятся слои абстракции, реализуются классы, сокрытие данных и модули.
+Хотя в TypeScript есть и классы, и пространства имен, и модули, функции по-прежнему играют ключевую роль в описании того, как все *работает*.
+Кроме того, TypeScript добавляет несколько новых возможностей к стандартным JavaScript-функциям, и делает работу с ними проще.
 
-# Functions
+# Функции
 
-To begin, just as in JavaScript, TypeScript functions can be created both as a named function or as an anonymous function.
-This allows you to choose the most appropriate approach for your application, whether you're building a list of functions in an API or a one-off function to hand off to another function.
+Точно так же, как и в JavaScript, функции в TypeScript могут создаваться и как именованные, и как анонимные.
+Это дает возможность выбрать подход, который лучше подходит конкретному приложению: создается ли группа функций для API, либо функция, которая нужна лишь для того, чтобы быть аргументом для другой функции.
 
-To quickly recap what these two approaches look like in JavaScript:
+Напомним, как эти два варианта выглядят в JavaScript:
 
 ```ts
-// Named function
+// Именованная функция
 function add(x, y) {
     return x + y;
 }
 
-// Anonymous function
+// Анонимная функция
 let myAdd = function(x, y) { return x+y; };
 ```
 
-Just as in JavaScript, functions can refer to variables outside of the function body.
-When they do so, they're said to `capture` these variables.
-While understanding how this works, and the trade-offs when using this technique, are outside of the scope of this article, having a firm understanding how this mechanic is an important piece of working with JavaScript and TypeScript.
+Как и в JavaScript, функции могут обращаться к переменным вне своего тела.
+Когда такое происходит, говорят, что функция "захватывает" переменные.
+Хотя объяснять то, как это работает и каковы подводные камни данной техники — не задача данной статьи, важно иметь четкое понимание этого механизма, чтобы работать с JavaScript и TypeScript.
 
 ```ts
 let z = 100;
@@ -34,11 +34,11 @@ function addToZ(x, y) {
 }
 ```
 
-# Function Types
+# Типы функций
 
-## Typing the function
+## Добавление типов к функции
 
-Let's add types to our simple examples from earlier:
+Добавим к функции из предыдущих простых примеров типы:
 
 ```ts
 function add(x: number, y: number): number {
@@ -48,76 +48,75 @@ function add(x: number, y: number): number {
 let myAdd = function(x: number, y: number): number { return x+y; };
 ```
 
-We can add types to each of the parameters and then to the function itself to add a return type.
-TypeScript can figure the return type out by looking at the return statements, so we can also optionally leave this off in many cases.
+Добавлять типы можно к каждому параметру, а также и к самой функции, чтобы указать тип возвращаемого значения.
+TypeScript умеет сам выводить тип возвращаемого значения, анализируя инструкции `return`, поэтому зачастую можно не указывать его явно.
 
-## Writing the function type
+## Пишем тип функции
 
-Now that we've typed the function, let's write the full type of the function out by looking at the each piece of the function type.
+Теперь, когда мы добавили к функции типы, можно описать ее полный тип, собрав его по кусочкам из определения:
 
 ```ts
 let myAdd: (x: number, y: number)=>number =
     function(x: number, y: number): number { return x+y; };
 ```
 
-A function's type has the same two parts: the type of the arguments and the return type.
-When writing out the whole function type, both parts are required.
-We write out the parameter types just like a parameter list, giving each parameter a name and a type.
-This name is just to help with readability.
-We could have instead written:
+Тип функции состоит из таких же двух частей: типа аргументов и типа возвращаемого значения.
+Когда записывается полный тип функции, указывать необходимо обе эти части.
+Типы параметров записываются так же, как и список параметров, и каждому параметру присваивается имя и тип.
+Имена здесь нужны только для удобства чтения, можно было бы написать, к примеру, вот так:
 
 ```ts
 let myAdd: (baseValue:number, increment:number) => number =
     function(x: number, y: number): number { return x + y; };
 ```
 
-As long as the parameter types line up, it's considered a valid type for the function, regardless of the names you give the parameters in the function type.
+Если типы параметров совпадают, то тип считается подходящим для функции, и не важно, какие имена были даны параметрам в описании типа функции.
 
-The second part is the return type.
-We make it clear which is the return type by using a fat arrow (`=>`) between the parameters and the return type.
-As mentioned before, this is a required part of the function type, so if the function doesn't return a value, you would use `void` instead of leaving it off.
+Вторая часть типа функции — тип возвращаемого значения.
+На него указывает толстая стрелка (`=>`) между параметрами и типом возвращаемого значения.
+Как писалось выше, эта часть необходима, и поэтому, если функция не возвращает ничего, в качестве типа возвращаемого значения нужно указать `void`.
 
-Of note, only the parameters and the return type make up the function type.
-Captured variables are not reflected in the type.
-In effect, captured variables are part of the "hidden state" of any function and do not make up its API.
+Отметим, что параметров и типа возвращаемого значения вполне достаточно, чтобы описать тип функции.
+Переменные, которые функция захватывает, в ее типе не отражаются.
+По сути, захваченные переменные — часть так называемого "скрытого состояния" функции, и они не являются частью её API.
 
-## Inferring the types
+## Выведение типов
 
-In playing with the example, you may notice that the TypeScript compiler can figure out the type if you have types on one side of the equation but not the other:
+Экспериментируя со следующим примером, можно заметить, что компилятор TypeScript способен разобраться с типами, если они указаны лишь в одной половине выражения:
 
 ```ts
-// myAdd has the full function type
+// myAdd имеет полный тип функции
 let myAdd = function(x: number, y: number): number { return  x + y; };
 
-// The parameters 'x' and 'y' have the type number
+// У параметров 'x' и 'y' — тип "number"
 let myAdd: (baseValue:number, increment:number) => number =
     function(x, y) { return x + y; };
 ```
 
-This is called "contextual typing", a form of type inference.
-This helps cut down on the amount of effort to keep your program typed.
+Это называется контекстной типизацией — одним из видов выведения типов.
+Такая особенность позволяет тратить меньше усилий на то, чтобы добавить типы в программу.
 
-# Optional and Default Parameters
+# Опциональные параметры и параметры по умолчанию
 
-In TypeScript, every parameter is assumed to be required by the function.
-This doesn't mean that it can't be given `null` or `undefined`, but rather, when the function is called the compiler will check that the user has provided a value for each parameter.
-The compiler also assumes that these parameters are the only parameters that will be passed to the function.
-In short, the number of arguments given to a function has to match the number of parameters the function expects.
+В TypeScript считается, что каждый параметр функции обязателен.
+Это не значит, что ей нельзя передать `null` или `undefined`: это означает, что при вызове функции компилятор проверит, задал ли пользователь значение для каждого ее параметра.
+Кроме того, компилятор считает, что никакие параметры, кроме указанных, не будут передаваться.
+Проще говоря, число передаваемых параметров должно совпадать с числом параметров, которые ожидает функция.
 
 ```ts
 function buildName(firstName: string, lastName: string) {
     return firstName + " " + lastName;
 }
 
-let result1 = buildName("Bob");                  // error, too few parameters
-let result2 = buildName("Bob", "Adams", "Sr.");  // error, too many parameters
-let result3 = buildName("Bob", "Adams");         // ah, just right
+let result1 = buildName("Bob");                  // ошибка, слишком мало параметров
+let result2 = buildName("Bob", "Adams", "Sr.");  // ошибка, слишком много параметров
+let result3 = buildName("Bob", "Adams");         // в самый раз
 ```
 
-In JavaScript, every parameter is optional, and users may leave them off as they see fit.
-When they do, their value is `undefined`.
-We can get this functionality in TypeScript by adding a `?` to the end of parameters we want to be optional.
-For example, let's say we want the last name parameter from above to be optional:
+В JavaScript все параметры необязательны, и пользователи могут пропускать их, если нужно.
+В таких случаях значение пропущенных параметров принимается за `undefined`.
+В TypeScript тоже можно добиться этого: для этого в конце параметра, который нужно сделать необязательным, добавляется `?`.
+К примеру, мы хотим сделать необязательным `lastName` из предыдущего примера:
 
 ```ts
 function buildName(firstName: string, lastName?: string) {
@@ -127,31 +126,31 @@ function buildName(firstName: string, lastName?: string) {
         return firstName;
 }
 
-let result1 = buildName("Bob");                  // works correctly now
-let result2 = buildName("Bob", "Adams", "Sr.");  // error, too many parameters
-let result3 = buildName("Bob", "Adams");         // ah, just right
+let result1 = buildName("Bob");                  // сейчас все правильно
+let result2 = buildName("Bob", "Adams", "Sr.");  // ошибка, слишком много параметров
+let result3 = buildName("Bob", "Adams");         // в самый раз
 ```
 
-Any optional parameters must follow required parameters.
-Had we wanted to make the first name optional rather than the last name, we would need to change the order of parameters in the function, putting the first name last in the list.
+Все необязательные параметры должны идти после обязательных.
+Если бы первый параметр (`firstName`) нужно было сделать опциональным вместо `lastName`, то порядок параметров в функции пришлось бы изменить, чтобы `firstName` оказался последним.
 
-In TypeScript, we can also set a value that a parameter will be assigned if the user does not provide one, or if the user passes `undefined` in its place.
-These are called default-initialized parameters.
-Let's take the previous example and default the last name to `"Smith"`.
+Также TypeScript позволяет указать для параметра значение, которое он будет принимать, если пользователь пропустит его или передаст `undefined`.
+Такие параметры называются параметрами со значением по умолчанию или просто параметрами по умолчанию.
+Возьмем предыдущий пример и зададим для `lastName` значение по умолчанию, равное `"Smith"`.
 
 ```ts
 function buildName(firstName: string, lastName = "Smith") {
     return firstName + " " + lastName;
 }
 
-let result1 = buildName("Bob");                  // works correctly now, returns "Bob Smith"
-let result2 = buildName("Bob", undefined);       // still works, also returns "Bob Smith"
-let result3 = buildName("Bob", "Adams", "Sr.");  // error, too many parameters
-let result4 = buildName("Bob", "Adams");         // ah, just right
+let result1 = buildName("Bob");                  // пока что все правильно, возвращает "Bob Smith"
+let result2 = buildName("Bob", undefined);       // тоже работает и возвращает "Bob Smith"
+let result3 = buildName("Bob", "Adams", "Sr.");  // ошибка, слишком много параметров
+let result4 = buildName("Bob", "Adams");         // в самый раз
 ```
 
-Default-initialized parameters that come after all required parameters are treated as optional, and just like optional parameters, can be omitted when calling their respective function.
-This means optional parameters and trailing default parameters will share commonality in their types, so both
+Параметры по умолчанию, которые следуют после всех обязательных параметров, считаются опциональными. Так же, как и опциональные, их можно пропускать при вызове функции.
+Это означает, что типы опциональных параметров и параметров по умолчанию, которые находятся в конце, будут совместимы, так что эта функция:
 
 ```ts
 function buildName(firstName: string, lastName?: string) {
@@ -159,7 +158,7 @@ function buildName(firstName: string, lastName?: string) {
 }
 ```
 
-and
+и эта
 
 ```ts
 function buildName(firstName: string, lastName = "Smith") {
@@ -167,31 +166,31 @@ function buildName(firstName: string, lastName = "Smith") {
 }
 ```
 
-share the same type `(firstName: string, lastName?: string) => string`.
-The default value of `lastName` disappears in the type, only leaving behind the fact that the parameter is optional.
+будут иметь одинаковый тип `(firstName: string, lastName?: string) => string`.
+Значение по умолчанию для параметра `lastName` в описании типа функции исчезает, и остается лишь тот факт, что последний параметр необязателен.
 
-Unlike plain optional parameters, default-initialized parameters don't *need* to occur after required parameters.
-If a default-initialized parameter comes before a required parameter, users need to explicitly pass `undefined` to get the default initialized value.
-For example, we could write our last example with only a default initializer on `firstName`:
+В отличие от простых опциональных параметров, параметры по умолчанию *не обязательно* должны находиться после обязательных параметров.
+Если после параметра по умолчанию будет идти обязательный, то придется явно передать `undefined`, чтобы задать значение по умолчанию.
+К примеру, последний пример можно переписать, используя для `firstName` только параметр по умолчанию:
 
 ```ts
 function buildName(firstName = "Will", lastName: string) {
     return firstName + " " + lastName;
 }
 
-let result1 = buildName("Bob");                  // error, too few parameters
-let result2 = buildName("Bob", "Adams", "Sr.");  // error, too many parameters
-let result3 = buildName("Bob", "Adams");         // okay and returns "Bob Adams"
-let result4 = buildName(undefined, "Adams");     // okay and returns "Will Adams"
+let result1 = buildName("Bob");                  // ошибка, слишком мало параметров
+let result2 = buildName("Bob", "Adams", "Sr.");  // ошибка, слишком много параметров
+let result3 = buildName("Bob", "Adams");         // подходит, возвратит "Bob Adams"
+let result4 = buildName(undefined, "Adams");     // подходит, возвратит "Will Adams"
 ```
 
-# Rest Parameters
+# Оставшиеся параметры (rest parameters)
 
-Required, optional, and default parameters all have one thing in common: they talk about one parameter at a time.
-Sometimes, you want to work with multiple parameters as a group, or you may not know how many parameters a function will ultimately take.
-In JavaScript, you can work with the arguments directly using the `arguments` variable that is visible inside every function body.
+Обязательные, опциональные и параметры по умолчанию имеют одну общую для всех черту — они описывают по одному параметру за раз.
+В некоторых случаях нужно работать с несколькими параметрами, рассматривая их как группу; а иногда заранее неизвестно, сколько параметров функция будет принимать.
+В JavaScript с аргументами можно работать напрямую, используя переменную `arguments`, которая доступна внутри любой функции.
 
-In TypeScript, you can gather these arguments together into a variable:
+В TypeScript можно собрать аргументы в одну переменную:
 
 ```ts
 function buildName(firstName: string, ...restOfName: string[]) {
@@ -201,11 +200,11 @@ function buildName(firstName: string, ...restOfName: string[]) {
 let employeeName = buildName("Joseph", "Samuel", "Lucas", "MacKinzie");
 ```
 
-*Rest parameters* are treated as a boundless number of optional parameters.
-When passing arguments for a rest parameter, you can use as many as you want; you can even pass none.
-The compiler will build an array of the arguments passed in with the name given after the ellipsis (`...`), allowing you to use it in your function.
+*Оставшиеся параметры* (rest parameters) можно понимать как неограниченное число необязательных параметров.
+При передаче аргументов для оставшихся параметров их можно передать столько, сколько угодно; а можно и вообще ничего не передавать.
+Компилятор построит массив из переданных аргументов, присвоит ему имя, которое указано после многоточия (`...`), и сделает его доступным внутри функции.
 
-The ellipsis is also used in the type of the function with rest parameters:
+Многоточие используется и при описании типа функции с оставшимися параметрами:
 
 ```ts
 function buildName(firstName: string, ...restOfName: string[]) {
@@ -217,19 +216,21 @@ let buildNameFun: (fname: string, ...rest: string[]) => string = buildName;
 
 # `this`
 
-Learning how to use `this` in JavaScript is something of a rite of passage.
-Since TypeScript is a superset of JavaScript, TypeScript developers also need to learn how to use `this` and how to spot when it's not being used correctly.
-Fortunately, TypeScript lets you catch incorrect uses of `this` with a couple of techniques.
-If you need to learn how `this` works in JavaScript, though, first read Yehuda Katz's [Understanding JavaScript Function Invocation and "this"](http://yehudakatz.com/2011/08/11/understanding-javascript-function-invocation-and-this/).
-Yehuda's article explains the inner workings of `this` very well, so we'll just cover the basics here.
+Научиться правильно использовать `this` в JavaScript — нечто вроде обряда посвящения в разработчики.
+Поскольку TypeScript — это надмножество JavaScript, программистам на TypeScript также нужно понимать, как использовать `this` и как замечать, когда `this` используется неправильно.
+К счастью, TypeScript позволяет обнаруживать неправильное использование `this` с помощью нескольких приемов.
+Если вам только предстоит разобраться с тем, как работает `this`, то для начала прочтите статью Yehuda Katz [Понятие о вызове функций в JavaScript и "this"]((http://yehudakatz.com/2011/08/11/understanding-javascript-function-invocation-and-this/).
+Эта статья очень хорошо объясняет, как работает `this` "под капотом", поэтому здесь мы рассмотрим только основы.
 
-## `this` and arrow functions
+Прим. переводчика — на русском языке по данной теме можно посоветовать прочесть [соответствующую статью из учебника javascript.ru](https://learn.javascript.ru/object-methods), а также [Ключевое слово this в JavaScript](http://getinstance.info/articles/javascript/this-keyword-in-javascript/).
 
-In JavaScript, `this` is a variable that's set when a function is called.
-This makes it a very powerful and flexible feature, but it comes at the cost of always having to know about the context that a function is executing in.
-This is notoriously confusing, especially when returning a function or passing a function as an argument.
+## `this` и стрелочные функции
 
-Let's look at an example:
+`this` — это переменная, которая устанавливается при вызове функции.
+Это очень мощная и гибкая возможность языка, однако в расплату за ее достоинства приходится всегда помнить о контексте, в котором выполняется функция.
+Здесь легко запутаться, особенно когда функция возвращается в качестве результата или передается как аргумент.
+
+Давайте посмотрим на пример:
 
 ```ts
 let deck = {
@@ -251,24 +252,24 @@ let pickedCard = cardPicker();
 alert("card: " + pickedCard.card + " of " + pickedCard.suit);
 ```
 
-Notice that `createCardPicker` is a function that itself returns a function.
-If we tried to run the example, we would get an error instead of the expected alert box.
-This is because the `this` being used in the function created by `createCardPicker` will be set to `window` instead of our `deck` object.
-That's because we call `cardPicker()` on its own.
-A top-level non-method syntax call like will use `window` for `this`.
-(Note: under strict mode, `this` will be `undefined` rather than `window`).
+Обратите внимание, что `createCardPicker` — функция, которая возвращает функцию.
+Если попытаться запустить этот пример, то мы получим ошибку вместо ожидаемого сообщения.
+Так происходит по той причине, что `this`, которая используется в функции, созданной `createCardPicker`, указывает на `window`, а не на объект `deck`.
+Все это из-за того, что `cardPicker()` вызывается сама по себе.
+При использовании подобного синтаксиса, когда функция вызывается не как метод, и при том на самом верхнем уровне программы, `this` будет указывать на `window`.
+(Замечание: в режиме соответствия стандартам (`strict mode`) в таких случаях `this` будет иметь значение `undefined`, а не `window`).
 
-We can fix this by making sure the function is bound to the correct `this` before we return the function to be used later.
-This way, regardless of how it's later used, it will still be able to see the original `deck` object.
-To do this, we change the function expression to use the ECMAScript 6 arrow syntax.
-Arrow functions capture the `this` where the function is created rather than where it is invoked:
+Можно исправить это, удостоверившись в том, что функция привязана к правильному значению `this`, прежде чем возвращать ее.
+В таком случае, независимо от того, как она будет использоваться в дальнейшем, ей все равно будет доступен оригинальный объект `deck`.
+Чтоб сделать это, нужно изменить функцию, и использовать синтаксис стрелочной функции из стандарта ECMAScript 6.
+Стрелочные функции захватывают значение `this` таким, каким оно было на момент ее создания (а не во время вызова):
 
 ```ts
 let deck = {
     suits: ["hearts", "spades", "clubs", "diamonds"],
     cards: Array(52),
     createCardPicker: function() {
-        // NOTE: the line below is now an arrow function, allowing us to capture 'this' right here
+        // ВНИМАНИЕ: строка ниже — стрелочная функция, которая захватывает значение 'this' из этого места
         return () => {
             let pickedCard = Math.floor(Math.random() * 52);
             let pickedSuit = Math.floor(pickedCard / 13);
@@ -284,23 +285,22 @@ let pickedCard = cardPicker();
 alert("card: " + pickedCard.card + " of " + pickedCard.suit);
 ```
 
-Even better, TypeScript will warn you when you make this mistake if you pass the `--noImplicitThis` flag to the compiler.
-It will point out that `this` in `this.suits[pickedSuit]` is of type `any`.
+Что еще лучше, если передать компилятору флаг `--noImplicitThis`, то TypeScript будет выдавать предупреждение, если вы сделаете подобную ошибку.
+Он укажет на то, что `this` в выражении `this.suits[pickedSuit]` имеет тип `any`.
 
-## `this` parameters
+## Параметры `this`
 
-Unfortunately, the type of `this.suits[pickedSuit]` is still `any`.
-That's because `this` comes from the function expression inside the object literal.
-To fix this, you can provide an explicit `this` parameter.
-`this` parameters are fake parameters that come first in the parameter list of a function:
+К сожалению, тип выражения `this.suits[pickedSuit]` по прежнему `any`, поскольку `this` берется из функционального выражения внутри объектного литерала.
+Чтоб исправить это, можно явно указать `this` в качестве параметра.
+Параметр `this` — это "фальшивый" параметр, который идет первым в списке параметров функции:
 
 ```ts
 function f(this: void) {
-    // make sure `this` is unusable in this standalone function
+    // Гарантировать, что в этой отдельной функции 'this' использовать нельзя
 }
 ```
 
-Let's add a couple of interfaces to our example above, `Card` and `Deck`, to make the types clearer and easier to reuse:
+Добавим к предыдущему примеру несколько интерфейсов: `Card` и `Deck`, чтобы сделать типы более понятными и простыми для повторного использования:
 
 ```ts
 interface Card {
@@ -315,7 +315,7 @@ interface Deck {
 let deck: Deck = {
     suits: ["hearts", "spades", "clubs", "diamonds"],
     cards: Array(52),
-    // NOTE: The function now explicitly specifies that its callee must be of type Deck
+    // ВНИМАНИЕ: Сейчас функция явно указывает на то, что она должна вызываться на объекте типа Deck
     createCardPicker: function(this: Deck) {
         return () => {
             let pickedCard = Math.floor(Math.random() * 52);
@@ -332,15 +332,15 @@ let pickedCard = cardPicker();
 alert("card: " + pickedCard.card + " of " + pickedCard.suit);
 ```
 
-Now TypeScript knows that `createCardPicker` expects to be called on a `Deck` object.
-That means that `this` is of type `Deck` now, not `any`, so `--noImplicitThis` will not cause any errors.
+Теперь компилятор знает, что функция `createCardPicker` ожидает, что будет вызвана на объекте с типом `Deck`.
+Это значит, что тип значения `this` теперь — `Deck`, а не `any`, и флаг `--noImplicitThis` не будет выдавать ошибок.
 
-### `this` parameters in callbacks
+### Параметры `this` для функций обратного вызова
 
-You can also run into errors with `this` in callbacks, when you pass functions to a library that will later call them.
-Because the library that calls your callback will call it like a normal function, `this` will be `undefined`.
-With some work you can use `this` parameters to prevent errors with callbacks too.
-First, the library author needs to annotate the callback type with `this`:
+Также можно столкнуться с ошибками, связанными с `this` в функциях обратного вызова, когда функции передаются в библиотеку, которая позже будет их вызывать.
+Поскольку переданная функция будет вызвана библиотекой как обычная функция, у `this` будет значение `undefined`.
+Приложив некоторые усилия, можно использовать параметр `this`, чтобы предотвратить подобные ошибки.
+Во-первых, разработчик библиотеки должен сопроводить тип функции обратного вызова параметром `this`:
 
 ```ts
 interface UIElement {
@@ -348,14 +348,14 @@ interface UIElement {
 }
 ```
 
-`this: void` means that `addClickListener` expects `onclick` to be a function that does not require a `this` type.
-Second, annotate your calling code with `this`:
+`this: void` означает, что `addClickListener` предполагает, что функция `onclick` не требует `this`.
+Во-вторых, код, который вызывается, нужно также сопроводить параметром `this`:
 
 ```ts
 class Handler {
     info: string;
     onClickBad(this: Handler, e: Event) {
-        // oops, used this here. using this callback would crash at runtime
+        // Тут используется this! Эта функция упадет во время выполнения!
         this.info = e.message;
     };
 }
@@ -363,15 +363,15 @@ let h = new Handler();
 uiElement.addClickListener(h.onClickBad); // error!
 ```
 
-With `this` annotated, you make it explicit that `onClickBad` must be called on an instance of `Handler`.
-Then TypeScript will detect that `addClickListener` requires a function that has `this: void`.
-To fix the error, change the type of `this`:
+Когда `this` указан, это явно отражает тот факт, что `onClickBad` должна вызываться на экземпляре класса `Handler`.
+Теперь TypeScript обнаружит, что `addClickListener` требует функцию с `this: void`.
+Чтобы исправить эту ошибку, изменим тип `this`:
 
 ```ts
 class Handler {
     info: string;
     onClickGood(this: void, e: Event) {
-        // can't use this here because it's of type void!
+        // здесь нельзя использовать переменную this, потому что у нее тип void!
         console.log('clicked!');
     }
 }
@@ -379,9 +379,9 @@ let h = new Handler();
 uiElement.addClickListener(h.onClickGood);
 ```
 
-Because `onClickGood` specifies its `this` type as `void`, it is legal to pass to `addClickListener`.
-Of course, this also means that it can't use `this.info`.
-If you want both then you'll have to use an arrow function:
+Так как в функции `onClickGood` указано, что тип `this` — `void`, ее можно передать в `addClickListener`.
+Конечно, это означает и то, что теперь в ней нельзя использовать `this.info`.
+Но если нужно и то, и другое, то придется использовать стрелочную функцию:
 
 ```ts
 class Handler {
@@ -390,27 +390,26 @@ class Handler {
 }
 ```
 
-This works because arrow functions don't capture `this`, so you can always pass them to something that expects `this: void`.
-The downside is that one arrow function is created per object of type Handler.
-Methods, on the other hand, are only created once and attached to Handler's prototype.
-They are shared between all objects of type Handler.
+Это будет работать, поскольку стрелочные функции не захватывают `this` из контекста, в котором выполняются, и их можно свободно передавать там, где ожидается функция с `this: void`.
+Недостаток такого решения в том, что для каждого объекта `Handler` будет создаваться своя стрелочная функция.
+Методы же, напротив, создаются только однажды, ассоциируются с прототипом `Handler`, и являются общими для всех объектов этого класса.
 
-# Overloads
+# Перегрузки
 
-JavaScript is inherently a very dynamic language.
-It's not uncommon for a single JavaScript function to return different types of objects based on the shape of the arguments passed in.
+JavaScript по своей природе является очень динамичным языком.
+Не так уж редко встречаются функции, которые возвращают объекты различных типов в зависимости от переданных аргументов.
 
 ```ts
 let suits = ["hearts", "spades", "clubs", "diamonds"];
 
 function pickCard(x): any {
-    // Check to see if we're working with an object/array
-    // if so, they gave us the deck and we'll pick the card
+    // Работаем с объектом/массивом?
+    // Значит, нам передали колоду и мы выбираем карту
     if (typeof x == "object") {
         let pickedCard = Math.floor(Math.random() * x.length);
         return pickedCard;
     }
-    // Otherwise just let them pick the card
+    // Иначе даем возможность выбрать карту
     else if (typeof x == "number") {
         let pickedSuit = Math.floor(x / 13);
         return { suit: suits[pickedSuit], card: x % 13 };
@@ -425,14 +424,14 @@ let pickedCard2 = pickCard(15);
 alert("card: " + pickedCard2.card + " of " + pickedCard2.suit);
 ```
 
-Here the `pickCard` function will return two different things based on what the user has passed in.
-If the users passes in an object that represents the deck, the function will pick the card.
-If the user picks the card, we tell them which card they've picked.
-But how do we describe this to the type system?
+В этом примере функция `pickCard` возвращает две разные вещи в зависимости от того, что было ей передано.
+Если пользователь передал объект, который представляет колоду карт, функция выберет одну из карт.
+Если же пользователь передает карту, функция определит, какую карту он выбрал.
+Но как описать такое поведение с помощью системы типов?
 
-The answer is to supply multiple function types for the same function as a list of overloads.
-This list is what the compiler will use to resolve function calls.
-Let's create a list of overloads that describe what our `pickCard` accepts and what it returns.
+Нужно указать для одной функции несколько типов, создав список перегрузок.
+Этот список компилятор будет использовать для проверок при вызове функции.
+Создадим список перегрузок, который описывает, что принимает функция `pickCard` и что она возвращает.
 
 ```ts
 let suits = ["hearts", "spades", "clubs", "diamonds"];
@@ -440,13 +439,13 @@ let suits = ["hearts", "spades", "clubs", "diamonds"];
 function pickCard(x: {suit: string; card: number; }[]): number;
 function pickCard(x: number): {suit: string; card: number; };
 function pickCard(x): any {
-    // Check to see if we're working with an object/array
-    // if so, they gave us the deck and we'll pick the card
+    // Работаем с объектом/массивом?
+    // Значит, нам передали колоду и нужно выбрать карту
     if (typeof x == "object") {
         let pickedCard = Math.floor(Math.random() * x.length);
         return pickedCard;
     }
-    // Otherwise just let them pick the card
+    // Иначе даем возможность выбрать карту
     else if (typeof x == "number") {
         let pickedSuit = Math.floor(x / 13);
         return { suit: suits[pickedSuit], card: x % 13 };
@@ -461,12 +460,12 @@ let pickedCard2 = pickCard(15);
 alert("card: " + pickedCard2.card + " of " + pickedCard2.suit);
 ```
 
-With this change, the overloads now give us type-checked calls to the `pickCard` function.
+Изменив код таким образом, мы получаем возможность вызывать функцию `pickCard`, совершая проверку типов.
 
-In order for the compiler to pick the correct typecheck, it follows a similar process to the underlying JavaScript.
-It looks at the overload list, and proceeding with the first overload attempts to call the function with the provided parameters.
-If it finds a match, it picks this overload as the correct overload.
-For this reason, its customary to order overloads from most specific to least specific.
+Для того, чтоб выбрать правильную проверку типов, компилятор производит действия, схожие с аналогичными действиями в JavaScript.
+Он просматривает список перегрузок, начиная с первого элемента, и сопоставляет параметры функций.
+Если параметры подходят, то компилятор выбирает эту перегрузку как верную.
+Поэтому, как правило, перегрузки функций упорядочивают от наиболее специфичных к наименее специфичным.
 
-Note that the `function pickCard(x): any` piece is not part of the overload list, so it only has two overloads: one that takes an object and one that takes a number.
-Calling `pickCard` with any other parameter types would cause an error.
+Обратите внимание, что участок кода `function pickCard(x): any` не входит в список перегрузок; в этом списке всего два элемента, один из которых принимает `object`, а другой — число.
+Вызов `pickCard` с параметрами любых других типов приведет к ошибке.
