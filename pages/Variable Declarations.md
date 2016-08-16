@@ -175,44 +175,42 @@ for (var i = 0; i < 10; i++) {
 }
 ```
 
-This odd-looking pattern is actually a commonplace.
-The `i` in the parameter actually shadows the `i` declared in the `for` loop, but since we named it the same, we didn't have to modify the loop body too much.
+Этот странно выглядящий шаблон на самом деле не редок.
 
-# `let` declarations
+# Объявления `let` 
 
-By now you've figured out that `var` has some problems, which is precisely why `let` statements are a new way to declare variables.
-Apart from the keyword used, `let` statements are written the same way `var` statements are.
+Сейчас мы уже понимаем, что `var` имеет некоторые проблемы, именно поэтому появился новый способ объявления переменных `let`. Они записываются точно также, как и объявления `var`.
 
 ```ts
 let hello = "Hello!";
 ```
 
-The key difference is not in the syntax, but in the semantics, which we'll now dive into.
+Ключевое различие не в синтаксисе, а в семантике, в которую мы сейчас погрузимся.
 
-## Block-scoping
+## Блочная область видимости
 
-When a variable is declared using `let`, it uses what some call *lexical-scoping* or *block-scoping*.
-Unlike variables declared with `var` whose scopes leak out to their containing function, block-scoped variables are not visible outside of their nearest containing block or `for`-loop.
+Когда переменная объявляется с использованием `let`, она используется в режиме *блочной области видимости*.
+В отличие от переменных, объявленных с помощью `var`, чьи области видимости распространяются на всю функцию, в которой они находятся, переменные блочной области видимости не видимы вне их ближайшего блока или же цикла `for`.
 
 ```ts
 function f(input: boolean) {
     let a = 100;
 
     if (input) {
-        // Still okay to reference 'a'
+        // Здесь мы видим переменную 'a'
         let b = a + 1;
         return b;
     }
 
-    // Error: 'b' doesn't exist here
+    // Ошибка: 'b' не существует в этом блоке
     return b;
 }
 ```
 
-Here, we have two local variables `a` and `b`.
-`a`'s scope is limited to the body of `f` while `b`'s scope is limited to the containing `if` statement's block.
+Здесь мы имеем две локальные переменные `a` и `b`.
+Область видимости `a` ограничена телом функции `f`, в то время как область `b` ограничена блоком условия `if`.
 
-Variables declared in a `catch` clause also have similar scoping rules.
+Переменные, объявленные в блоке `catch` имеют те же правила видимости.
 
 ```ts
 try {
@@ -225,19 +223,17 @@ catch (e) {
 // Error: 'e' doesn't exist here
 console.log(e);
 ```
-
-Another property of block-scoped variables is that they can't be read or written to before they're actually declared.
-While these variables are "present" throughout their scope, all points up until their declaration are part of their *temporal dead zone*.
-This is just a sophisticated way of saying you can't access them before the `let` statement, and luckily TypeScript will let you know that.
+Другое свойство переменных блочной области видимости - к ним нельзя обратиться перед тем, как они были объявлены.
+При том, что переменные блочной области видимости представлены везде в своем блоке, в каждой точке до их объявления находится *мертвая зона*. Это просто такой способ сказать, что вы не можете получить к ним доступ до утверждения `let` и, к счастью, TypeScript напомнит вам об этом.
 
 ```ts
-a++; // illegal to use 'a' before it's declared;
+a++; // неверно использовать 'a' до ее объявления;
 let a;
 ```
 
-Something to note is that you can still *capture* a block-scoped variable before it's declared.
-The only catch is that it's illegal to call that function before the declaration.
-If targeting ES2015, a modern runtime will throw an error; however, right now TypeScript is permissive and won't report this as an error.
+Однако, вы все еще можете *захватить* (замкнуть) переменную с блочной областью видимости до ее объявления.
+Правда, попытка вызвать такую функцию до ее объявления приведет к ошибке.
+Если вы компилируете в стандарт ES2015, это вызовет ошибку; тем не менее, прямо сейчас TypeScript разрешает это и не будет указывать на ошибку.
 
 ```ts
 function foo() {
@@ -252,11 +248,11 @@ foo();
 let a;
 ```
 
-For more information on temporal dead zones, see relevant content on the [Mozilla Developer Network](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let#Temporal_dead_zone_and_errors_with_let).
+Для более подробной информации о мертвых зонах перейдите по этой ссылке: [Mozilla Developer Network](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let#Temporal_dead_zone_and_errors_with_let).
 
-## Re-declarations and Shadowing
+## Повторное объявление и экранирование
 
-With `var` declarations, we mentioned that it didn't matter how many times you declared your variables; you just got one.
+В случае объявлений `var` не имеет значения, как много раз вы объявляете одну и ту же переменную. Вы всегда получите одну.
 
 ```ts
 function f(x) {
@@ -269,30 +265,28 @@ function f(x) {
 }
 ```
 
-In the above example, all declarations of `x` actually refer to the *same* `x`, and this is perfectly valid.
-This often ends up being a source of bugs.
-Thankfully, `let` declarations are not as forgiving.
+В примере выше все объявления `x` на самом деле  указывают на *одну и ту же* `x`, и это вполне допустимо.
+Это часто является источником багов. Поэтому хорошо, что объявления `let` этого не позволяют.
 
 ```ts
 let x = 10;
-let x = 20; // error: can't re-declare 'x' in the same scope
+let x = 20; // Ошибка: нельзя переопределить 'x' в одной области видимости
 ```
-
-The variables don't necessarily need to both be block-scoped for TypeScript to tell us that there's a problem.
+Переменные не обязательно должны обе быть с блочной областью видимости в TypeScript, чтобы компилятором была указана ошибка.
 
 ```ts
 function f(x) {
-    let x = 100; // error: interferes with parameter declaration
+    let x = 100; // ошибка: пересекается с параметром функции
 }
 
 function g() {
     let x = 100;
-    var x = 100; // error: can't have both declarations of 'x'
+    var x = 100; // ошибка: нельзя два раза объявить 'x'
 }
 ```
 
-That's not to say that block-scoped variable can never be declared with a function-scoped variable.
-The block-scoped variable just needs to be declared within a distinctly different block.
+Это не значит, что переменная с блочной областью видимости не может быть объявлена с переменной с областью видимости в той же функции.
+Переменная с блочной областью просто должна быть объявлена в своем блоке
 
 ```ts
 function f(condition, x) {
@@ -307,10 +301,9 @@ function f(condition, x) {
 f(false, 0); // returns 0
 f(true, 0);  // returns 100
 ```
-
-The act of introducing a new name in a more nested scope is called *shadowing*.
-It is a bit of a double-edged sword in that it can introduce certain bugs on its own in the event of accidental shadowing, while also preventing certain bugs.
-For instance, imagine we had written our earlier `sumMatrix` function using `let` variables.
+Способ введения нового имени во вложенной области называется *сокрытием*.
+Это своего рода меч с двумя лезвиями, т.к. он может ввести некоторые баги, также как и избавить от других.
+Например, представьте, как мы могли бы переписать функцию `sumMatrix`, используя переменные `let`.
 
 ```ts
 function sumMatrix(matrix: number[][]) {
@@ -326,12 +319,14 @@ function sumMatrix(matrix: number[][]) {
 }
 ```
 
-This version of the loop will actually perform the summation correctly because the inner loop's `i` shadows `i` from the outer loop.
+Эта версия цикла делает суммирование корректно, потому что `i` внутреннего цикла перекрывает `i` внешнего.
 
-Shadowing should *usually* be avoided in the interest of write clearer code.
-While there are some scenarios where it may be fitting to take advantage of it, you should use your best judgement.
+Такое сокрытие нужно обычно избегать, чтобы код был чище. Но в некоторых сценариях такой способ может идеально подходить для решения задачи. 
+Вы должны использовать лучшее решение на ваше усмотрение.
 
-## Block-scoped variable capturing
+## Замыкание пременных с блочной областью видмости
+
+Когда мы впервые коснулись замыкания переменных с объявлением `var`, мы коротко рассмотрели, как переменные ведут себя при замыкании.
 
 When we first touched on the idea of variable capturing with `var` declaration, we briefly went into how variables act once captured.
 To give a better intuition of this, each time a scope is run, it creates an "environment" of variables.
