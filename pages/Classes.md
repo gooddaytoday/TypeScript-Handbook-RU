@@ -149,7 +149,7 @@ let rhino = new Rhino();
 let employee = new Employee("Bob");
 
 animal = rhino;
-animal = employee; // Error: Animal and Employee are not compatible
+animal = employee; // Error: 'Animal' and 'Employee' are not compatible
 ```
 
 In this example, we have an `Animal` and a `Rhino`, with `Rhino` being a subclass of `Animal`.
@@ -189,27 +189,70 @@ console.log(howard.name); // error
 
 Notice that while we can't use `name` from outside of `Person`, we can still use it from within an instance method of `Employee` because `Employee` derives from `Person`.
 
-## Parameter properties
-
-In our last example, we had to declare a private member `name` and a constructor parameter `theName`, and we then immediately set `name` to `theName`.
-This turns out to be a very common practice.
-*Parameter properties* let you create and initialize a member in one place.
-Here's a further revision of the previous `Animal` class using a parameter property:
+A constructor may also be marked `protected`.
+This means that the class cannot be instantiated outside of its containing class, but can be extended. For example,
 
 ```ts
-class Animal {
-    constructor(private name: string) { }
-    move(distanceInMeters: number) {
-        console.log(`${this.name} moved ${distanceInMeters}m.`);
+class Person {
+    protected name: string;
+    protected constructor(theName: string) { this.name = theName; }
+}
+
+// Employee can extend Person
+class Employee extends Person {
+    private department: string;
+
+    constructor(name: string, department: string) {
+        super(name);
+        this.department = department;
+    }
+
+    public getElevatorPitch() {
+        return `Hello, my name is ${this.name} and I work in ${this.department}.`;
+    }
+}
+
+let howard = new Employee("Howard", "Sales");
+let john = new Person("John"); // Error: The 'Person' constructor is protected
+```
+
+# Readonly modifier
+
+You can make properties readonly by using the `readonly` keyword.
+Readonly properties must be initialized at their declaration or in the constructor.
+
+```ts
+class Octopus {
+    readonly name: string;
+    readonly numberOfLegs: number = 8;
+    constructor (theName: string) {
+        this.name = theName;
+    }
+}
+let dad = new Octopus("Man with the 8 strong legs");
+dad.name = "Man with the 3-piece suit"; // error! name is readonly.
+```
+
+## Parameter properties
+
+In our last example, we had to declare a readonly member `name` and a constructor parameter `theName` in the `Octopus` class, and we then immediately set `name` to `theName`.
+This turns out to be a very common practice.
+*Parameter properties* let you create and initialize a member in one place.
+Here's a further revision of the previous `Octopus` class using a parameter property:
+
+```ts
+class Octopus {
+    readonly numberOfLegs: number = 8;
+    constructor(readonly name: string) {
     }
 }
 ```
 
-Notice how we dropped `theName` altogether and just use the shortened `private name: string` parameter on the constructor to create and initialize the `name` member.
+Notice how we dropped `theName` altogether and just use the shortened `readonly name: string` parameter on the constructor to create and initialize the `name` member.
 We've consolidated the declarations and assignment into one location.
 
-Parameter properties are declared by prefixing a constructor parameter with an accessibility modifier.
-Using `private` for a parameter property declares and initializes a private member; likewise, the same is done for `public` and `protected`.
+Parameter properties are declared by prefixing a constructor parameter with an accessibility modifier or `readonly`, or both.
+Using `private` for a parameter property declares and initializes a private member; likewise, the same is done for `public`, `protected`, and `readonly`.
 
 # Accessors (Геттеры/сетторы)
 
@@ -269,7 +312,7 @@ if (employee.fullName) {
 
 # Static Properties
 
-Up to this point, we've only talked about the *instance* members of the class, those that show up on the object when its instantiated.
+Up to this point, we've only talked about the *instance* members of the class, those that show up on the object when it's instantiated.
 We can also create *static* members of a class, those that are visible on the class itself rather than on the instances.
 In this example, we use `static` on the origin, as it's a general value for all grids.
 Each instance accesses this value through prepending the name of the class.
@@ -304,7 +347,7 @@ The `abstract` keyword is used to define abstract classes as well as abstract me
 abstract class Animal {
     abstract makeSound(): void;
     move(): void {
-        console.log('roaming the earth...');
+        console.log("roaming the earth...");
     }
 }
 ```
@@ -321,7 +364,7 @@ abstract class Department {
     }
 
     printName(): void {
-        console.log('Department name: ' + this.name);
+        console.log("Department name: " + this.name);
     }
 
     abstract printMeeting(): void; // must be implemented in derived classes
@@ -330,15 +373,15 @@ abstract class Department {
 class AccountingDepartment extends Department {
 
     constructor() {
-        super('Accounting and Auditing'); // constructors in derived classes must call super()
+        super("Accounting and Auditing"); // constructors in derived classes must call super()
     }
 
     printMeeting(): void {
-        console.log('The Accounting Department meets each Monday at 10am.');
+        console.log("The Accounting Department meets each Monday at 10am.");
     }
 
     generateReports(): void {
-        console.log('Generating accounting reports...');
+        console.log("Generating accounting reports...");
     }
 }
 
@@ -436,7 +479,7 @@ Next, we then use the class directly.
 Here we create a new variable called `greeterMaker`.
 This variable will hold the class itself, or said another way its constructor function.
 Here we use `typeof Greeter`, that is "give me the type of the `Greeter` class itself" rather than the instance type.
-Or, more precisely, "give me the type of the symbol called `Greeter`", which is the type of the constructor function.
+Or, more precisely, "give me the type of the symbol called `Greeter`," which is the type of the constructor function.
 This type will contain all of the static members of Greeter along with the constructor that creates instances of the `Greeter` class.
 We show this by using `new` on `greeterMaker`, creating new instances of `Greeter` and invoking them as before.
 

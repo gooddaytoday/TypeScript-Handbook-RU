@@ -81,9 +81,9 @@ Optionally, a module can wrap one or more modules and combine all their exports 
 ##### AllValidators.ts
 
 ```ts
-export * from "./StringValidator"; // exports interface StringValidator
-export * from "./LettersOnlyValidator"; // exports class LettersOnlyValidator
-export * from "./ZipCodeValidator";  // exports class ZipCodeValidator
+export * from "./StringValidator"; // exports interface 'StringValidator'
+export * from "./LettersOnlyValidator"; // exports class 'LettersOnlyValidator'
+export * from "./ZipCodeValidator";  // exports class 'ZipCodeValidator'
 ```
 
 # Import
@@ -216,7 +216,7 @@ Both CommonJS and AMD generally have the concept of an `exports` object which co
 
 They also support replacing the `exports` object with a custom single object.
 Default exports are meant to act as a replacement for this behavior; however, the two are incompatible.
-TypeScript supports `export =` to module the traditional CommonJS and AMD workflow.
+TypeScript supports `export =` to model the traditional CommonJS and AMD workflow.
 
 The `export =` syntax specifies a single object that is exported from the module.
 This can be a class, interface, namespace, function, or enum.
@@ -500,6 +500,79 @@ import * as URL from "url";
 let myUrl = URL.parse("http://www.typescriptlang.org");
 ```
 
+### Shorthand ambient modules
+
+If you don't want to take the time to write out declarations before using a new module, you can use a shorthand declaration to get started quickly.
+
+##### declarations.d.ts
+
+```ts
+declare module "hot-new-module";
+```
+
+All imports from a shorthand module will have the `any` type.
+
+```ts
+import x, {y} from "hot-new-module";
+x(y);
+```
+
+### Wildcard module declarations
+
+Some module loaders such as [SystemJS](https://github.com/systemjs/systemjs/blob/master/docs/overview.md#plugin-syntax)
+and [AMD](https://github.com/amdjs/amdjs-api/blob/master/LoaderPlugins.md) allow non-JavaScript content to be imported.
+These typically use a prefix or suffix to indicate the special loading semantics.
+Wildcard module declarations can be used to cover these cases.
+
+```ts
+declare module "*!text" {
+    const content: string;
+    export default content;
+}
+// Some do it the other way around.
+declare module "json!*" {
+    const value: any;
+    export default value;
+}
+```
+
+Now you can import things that match `"*!text"` or `"json!*"`.
+
+```ts
+import fileContent from "./xyz.txt!text";
+import data from "json!http://example.com/data.json";
+console.log(data, fileContent);
+```
+
+### UMD modules
+
+Some libraries are designed to be used in many module loaders, or with no module loading (global variables).
+These are known as [UMD](https://github.com/umdjs/umd) or [Isomorphic](http://isomorphic.net) modules.
+These libraries can be accessed through either an import or a global variable.
+For example:
+
+##### math-lib.d.ts
+
+```ts
+export const isPrime(x: number): boolean;
+export as namespace mathLib;
+```
+
+The library can then be used as an import within modules:
+
+```ts
+import { isPrime } from "math-lib";
+isPrime(2);
+mathLib.isPrime(2); // ERROR: can't use the global definition from inside a module
+```
+
+It can also be used as a global variable, but only inside of a script.
+(A script is a file with no imports or exports.)
+
+```ts
+mathLib.isPrime(2);
+```
+
 # Guidance for structuring modules
 
 ## Export as close to top-level as possible
@@ -532,7 +605,7 @@ export default class SomeType {
 #### MyFunc.ts
 
 ```ts
-export default function getThing() { return 'thing'; }
+export default function getThing() { return "thing"; }
 ```
 
 #### Consumer.ts
@@ -557,7 +630,7 @@ export function someFunc() { /* ... */ }
 
 Conversly when importing:
 
-### Explicitlly list imported names
+### Explicitly list imported names
 
 #### Consumer.ts
 
