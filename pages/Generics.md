@@ -1,18 +1,18 @@
-# Introduction
+# Введение
 
-A major part of software engineering is building components that not only have well-defined and consistent APIs, but are also reusable.
-Components that are capable of working on the data of today as well as the data of tomorrow will give you the most flexible capabilities for building up large software systems.
+Важной частью разработки является построение компонентов, которые обладали бы не только строгим и последовательным API, но и были доступны для повторного использования.
+Наиболее гибкие возможности для построения крупной программной системы дают компоненты, способные работать и с теми данными, которые есть сегодня, с теми, которые могут появиться завтра.
 
-In languages like C# and Java, one of the main tools in the toolbox for creating reusable components is *generics*, that is, being able to create a component that can work over a variety of types rather than a single one.
-This allows users to consume these components and use their own types.
+В таких языках, как C# и Java, одним из главных инструментов для создания компонентов, предназначенных для повторного использования, являются обобщения (также известные как шаблоны или дженерики). Они позволяют создавать компоненты, способные работать с различными типами, а не только с каким-то одним.
+Это позволяет применять такие компоненты и использовать свои типы.
 
-# Hello World of Generics
+# Здравствуй, мир обобщений!
 
-To start off, let's do the "hello world" of generics: the identity function.
-The identity function is a function that will return back whatever is passed in.
-You can think of this in a similar way to the `echo` command.
+Для начала создадим традиционную для знакомства c обобщениями первую функцию: функцию-тождество.
+Такая функция возвращает в точности то, что ей было передано.
+Можно расценивать ее так же, как команду `echo`.
 
-Without generics, we would either have to give the identity function a specific type:
+Без использования обобщений пришлось бы задать такой функции определенный тип:
 
 ```ts
 function identity(arg: number): number {
@@ -20,7 +20,7 @@ function identity(arg: number): number {
 }
 ```
 
-Or, we could describe the identity function using the `any` type:
+Или же описать ее, используя тип `any`:
 
 ```ts
 function identity(arg: any): any {
@@ -28,50 +28,11 @@ function identity(arg: any): any {
 }
 ```
 
-While using `any` is certainly generic in that will accept any and all types for the type of `arg`, we actually are losing the information about what that type was when the function returns.
-If we passed in a number, the only information we have is that any type could be returned.
+Хотя использование `any`, без сомнения, представляет собой некоторого рода обобщение, поскольку позволяет использовать `arg` любого типа, в этом случае в момент возврата значения теряется информация о его типе.
+Если бы мы передали число, известно было бы лишь то, что это мог быть любой (`any`) тип.
 
-Instead, we need a way of capturing the type of the argument in such a way that we can also use it to denote what is being returned.
-Here, we will use a *type variable*, a special kind of variable that works on types rather than values.
-
-```ts
-function identity<T>(arg: T): T {
-    return arg;
-}
-```
-
-We've now added a type variable `T` to the identity function.
-This `T` allows us to capture the type the user provides (e.g. `number`), so that we can use that information later.
-Here, we use `T` again as the return type. On inspection, we can now see the same type is used for the argument and the return type.
-This allows us to traffic that type information in one side of the function and out the other.
-
-We say that this version of the `identity` function is generic, as it works over a range of types.
-Unlike using `any`, it's also just as precise (ie, it doesn't lose any information) as the first `identity` function that used numbers for the argument and return type.
-
-Once we've written the generic identity function, we can call it in one of two ways.
-The first way is to pass all of the arguments, including the type argument, to the function:
-
-```ts
-let output = identity<string>("myString");  // type of output will be 'string'
-```
-
-Here we explicitly set `T` to be string as one of the arguments to the function call, denoted using the `<>` around the arguments rather than `()`.
-
-The second way is also perhaps the most common. Here we use *type argument inference*, that is, we want the compiler to set the value of `T` for us automatically based on the type of the argument we pass in:
-
-```ts
-let output = identity("myString");  // type of output will be 'string'
-```
-
-Notice that we didn't have to explicitly pass the type in the angle brackets (`<>`), the compiler just looked at the value `"myString"`, and set `T` to its type.
-While type argument inference can be a helpful tool to keep code shorter and more readable, you may need to explicitly pass in the type arguments as we did in the previous example when the compiler fails to infer the type, as may happen in more complex examples.
-
-# Working with Generic Type Variables
-
-When you begin to use generics, you'll notice that when you create generic functions like `identity`, the compiler will enforce that you use any generically typed parameters in the body of the function correctly.
-That is, that you actually treat these parameters as if they could be any and all types.
-
-Let's take our `identity` function from earlier:
+Вместо этого нужен способ захватить тип аргумента так, чтобы его впоследствии можно было использовать для описания типа возвращаемого значения.
+Здесь мы используем *ти́повую переменную* — особый вид переменной, которая оперирует типами, а не значениями.
 
 ```ts
 function identity<T>(arg: T): T {
@@ -79,51 +40,90 @@ function identity<T>(arg: T): T {
 }
 ```
 
-What if we want to also log the length of the argument `arg` to the console with each call?
-We might be tempted to write this:
+Мы добавили типовую переменную `T` к функции-тождеству.
+Эта `T` позволяет сохранять тип, который указал пользователь (то есть `number`), так что позже его можно будет использовать.
+В данном случае `T` используется в качестве типа возвращаемого значения. Можно увидеть, что теперь и аргумент, и возвращаемое значение имеют один и тот же тип.
+Такой способ позволяет направить информацию о типах со входа функции к ее выходу.
+
+Можно сказать, что этот вариант функции `identity` является обобщенным, посколько он работает со многими типами.
+В отличие от варианта с использованием `any`, он также является точным в том смысле, что не теряет информации о типах, так же как и самый первый вариант, где для аргумента и для возвращаемого значения использовался тип `number`.
+
+Функция написана, и теперь ее можно вызвать одним из двух способов.
+Первый способ — передать все аргументы, в том числе и типовый аргумент:
+
+```ts
+let output = identity<string>("myString");  // у output будет тип string
+```
+
+В этом примере `T` явно устанавливается в `string`, как один из аргументов функции, но окруженный угловыми скобками `<>` вместо круглых `()`.
+
+Второй способ, вероятно, наиболее популярен. Здесь используется *выведение типового аргумента*, и компилятор автоматически устанавливает `T` на основании типа аргумента, который передается в функцию:
+
+```ts
+let output = identity("myString");  // у output будет тип string
+```
+
+Обратите внимание, что тип не передается явно, в угловых скобках (`<>`) — компилятор просто проанализировал значение `"myString"` и установил `T` в значение его типа.
+Хотя выведение типового аргумента может быть полезно, чтобы сделать код более кратким и читаемым, иногда может понадобиться явно передавать типовый аргумент, если компилятору не удается автоматически вывести тип, что может произойти в более сложных случаях.
+
+# Работа с обобщенными типовыми переменными
+
+Начав применять обобщения, можно заметить, что при создании обобщенных функций, таких, как `identity`, компилятор будет принуждать к корректному использованию типовых переменных в теле функции.
+То есть, необходимо расценивать каждый из параметров так, как если бы он мог оказаться абсолютно любым типом.
+
+Возьмем уже знакомую нам функцию `identity`:
+
+```ts
+function identity<T>(arg: T): T {
+    return arg;
+}
+```
+
+Что, если нужно при каждом вызове функции выводить длину аргумента `arg` в консоль?
+Может появиться искушение написать так:
 
 ```ts
 function loggingIdentity<T>(arg: T): T {
-    console.log(arg.length);  // Error: T doesn't have .length
+    console.log(arg.length);  // Ошибка: у T нет свойства .length
     return arg;
 }
 ```
 
-When we do, the compiler will give us an error that we're using the `.length` member of `arg`, but nowhere have we said that `arg` has this member.
-Remember, we said earlier that these type variables stand in for any and all types, so someone using this function could have passed in a `number` instead, which does not have a `.length` member.
+Если сделать подобное, компилятор выдаст ошибку, говорящую о том, что используется `.length` объекта `arg`, хотя нигде не было указано, что у объекта есть такое свойство.
+Ранее говорилось о том, что типовая переменная означает абсолютно любой тип, поэтому в функцию могло быть передано и число, у которого нет свойства `.length`.
 
-Let's say that we've actually intended this function to work on arrays of `T` rather than `T` directly. Since we're working with arrays, the `.length` member should be available.
-We can describe this just like we would create arrays of other types:
+Допустим, что на самом деле функция должна работать с массивами объектов `T`, а не с самими объектами `T` напрямую. Так как она будет иметь дело с массивами, у них должно быть свойство `.length`.
+Можно описать это так, словно мы создаем массив:
 
 ```ts
 function loggingIdentity<T>(arg: T[]): T[] {
-    console.log(arg.length);  // Array has a .length, so no more error
+    console.log(arg.length);  // У массива есть .length, поэтому ошибки больше нет
     return arg;
 }
 ```
 
-You can read the type of `loggingIdentity` as "the generic function `loggingIdentity` takes a type parameter `T`, and an argument `arg` which is an array of `T`s, and returns an array of `T`s."
-If we passed in an array of numbers, we'd get an array of numbers back out, as `T` would bind to `number`.
-This allows us to use our generic type variable `T` as part of the types we're working with, rather than the whole type, giving us greater flexibility.
+Тип `loggingIdentity` читается как "обобщенная функция `loggingIdentity`, которая принимает типовый параметр `T` и аргумент `arg`, который является массивом объектов `T`, и возвращает массив объектов `T`".
+Если функции будет передан массив чисел, то результатом также будет массив чисел, так как `T` станет `number`.
+Это позволяет использовать обобщенную типовую переменную `T` как часть типа, с которым мы работаем, а не только как целый тип, что дает большую гибкость.
 
-We can alternatively write the sample example this way:
+Как вариант, можно записать этот пример следующим способом:
 
 ```ts
 function loggingIdentity<T>(arg: Array<T>): Array<T> {
-    console.log(arg.length);  // Array has a .length, so no more error
+    console.log(arg.length);  // У массива есть .length, поэтому ошибки больше нет
     return arg;
 }
 ```
 
-You may already be familiar with this style of type from other languages.
-In the next section, we'll cover how you can create your own generic types like `Array<T>`.
+Вы уже могли встречаться с таким видом записи типов в других языках.
+В следующем разделе мы обсудим, как создавать свои собственные типы наподобие `Array<T>`.
 
-# Generic Types
+# Обобщенные типы
 
-In previous sections, we created generic identity functions that worked over a range of types.
-In this section, we'll explore the type of the functions themselves and how to create generic interfaces.
+В предыдущих разделах мы создали обобщенную функцию-тождество, которая работала с различными типами.
+В этом разделе разберем, как описать тип такой функции и то, как создавать обобщенные интерфейсы.
 
-The type of generic functions is just like those of non-generic functions, with the type parameters listed first, similarly to function declarations:
+Тип обобщенной функции схож с типом обычной функции, где типовый параметр указан первым, так же, как и в ее определении:
 
 ```ts
 function identity<T>(arg: T): T {
@@ -133,7 +133,7 @@ function identity<T>(arg: T): T {
 let myIdentity: <T>(arg: T) => T = identity;
 ```
 
-We could also have used a different name for the generic type parameter in the type, so long as the number of type variables and how the type variables are used line up.
+Для типового параметра можно было бы использовать другое имя, важно лишь, чтобы число типовых параметров и то, как они используются, согласовывалось.
 
 ```ts
 function identity<T>(arg: T): T {
@@ -143,7 +143,7 @@ function identity<T>(arg: T): T {
 let myIdentity: <U>(arg: U) => U = identity;
 ```
 
-We can also write the generic type as a call signature of an object literal type:
+Также можно записать обобщенный тип как сигнатуру вызова на типе объектного литерала:
 
 ```ts
 function identity<T>(arg: T): T {
@@ -153,8 +153,8 @@ function identity<T>(arg: T): T {
 let myIdentity: {<T>(arg: T): T} = identity;
 ```
 
-Which leads us to writing our first generic interface.
-Let's take the object literal from the previous example and move it to an interface:
+Это подводит нас к описанию первого обобщенного интерфейса.
+Возьмем объектный литерал из предыдущего примера и превратим его в интерфейс:
 
 ```ts
 interface GenericIdentityFn {
@@ -168,9 +168,9 @@ function identity<T>(arg: T): T {
 let myIdentity: GenericIdentityFn = identity;
 ```
 
-In a similar example, we may want to move the generic parameter to be a parameter of the whole interface.
-This lets us see what type(s) we're generic over (e.g. `Dictionary<string>` rather than just `Dictionary`).
-This makes the type parameter visible to all the other members of the interface.
+Возможно, нам захотелось бы сделать обобщенный параметр параметром интерфейса в целом.
+Такой подход позволит понимать, относительно какого типа (или типов) происходит обобщение (то есть относительно `Dictionary<string>`, а не просто `Dictionary`).
+Это делает типовый параметр доступным всем остальным членам интерфейса.
 
 ```ts
 interface GenericIdentityFn<T> {
@@ -184,18 +184,18 @@ function identity<T>(arg: T): T {
 let myIdentity: GenericIdentityFn<number> = identity;
 ```
 
-Notice that our example has changed to be something slightly different.
-Instead of describing a generic function, we now have a non-generic function signature that is a part of a generic type.
-When we use `GenericIdentityFn`, we now will also need to specify the corresponding type argument (here: `number`), effectively locking in what the underlying call signature will use.
-Understanding when to put the type parameter directly on the call signature and when to put it on the interface itself will be helpful in describing what aspects of a type are generic.
+Обратите внимание, что пример трансформировался в нечто совершенно иное.
+Вместо описания обобщенной функции теперь обычная, не обобщенная функция, которая является частью обобщенного типа.
+При использовании `GenericIdentityFn` теперь придется указывать соответствующий типовый аргумент (в данном случае `number`), таким образом зафиксировав типы, которые будет использовать соответствующая функция.
+Понимать, в каких случаях типовый параметр нужно добавлять к сигнатуре вызова, а когда — к самому интерфейсу, полезно при описании того, какие аспекты типа являются обобщенными.
 
-In addition to generic interfaces, we can also create generic classes.
-Note that it is not possible to create generic enums and namespaces.
+Кроме обобщенных интерфейсов можно создавать и обобщенные классы.
+Обратите внимание, что создавать обобщенные перечисления и пространства имен нельзя.
 
-# Generic Classes
+# Обобщенные классы
 
-A generic class has a similar shape to a generic interface.
-Generic classes have a generic type parameter list in angle brackets (`<>`) following the name of the class.
+Обобщенные классы имеют такой же вид, что и обобщенные интерфейсы.
+У них есть список типовых параметров в угловых скобках (`<>`) после имени класса.
 
 ```ts
 class GenericNumber<T> {
@@ -208,8 +208,8 @@ myGenericNumber.zeroValue = 0;
 myGenericNumber.add = function(x, y) { return x + y; };
 ```
 
-This is a pretty literal use of the `GenericNumber` class, but you may have noticed that nothing is restricting it to only use the `number` type.
-We could have instead used `string` or even more complex objects.
+Это довольно буквальное использование типа `GenericNumber` (букв. обобщенное число), но можно заметить, что ничего не мешает использовать с ним и другие типы, кроме `number`.
+К примеру, можно использовать тип `string` или более сложные объекты.
 
 ```ts
 let stringNumeric = new GenericNumber<string>();
@@ -219,29 +219,28 @@ stringNumeric.add = function(x, y) { return x + y; };
 alert(stringNumeric.add(stringNumeric.zeroValue, "test"));
 ```
 
-Just as with interface, putting the type parameter on the class itself lets us make sure all of the properties of the class are working with the same type.
+Так же, как и с интерфейсами, передача типового параметра самому классу устанавливает то, что все его свойства будет работать с одним и тем же типом.
 
-As we covered in [our section on classes](./Classes.md), a class has two sides to its type: the static side and the instance side.
-Generic classes are only generic over their instance side rather than their static side, so when working with classes, static members can not use the class's type parameter.
+Как указывалось в [главе о классах](./Classes.md), у класса есть два типа: тип статической части и тип экземпляра.
+Обобщенные типы являются таковыми только по отношению к типу экземпляра, но не к типу статической части. Поэтому статические члены класса не могут использовать типовые параметры класса.
 
-# Generic Constraints
+# Ограничения обобщений
 
-If you remember from an earlier example, you may sometimes want to write a generic function that works on a set of types where you have some knowledge about what capabilities that set of types will have.
-In our `loggingIdentity` example, we wanted to be able access the `.length` property of `arg`, but the compiler could not prove that every type had a `.length` property, so it warns us that we can't make this assumption.
+Как вы помните из предыдущих примеров, в некоторых случаях требуется создать обобщенную функцию, которая работает с некоторым множеством типов, в отношении которых известно, какие возможности у них есть.
+В примере с `loggingIdentity` требовалось получить доступ к свойству `.length` объекта `arg`, но компилятор не мог быть уверен, что у любого типа будет такое свойство, поэтому предупреждал об этом.
 
 ```ts
 function loggingIdentity<T>(arg: T): T {
-    console.log(arg.length);  // Error: T doesn't have .length
+    console.log(arg.length);  // Ошибка: у T нет свойства .length
     return arg;
 }
 ```
 
-Instead of working with any and all types, we'd like to constrain this function to work with any and all types that also have the `.length` property.
-As long as the type has this member, we'll allow it, but it's required to have at least this member.
-To do so, we must list our requirement as a constraint on what T can be.
+Вместо того, чтобы работать с любым возможным типом, мы бы хотели создать ограничение, чтобы функция работала со всеми типами, у которых есть свойство `.length`.
+Если у типа есть это свойство, то его можно будет использовать, но он обязательно должен иметь по крайней мере это свойство.
 
-To do so, we'll create an interface that describes our constraint.
-Here, we'll create an interface that has a single `.length` property and then we'll use this interface and the `extends` keyword to denote our constraint:
+Чтобы реализовать это, создадим интерфейс, который описывал бы такое ограничение.
+Создадим интерфейс с единственным свойством `.length`, и используем его с ключевым словом `extend`, чтобы обозначить ограничение:
 
 ```ts
 interface Lengthwise {
@@ -249,28 +248,28 @@ interface Lengthwise {
 }
 
 function loggingIdentity<T extends Lengthwise>(arg: T): T {
-    console.log(arg.length);  // Now we know it has a .length property, so no more error
+    console.log(arg.length);  // Теперь мы знаем, что у объекта есть свойство .length, поэтому ошибки нет
     return arg;
 }
 ```
 
-Because the generic function is now constrained, it will no longer work over any and all types:
+Поскольку обобщенная функция теперь имеет ограничение, она не сможет работать с любым типом:
 
 ```ts
-loggingIdentity(3);  // Error, number doesn't have a .length property
+loggingIdentity(3);  // Ошибка, у числа нет свойства .length
 ```
 
-Instead, we need to pass in values whose type has all the required properties:
+Вместо этого ей необходимо передавать значения тех типов, у которых есть все необходимые свойства:
 
 ```ts
 loggingIdentity({length: 10, value: 3});
 ```
 
-## Using Type Parameters in Generic Constraints
+## Использование типовых параметров в ограничениях обобщений
 
-You can declare a type parameter that is constrained by another type parameter.
-For example, here we'd like to take two objects and copy properties from one to the other.
-We'd like to ensure that we're not accidentally writing any extra properties from our `source`, so we'll place a constraint between the two types:
+Можно объявить типовый параметр, который ограничивается другим типовым параметром.
+К примеру, нужно принять два объекта и копировать свойства из одного в другой.
+Нужно удостовериться, что мы случайно не добавим какое-либо лишнее свойство, поэтому добавим ограничение между двумя типами:
 
 ```ts
 function copyFields<T extends U, U>(target: T, source: U): T {
@@ -282,13 +281,13 @@ function copyFields<T extends U, U>(target: T, source: U): T {
 
 let x = { a: 1, b: 2, c: 3, d: 4 };
 
-copyFields(x, { b: 10, d: 20 }); // okay
-copyFields(x, { Q: 90 });  // error: property 'Q' isn't declared in 'x'.
+copyFields(x, { b: 10, d: 20 }); // все в порядке
+copyFields(x, { Q: 90 });  // ошибка: у 'x' нет свойства 'Q'
 ```
 
-## Using Class Types in Generics
+## Использование типов классов в обобщениях
 
-When creating factories in TypeScript using generics, it is necessary to refer to class types by their constructor functions. For example,
+Реализуя паттерн "фабрика" с использованием обобщений, необходимо указывать на тип класса с помощью его функции-конструктора. К примеру,
 
 ```ts
 function create<T>(c: {new(): T; }): T {
@@ -296,7 +295,7 @@ function create<T>(c: {new(): T; }): T {
 }
 ```
 
-A more advanced example uses the prototype property to infer and constrain relationships between the constructor function and the instance side of class types.
+Более сложный пример использует свойство прототипа, чтобы вывести и ограничить отношения между конструктором и типом экземпляра класса.
 
 ```ts
 class BeeKeeper {
@@ -325,5 +324,5 @@ function findKeeper<A extends Animal, K> (a: {new(): A;
     return a.prototype.keeper;
 }
 
-findKeeper(Lion).nametag;  // typechecks!
+findKeeper(Lion).nametag;  // проверка типов!
 ```
