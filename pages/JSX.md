@@ -1,71 +1,71 @@
-# Introduction
+﻿# Введение
 
-[JSX](https://facebook.github.io/jsx/) is an embeddable XML-like syntax.
-It is meant to be transformed into valid JavaScript, though the semantics of that transformation are implementation-specific.
-JSX came to popularity with the [React](http://facebook.github.io/react/) framework, but has since seen other applications as well.
-TypeScript supports embedding, type checking, and compiling JSX directly into JavaScript.
+[JSX](https://facebook.github.io/jsx/) является встраиваемым XML-подобным расширением синтаксиса JavaScript.
+Он должен трасформироваться в корректный JavaScript, однако семантика такого преобразования зависит от конкретной реализации.
+JSX завоевал популярность вместе с фреймворком [React](http://facebook.github.io/react/), но потом  применялся и отдельно.
+TypeScript поддерживает встраивание, проверку типов и преобразование JSX в JavaScript напрямую.
 
-# Basic usage
+# Основы
 
-In order to use JSX you must do two things.
+Чтобы начать использовать JSX, необходимо сделать следующее:
 
-1. Name your files with a `.tsx` extension
-2. Enable the `jsx` option
+1. Назначить вашим файлам расширение `.tsx`
+2. Включить опцию `jsx`
 
-TypeScript ships with two JSX modes: `preserve` and `react`.
-These modes only affect the emit stage - type checking is unaffected.
-The `preserve` mode will keep the JSX as part of the output to be further consumed by another transform step (e.g. [Babel](https://babeljs.io/)).
-Additionally the output will have a `.jsx` file extension.
-The `react` mode will emit `React.createElement`, does not need to go through a JSX transformation before use, and the output will have a `.js` file extension.
+TypeScript имеет два JSX режима: `preserve` и `react`.
+Эти режимы влияют только на стадию генерации - проверка типов не изменяется.
+Режим `preserve` сохраняет JSX в выходном коде, который далее передаётся на следующий шаг трансформации (e.g. [Babel](https://babeljs.io/)).
+Выходной код получит расширение `.jsx`. 
+Режим `react` сгенерирует  `React.createElement`, где уже не нужно трансформировать JSX перед применением, и код на выходе получит расширение `.js`.
 
-Mode       | Input     | Output                       | Output File Extension
------------|-----------|------------------------------|----------------------
+Режим      | Вход      | Выход                        | Выходное расширение файла
+-----------|-----------|------------------------------|--------------------------
 `preserve` | `<div />` | `<div />`                    | `.jsx`
 `react`    | `<div />` | `React.createElement("div")` | `.js`
 
-You can specify this mode using either the `--jsx` command line flag or the corresponding option in your [tsconfig.json](./tsconfig.json.md) file.
+Вы можете указать режим либо с помощью флага командной строки `--jsx`, либо в соответствующей опции в вашем файле [tsconfig.json](./tsconfig.json.md).
 
-> *Note: The identifier `React` is hard-coded, so you must make React available with an uppercase R.*
+> *Замечание: Идентификатор `React` жёстко прописан в коде, поэтому необходимо сделать React доступным с заглавной буквы R.*
 
-# The `as` operator
+# Оператор `as`
 
-Recall how to write a type assertion:
+Вспомним, как записывается декларирование типов:
 
 ```ts
 var foo = <foo>bar;
 ```
 
-Here we are asserting the variable `bar` to have the type `foo`.
-Since TypeScript also uses angle brackets for type assertions, JSX's syntax introduces certain parsing difficulties. As a result, TypeScript disallows angle bracket type assertions in `.tsx` files.
+Здесь мы декларируем, что переменная `bar` будет иметь тип `foo`.
+Так как TypeScript также использует угловые скобки для декларирования типов, синтаксис JSX's становится труднее обработать. В результате TypeScript запрещает использование угловых скобок при декларировании типов в файлах `.tsx`.
 
-To make up for this loss of functionality in `.tsx` files, a new type assertion operator has been added: `as`.
-The above example can easily be rewritten with the `as` operator.
+Чтобы исправить эту потерю функциональности в файлах `.tsx`, был добавлен новый оператор: `as`.
+Предыдущий пример можно переписать с использованием оператора `as`.
 
 ```ts
 var foo = bar as foo;
 ```
 
-The `as` operator is available in both `.ts` and `.tsx` files, and is identical in behavior to the other type assertion style.
+Оператор `as` доступен как в `.ts` так и в `.tsx` файлах и ведёт себя точно также, как и другой оператор декларирования.
 
-# Type Checking
+# Проверка типов
 
-In order to understand type checking with JSX, you must first understand the difference between intrinsic elements and value-based elements.
-Given a JSX expression `<expr />`, `expr` may either refer to something intrinsic to the environment (e.g. a `div` or `span` in a DOM environment) or to a custom component that you've created.
-This is important for two reasons:
+Чтобы понять проверку типов в JSX, необходимо уяснить разницу между внутренними элементами и элементами, основанными на значении.
+В JSX-выражении `<expr />`, `expr` может означать как внутренний элемент окружения (например, `div` или `span` в окружении DOM), так и созданный вами пользовательский элемент.
+Это важно по следующим причинам:
 
-1. For React, intrinsic elements are emitted as strings (`React.createElement("div")`), whereas a component you've created is not (`React.createElement(MyComponent)`).
-2. The types of the attributes being passed in the JSX element should be looked up differently.
-  Intrinsic element attributes should be known *intrinsically* whereas components will likely want to specify their own set of attributes.
+1. В React внутренние элементы генерируются в виде строк (`React.createElement("div")`), а пользовательские компоненты нет (`React.createElement(MyComponent)`).
+2. Типы атрибутов, передаваемых в JSX-элемент, получаются разными способами.
+  Внутренние элементы должны быть известны по умолчанию, тогда как компоненты, скорее всего, будут создавать свои собственные наборы атрибутов.
 
-TypeScript uses the [same convention that React does](http://facebook.github.io/react/docs/jsx-in-depth.html#html-tags-vs.-react-components) for distinguishing between these.
-An intrinsic element always begins with a lowercase letter, and a value-based element always begins with an uppercase letter.
+TypeScript использует [то же соглашение, что и React](http://facebook.github.io/react/docs/jsx-in-depth.html#html-tags-vs.-react-components), чтобы различать два вышеупомянутых случая.
+Внутренние элементы всегда начинаются с маленькой буквы, а элементы, основанные на значении, начинаются с заглавной.
 
-## Intrinsic elements
+## Внутренние элементы
 
-Intrinsic elements are looked up on the special interface `JSX.IntrinsicElements`.
-By default, if this interface is not specified, then anything goes and intrinsic elements will not be type checked.
-However, if interface *is* present, then the name of the intrinsic element is looked up as a property on the `JSX.IntrinsicElements` interface.
-For example:
+Система находит внутренние элементы с помощью специального интерфейса `JSX.IntrinsicElements`.
+По умолчанию, если этот интерфейс не определён, тип всех внутренних элементов не будет проверен.
+Однако если интерфейс определён, система будет искать имя внутреннего элемента как свойство интерфейса `JSX.IntrinsicElements`.
+Например:
 
 ```ts
 declare namespace JSX {
@@ -75,12 +75,12 @@ declare namespace JSX {
 }
 
 <foo />; // ok
-<bar />; // error
+<bar />; // ошибка
 ```
 
-In the above example, `<foo />` will work fine but `<bar />` will result in an error since it has not been specified on `JSX.IntrinsicElements`.
+В примере выше `<foo />` отработает нормально, но `<bar />` приведёт к ошибке, так как он не был определён в `JSX.IntrinsicElements`.
 
-> Note: You can also specify a catch-all string indexer on `JSX.IntrinsicElements` as follows:
+> Замечание: Вы также можете определить универсальный строковый индексатор `JSX.IntrinsicElements`:
 >```ts
 >declare namespace JSX {
 >    interface IntrinsicElements {
@@ -89,33 +89,33 @@ In the above example, `<foo />` will work fine but `<bar />` will result in an e
 >}
 >```
 
-## Value-based elements
+## Элементы-значения
 
-Value based elements are simply looked up by identifiers that are in scope.
+Система ищет элементы-значения по идентификаторам в пределах области видимости.
 
 ```ts
 import MyComponent from "./myComponent";
 
 <MyComponent />; // ok
-<SomeOtherComponent />; // error
+<SomeOtherComponent />; // ошибка
 ```
 
-It is possible to limit the type of a value-based element.
-However, for this we must introduce two new terms: the *element class type* and the *element instance type*.
+Есть возможность ограничить тип элемента-значения.
+Но для этого необходимо ввести два новых термина: *тип класса элемента* (element class type) и *тип экземпляра элемента* (element instance type).
 
-Given `<Expr />`, the *element class type* is the type of `Expr`.
-So in the example above, if `MyComponent` was an ES6 class the class type would be that class.
-If `MyComponent` was a factory function, the class type would be that function.
+В выражении `<Expr />` *типом класса элемента* является тип `Expr`.
+Таким образом, в вышеприведённом примере, если `MyComponent` принадлежит классу ES6, типом класса будет именно этот класс.
+Если `MyComponent` является фабричной функцией, тип класса будет этой функцией.
 
-Once the class type is established, the instance type is determined by the union of the return types of the class type's call signatures and construct signatures.
-So again, in the case of an ES6 class, the instance type would be the type of an instance of that class, and in the case of a factory function, it would be the type of the value returned from the function.
+Как только тип класса установлен, тип экземпляра определяется объединением возвращаемых типов сигнатуры вызова типа класса и сигнатуры конструктора.
+Опять же, в случае класса ES6, типом экземпляра будет тип экземпляра этого класса, а в случае фабричной функции это будет тип возвращаемого функцией значения.
 
 ```ts
 class MyComponent {
   render() {}
 }
 
-// use a construct signature
+// использование сигнатуры конструктора
 var myComponent = new MyComponent();
 
 // element class type => MyComponent
@@ -128,15 +128,15 @@ function MyFactoryFunction() {
   }
 }
 
-// use a call signature
+// использование сигнатуры вызова
 var myComponent = MyFactoryFunction();
 
 // element class type => FactoryFunction
 // element instance type => { render: () => void }
 ```
 
-The element instance type is interesting because it must be assignable to `JSX.ElementClass` or it will result in an error.
-By default `JSX.ElementClass` is `{}`, but it can be augmented to limit the use of JSX to only those types that conform to the proper interface.
+Также вызывает интерес тип элемента экземпляра, поскольку должна быть возможность назначить его `JSX.ElementClass`, в противном случае возникнет ошибка.
+По умолчанию `JSX.ElementClass` является`{}`, но он может быть дополнен, чтобы ограничить использование JSX только теми типами, которые соответствуют правильному интерфейсу.
 
 ```ts
 declare namespace JSX JSX {
@@ -160,16 +160,16 @@ function NotAValidFactoryFunction() {
   return {};
 }
 
-<NotAValidComponent />; // error
-<NotAValidFactoryFunction />; // error
+<NotAValidComponent />; // ошибка
+<NotAValidFactoryFunction />; // ошибка
 ```
 
-## Attribute type checking
+## Проверка типа атрибута
 
-The first step to type checking attributes is to determine the *element attributes type*.
-This is slightly different between intrinsic and value-based elements.
+Для того, чтобы проверить типы атрибутов, сначала необходимо определить *тип атрибутов элемента* (element attributes type).
+Эта процедура немного отличается для внутренних элементов и элементов-значений.
 
-For intrinsic elements, it is the type of the property on `JSX.IntrinsicElements`
+Для внутренних элементов это тип свойства в `JSX.IntrinsicElements`
 
 ```ts
 declare namespace JSX {
@@ -178,36 +178,35 @@ declare namespace JSX {
   }
 }
 
-// element attributes type for 'foo' is '{bar?: boolean}'
+// типом атрибутов элемента 'foo' является '{bar?: boolean}'
 <foo bar />;
 ```
 
-For value-based elements, it is a bit more complex.
-It is determined by the type of a property on the *element instance type* that was previously determined.
-Which property to use is determined by `JSX.ElementAttributesProperty`.
-It should be declared with a single property.
-The name of that property is then used.
+Для элементов-значений вопрос немного усложняется.
+Тип атрибутов определяется типом *типом экземпляра элемента* (element instance type), который был установлен ранее.
+Какое свойство использовать, определяется с помощью `JSX.ElementAttributesProperty`.
+Оно должно быть объявлено единственным свойством, имя которого будет использоваться далее.
 
 ```ts
 declare namespace JSX {
   interface ElementAttributesProperty {
-    props; // specify the property name to use
+    props; // укажите имя свойства для дальнейшего использования
   }
 }
 
 class MyComponent {
-  // specify the property on the element instance type
+  // укажите свойство типа экземпляра элемента
   props: {
     foo?: string;
   }
 }
 
-// element attributes type for 'MyComponent' is '{foo?: string}'
+// типом атрибутов элемента 'MyComponent' является '{foo?: string}'
 <MyComponent foo="bar" />
 ```
 
-The element attribute type is used to type check the attributes in the JSX.
-Optional and required properties are supported.
+Тип атрибута элемента используется в проверке типов атрибутов в JSX.
+Поддерживаются опциональные и обязательные опции.
 
 ```ts
 declare namespace JSX {
@@ -218,34 +217,34 @@ declare namespace JSX {
 
 <foo requiredProp="bar" />; // ok
 <foo requiredProp="bar" optionalProp={0} />; // ok
-<foo />; // error, requiredProp is missing
-<foo requiredProp={0} />; // error, requiredProp should be a string
-<foo requiredProp="bar" unknownProp />; // error, unknownProp does not exist
-<foo requiredProp="bar" some-unknown-prop />; // ok, because 'some-unknown-prop' is not a valid identifier
+<foo />; // ошибка, не указано requiredProp 
+<foo requiredProp={0} />; // ошибка, requiredProp должно быть строкой
+<foo requiredProp="bar" unknownProp />; // ошибка, unknownProp не существует
+<foo requiredProp="bar" some-unknown-prop />; // ok, потому что 'some-unknown-prop' является корректным идентификатором
 ```
 
-> Note: If an attribute name is not a valid JS identifier (like a `data-*` attribute), it is not considered to be an error if it is not found in the element attributes type.
+> Замечание: Если имя атрибута не является корректным JS-идентификатором (как атрибут `data-*`), это не будет считаться ошибкой, если не будет находиться в типе атрибутов элемента.
 
-The spread operator also works:
+Также можно использовать оператор расширения:
 
 ```JSX
 var props = { requiredProp: "bar" };
 <foo {...props} />; // ok
 
 var badProps = {};
-<foo {...badProps} />; // error
+<foo {...badProps} />; // ошибка
 ```
 
-# The JSX result type
+# Тип результата JSX
 
-By default the result of a JSX expression is typed as `any`.
-You can customize the type by specifying the `JSX.Element` interface.
-However, it is not possible to retrieve type information about the element, attributes or children of the JSX from this interface.
-It is a black box.
+По умолчанию результирующим типом выражения JSX является тип `any`.
+Вы можете изменить тип путём определения интерфейса `JSX.Element`.
+Однако невозможно получить информацию о типах элемента, атрибутов или потомков JSX из интерфейса.
+Фактически это чёрный ящик.
 
-# Embedding Expressions
+# Встраивание выражений
 
-JSX allows you to embed expressions between tags by surrounding the expressions with curly braces (`{ }`).
+JSX позволяет вставлять выражения между тегами, заключая их в фигурные скобки (`{ }`).
 
 ```JSX
 var a = <div>
@@ -253,8 +252,8 @@ var a = <div>
 </div>
 ```
 
-The above code will result in an error since you cannot divide a string by a number.
-The output, when using the `preserve` option, looks like:
+Вышеприведённый код завершится ошибкой, так как вы не можете поделить строку на число.
+При использовании опции `preserve` вывод будет выглядеть так:
 
 ```JSX
 var a = <div>
@@ -262,10 +261,10 @@ var a = <div>
 </div>
 ```
 
-# React integration
+# Интеграция с React
 
-To use JSX with React you should use the [React typings](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/react).
-These typings define the `JSX` namespace appropriately for use with React.
+Для работы JSX с React необходимо использовать [React typings](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/react).
+Эти типы определяют пространство имён `JSX` для корректного использования с React.
 
 ```ts
 /// <reference path="react.d.ts" />
@@ -281,5 +280,5 @@ class MyComponent extends React.Component<Props, {}> {
 }
 
 <MyComponent foo="bar" />; // ok
-<MyComponent foo={0} />; // error
+<MyComponent foo={0} />; // ошибка
 ```
