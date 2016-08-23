@@ -1,21 +1,21 @@
-> **A note about terminology:**
-It's important to note that in TypeScript 1.5, the nomenclature has changed.
-"Internal modules" are now "namespaces".
-"External modules" are now simply "modules", as to align with [ECMAScript 2015](http://www.ecma-international.org/ecma-262/6.0/)'s terminology, (namely that `module X {` is equivalent to the now-preferred `namespace X {`).
+> **Замечание по поводу терминологии:**
+Важно отметить, что в TypeScript 1.5 изменилась номенклатура.
+"Внутренние модули" теперь называются "пространства имён".
+"Внешние модули" стали просто "модулями", чтобы согласовать терминологию с [ECMAScript 2015](http://www.ecma-international.org/ecma-262/6.0/), (а именно: `module X {` эквивалентен предпочитаемому в настоящее время `namespace X {`).
 
-# Introduction
+# Введение
 
-This post outlines the various ways to organize your code using namespaces (previously "internal modules") in TypeScript.
-As we alluded in our note about terminology, "internal modules" are now referred to as "namespaces".
-Additionally, anywhere the `module` keyword was used when declaring an internal module, the `namespace` keyword can and should be used instead.
-This avoids confusing new users by overloading them with similarly named terms.
+Данный раздел документации описывает различные пути организации вашего кода в TypeScript с помощью пространств имён (бывш. "внутренние модули").
+Согласно замечанию о терминологии, "внутренние модули" теперь называются "пространствами имён".
+В дополнение к этому, везде, где раньше для декларирования внутреннего модуля использовалось ключевое слово `module`, теперь вместо него должно быть использовано ключевое слово `namespace`.
+Это позволяет упростить жизнь новым пользователям, не перегружая их терминами с похожими названиями.
 
-# First steps
+# Первые шаги
 
-Let's start with the program we'll be using as our example throughout this page.
-We've written a small set of simplistic string validators, as you might write to check a user's input on a form in a webpage or check the format of an externally-provided data file.
+Давайте начнём с программы, которую мы будем использовать в этом разделе документации в качестве примера.
+Мы написали несколько простых валидаторов строк, которые могут использоваться для проверки ввода пользователя на форме веб-страницы или для проверки формата стороннего файла с данными.
 
-## Validators in a single file
+## Валидаторы в одиночном файле
 
 ```ts
 interface StringValidator {
@@ -37,34 +37,34 @@ class ZipCodeValidator implements StringValidator {
     }
 }
 
-// Some samples to try
+// Несколько тестовых примеров
 let strings = ["Hello", "98052", "101"];
 
-// Validators to use
+// Валидаторы
 let validators: { [s: string]: StringValidator; } = {};
 validators["ZIP code"] = new ZipCodeValidator();
 validators["Letters only"] = new LettersOnlyValidator();
 
-// Show whether each string passed each validator
+// Для каждой строки показывает, прошла ли она каждый валидатор
 for (let s of strings) {
     for (let name in validators) {
         let isMatch = validators[name].isAcceptable(s);
-        console.log(`'${ s }' ${ isMatch ? "matches" : "does not match" } '${ name }'.`);
+        console.log(`'${ s }' ${ isMatch ? "соответствует" : "не соответствует" } '${ name }'.`);
     }
 }
 ```
 
-# Namespacing
+# Использование пространств имён
 
-As we add more validators, we're going to want to have some kind of organization scheme so that we can keep track of our types and not worry about name collisions with other objects.
-Instead of putting lots of different names into the global namespace, let's wrap up our objects into a namespace.
+Поскольку мы добавляем больше валидаторов, нам понадобится какая-нибудь организационная схема, которая позволит отслеживать наши типы и не беспокоиться по поводу пересечений с именами других объектов.
+Вместо того, чтобы помещать множество различных идентификаторов в глобальное пространство имён, давайте обернём наши объекты в новое.
 
-In this example, we'll move all validator-related entities into a namespace called `Validation`.
-Because we want the interfaces and classes here to be visible outside the namespace, we preface them with `export`.
-Conversely, the variables `lettersRegexp` and `numberRegexp` are implementation details, so they are left unexported and will not be visible to code outside the namespace.
-In the test code at the bottom of the file, we now need to qualify the names of the types when used outside the namespace, e.g. `Validation.LettersOnlyValidator`.
+В данном примере мы перенесём все элементы, связанные с валидаторами, в пространство имён `Validation`.
+Поскольку мы хотим, чтобы наши интерфейсы и классы были доступны извне, мы поместим перед ними ключевое слово `export`.
+Напротив, переменные `lettersRegexp` и `numberRegexp` - лишь детали данной реализации, поэтому они не экспортируются и не будут видимы вне своего пространства имён.
+В коде тестового примера в конце файла нам нужно определить имена типов в том виде, в котором они будут использоваться вне нашего пространства имён, например `Validation.LettersOnlyValidator`.
 
-## Namespaced Validators
+## Валидаторы внутри пространства имён
 
 ```ts
 namespace Validation {
@@ -88,32 +88,32 @@ namespace Validation {
     }
 }
 
-// Some samples to try
+// Несколько тестовых примеров
 let strings = ["Hello", "98052", "101"];
 
-// Validators to use
+// Валидаторы
 let validators: { [s: string]: Validation.StringValidator; } = {};
 validators["ZIP code"] = new Validation.ZipCodeValidator();
 validators["Letters only"] = new Validation.LettersOnlyValidator();
 
-// Show whether each string passed each validator
+// Для каждой строки показывает, прошла ли она каждый валидатор
 for (let s of strings) {
     for (var name in validators) {
-        console.log(`"${ s }" - ${ validators[name].isAcceptable(s) ? "matches" : "does not match" } ${ name }`);
+        console.log(`"${ s }" - ${ validators[name].isAcceptable(s) ? "соответствует" : "не соответствует" } ${ name }`);
     }
 }
 ```
 
-# Splitting Across Files
+# Разбиение на несколько файлов
 
-As our application grows, we'll want to split the code across multiple files to make it easier to maintain.
+По мере роста нашего приложения мы захотим разбить код на насколько файлов, чтобы облегчить его поддержку.
 
-## Multi-file namespaces
+## Многофайловые пространства имён
 
-Here, we'll split our `Validation` namespace across many files.
-Even though the files are separate, they can each contribute to the same namespace and can be consumed as if they were all defined in one place.
-Because there are dependencies between files, we'll add reference tags to tell the compiler about the relationships between the files.
-Our test code is otherwise unchanged.
+Здесь мы разобъём пространство имён `Validation` на несколько файлов.
+Несмотря на то, что код находится в разных файлах, он может относиться к одному пространству имён и воспринимается также, как если бы он был расположен в одном месте.
+Поскольку между файлами есть зависимости, мы добавим ссылочные теги, чтобы указать компилятору на связи между файлами.
+В остальном наш тестовый код не изменится.
 
 ##### Validation.ts
 
@@ -160,41 +160,41 @@ namespace Validation {
 /// <reference path="LettersOnlyValidator.ts" />
 /// <reference path="ZipCodeValidator.ts" />
 
-// Some samples to try
+// Несколько тестовых примеров
 let strings = ["Hello", "98052", "101"];
 
-// Validators to use
+// Валидаторы
 let validators: { [s: string]: Validation.StringValidator; } = {};
 validators["ZIP code"] = new Validation.ZipCodeValidator();
 validators["Letters only"] = new Validation.LettersOnlyValidator();
 
-// Show whether each string passed each validator
+// Для каждой строки показывает, прошла ли она каждый валидатор
 for (let s of strings) {
     for (let name in validators) {
-        console.log(""" + s + "" " + (validators[name].isAcceptable(s) ? " matches " : " does not match ") + name);
+        console.log(""" + s + "" " + (validators[name].isAcceptable(s) ? " соответствует " : " не соответствует ") + name);
     }
 }
 ```
 
-Once there are multiple files involved, we'll need to make sure all of the compiled code gets loaded.
-There are two ways of doing this.
+Поскольку здесь используется несколько файлов, необходимо убедиться, что загружен весь компилируемый код.
+Это можно сделать двумя способами.
 
-First, we can use concatenated output using the `--outFile` flag to compile all of the input files into a single JavaScript output file:
+Во-первых, мы можем использовать объединённый вывод с помощью флага `--outFile`, который позволяет  скомпилировать все входные файлы в один выходной JavaScript:
 
 ```Shell
 tsc --outFile sample.js Test.ts
 ```
 
-The compiler will automatically order the output file based on the reference tags present in the files. You can also specify each file individually:
+Компилятор автоматически упорядочит выходной файл на основе ссылочных тегов, находящихся в файлах. Вы также можете напрямую указать каждый файл:
 
 ```Shell
 tsc --outFile sample.js Validation.ts LettersOnlyValidator.ts ZipCodeValidator.ts Test.ts
 ```
 
-Alternatively, we can use per-file compilation (the default) to emit one JavaScript file for each input file.
-If multiple JS files get produced, we'll need to use `<script>` tags on our webpage to load each emitted file in the appropriate order, for example:
+В качестве альтернативы, можно использовать пофайловую компиляцию (по умолчанию), при которой на каждый входной файл генерируется одельный файл JavaScript.
+Если на выходе получается несколько JS-файлов, на веб-странице необходимо использовать тег `<script>`, чтобы загрузить сгенерированные файлы в правильном порядке. Например:
 
-##### MyTestPage.html (excerpt)
+##### MyTestPage.html (отрывок)
 
 ```ts
     <script src="Validation.js" type="text/javascript" />
@@ -203,11 +203,11 @@ If multiple JS files get produced, we'll need to use `<script>` tags on our webp
     <script src="Test.js" type="text/javascript" />
 ```
 
-# Aliases
+# Псевдонимы
 
-Another way that you can simplify working with of namespaces is to use `import q = x.y.z` to create shorter names for commonly-used objects.
-Not to be confused with the `import x = require("name")` syntax used to load modules, this syntax simply creates an alias for the specified symbol.
-You can use these sorts of imports (commonly referred to as aliases) for any kind of identifier, including objects created from module imports.
+Другим способом упрощения работы с пространствами имён является использование `import q = x.y.z`, с помощью которого можно создать короткие имена для постоянно используемых объектов.
+Таким образом просто создаётся псевдоним для указанных символов, и его не нужно путать с конструкцией `import x = require("name")`, используемой для загрузки модулей.
+Вы можете использовать эти типы импорта (обычно называемые псевдонимами) для любых видов идентификаторов, включая объекты, созданные из импортов модуля.
 
 ```ts
 namespace Shapes {
@@ -218,31 +218,31 @@ namespace Shapes {
 }
 
 import polygons = Shapes.Polygons;
-let sq = new polygons.Square(); // Same as 'new Shapes.Polygons.Square()'
+let sq = new polygons.Square(); // То же, что и 'new Shapes.Polygons.Square()'
 ```
 
-Notice that we don't use the `require` keyword; instead we assign directly from the qualified name of the symbol we're importing.
-This is similar to using `var`, but also works on the type and namespace meanings of the imported symbol.
-Importantly, for values, `import` is a distinct reference from the original symbol, so changes to an aliased `var` will not be reflected in the original variable.
+Обратите внимание на то, что мы не используем ключевое слово `require`. Вместо этого мы присваиваем напрямую  от уточнённого имени импортируемого идентификатора.
+Это похоже на использование `var`, но также работает со значениями типов и пространств имён импортируемых идентификаторов.
+Важно отметить, что `import` - это отдельная ссылка, так что изменения псевдонима от `var` не отразятся на исходной переменной.
 
-# Working with Other JavaScript Libraries
+# Работа с другими библиотеками JavaScript
 
-To describe the shape of libraries not written in TypeScript, we need to declare the API that the library exposes.
-Because most JavaScript libraries expose only a few top-level objects, namespaces are a good way to represent them.
+Чтобы подключить написанную не на TypeScript библиотеку, необходимо объявить API этой библиотеки.
+По той причине, что большинство библиотек JavaScript предоставляют доступ только к нескольким объектам верхнего уровня, для их представления хорошо подходят пространства имён.
 
-We call declarations that don't define an implementation "ambient".
-Typically these are defined in `.d.ts` files.
-If you're familiar with C/C++, you can think of these as `.h` files.
-Let's look at a few examples.
+Мы называем объявления, которые не определяют реализации, "внешними".
+Обычно они определяются в файлах `.d.ts`.
+Если вы знакомы с C/C++, вы можете воспринимать их как заголовочные файлы `.h`.
+Давайте посмотрим на несколько примеров.
 
-## Ambient Namespaces
+## Внешние пространства имён
 
-The popular library D3 defines its functionality in a global object called `d3`.
-Because this library is loaded through a `<script>` tag (instead of a module loader), its declaration uses namespaces to define its shape.
-For the TypeScript compiler to see this shape, we use an ambient namespace declaration.
-For example, we could begin writing it as follows:
+Популярная библиотека D3 определяет свою функциональность во внешнем объекте, называемом `d3`.
+Поскольку эта библиотке загружается с помощью тега `<script>` (вместо загрузчика модулей), для её подключения используются пространства имён.
+Чтобы компилятор TypeScript мог увидеть эту библиотку, мы используем определение внешнего пространства имён.
+Напимер, мы можем начать писать код следующим образом:
 
-##### D3.d.ts (simplified excerpt)
+##### D3.d.ts (упрощённый отрывок)
 
 ```ts
 declare namespace D3 {
