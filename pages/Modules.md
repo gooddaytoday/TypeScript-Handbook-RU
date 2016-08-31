@@ -1,28 +1,27 @@
-> **A note about terminology:**
-It's important to note that in TypeScript 1.5, the nomenclature has changed.
-"Internal modules" are now "namespaces".
-"External modules" are now simply "modules", as to align with [ECMAScript 2015](http://www.ecma-international.org/ecma-262/6.0/)'s terminology, (namely that `module X {` is equivalent to the now-preferred `namespace X {`).
+﻿> **Замечание по поводу терминологии:**
+Важно отметить, что в TypeScript 1.5 изменилась номенклатура.
+"Внутренние модули" теперь называются "пространства имён".
+"Внешние модули" стали просто "модулями". Это было сделано, чтобы согласовать терминологию с [ECMAScript 2015](http://www.ecma-international.org/ecma-262/6.0/), (а именно: `module X {` эквивалентен предпочитаемому в настоящее время `namespace X {`).
 
-# Introduction
+# Введение
 
-Starting with the ECMAScript 2015, JavaScript has a concept of modules. TypeScript shares this concept.
+Начиная с ECMAScript 2015, в JavaScript появилась концепция модулей. TypeScript использует ту же концепцию.
 
-Modules are executed within their own scope, not in the global scope; this means that variables, functions, classes, etc. declared in a module are not visible outside the module unless they are explicitly exported using one of the [`export` forms](#export).
-Conversely, to consume a variable, function, class, interface, etc. exported from a different module, it has to be imported using one of the [`import` forms](#import).
+Модули выполняются не в глобальной, а в своей собственной области видимости. Это означает, что переменные, функции, классы и т.д., объявленные в модуле, не видны вне модуля, за исключением тех случаев, когда они явно экспортированы с использованием одной из форм [`export`](#export).
+Также, чтобы использовать переменную, функцию, класс, интерфейс, и т.д., экспортированные из другого модуля, необходимо импортировать их с помощью одной из форм [`import`](#import).
 
-Modules are declarative; the relationships between modules are specified in terms of imports and exports at the file level.
+Модули декларативны, и отношения между модулями определяются в терминах импорта и экспорта на файловом уровне.
 
-Modules import one another using a module loader.
-At runtime the module loader is responsible for locating and executing all dependencies of a module before executing it.
-Well-known modules loaders used in JavaScript are the [CommonJS](https://en.wikipedia.org/wiki/CommonJS) module loader for Node.js and [require.js](http://requirejs.org/) for Web applications.
+Модули импортируют друг друга, используя загрузчик модулей, который во время выполнения кода находит и выполняет все зависимости модуля перед его выполнением.
+В JavaScript широко используются такие загрузчики, как [CommonJS](https://en.wikipedia.org/wiki/CommonJS) для Node.js и [require.js](http://requirejs.org/) для веб-приложений.
 
-In TypeScript, just as in ECMAScript 2015, any file containing a top-level `import` or `export` is considered a module.
+В TypeScript, как и в ECMAScript 2015, любой файл, содержащий `import` или  `export` верхнего уровня, считается модулем.
 
-# Export
+# Экспорт
 
-## Exporting a declaration
+## Экспорт объявления
 
-Any declaration (such as a variable, function, class, type alias, or interface) can be exported by adding the `export` keyword.
+Любое объявление (переменой, функции, класса, псевдонима типа или  интерфейса) может быть экспортировано с помощью добавления ключевого слова `export`.
 
 ##### Validation.ts
 
@@ -44,9 +43,10 @@ export class ZipCodeValidator implements StringValidator {
 }
 ```
 
-## Export statements
+## Экспортное определение (Export statement)
 
-Export statements are handy when exports need to be renamed for consumers, so the above example can be written as:
+Экспортные определения удобно применять в том случае, когда экспортируемые элементы необходимо переименовать. Тогда вышеприведённый пример можно переписать следующим образом:
+
 
 ```ts
 class ZipCodeValidator implements StringValidator {
@@ -58,10 +58,10 @@ export { ZipCodeValidator };
 export { ZipCodeValidator as mainValidator };
 ```
 
-## Re-exports
+## Ре-экспорт
 
-Often modules extend other modules, and partially expose some of their features.
-A re-export does not import it locally, or introduce a local variable.
+Модули часто расширяют другие модули. При этом они сами предоставляют доступ к части функций исходных модулей.
+Ре-экспорт не выполняет локального импорта и не создаёт локальную переменную.
 
 ##### ParseIntBasedZipCodeValidator.ts
 
@@ -72,26 +72,26 @@ export class ParseIntBasedZipCodeValidator {
     }
 }
 
-// Export original validator but rename it
+// Экспортирует исходный валидатор, переименовывая его
 export {ZipCodeValidator as RegExpBasedZipCodeValidator} from "./ZipCodeValidator";
 ```
 
-Optionally, a module can wrap one or more modules and combine all their exports using `export * from "module"` syntax.
+При использовании модуля качестве обёртки над одним или несколькими другими модулями, есть возможность ре-экспортировать сразу все их операторы экспорта с помощью конструкции `export * from "module"`.
 
 ##### AllValidators.ts
 
 ```ts
-export * from "./StringValidator"; // exports interface 'StringValidator'
-export * from "./LettersOnlyValidator"; // exports class 'LettersOnlyValidator'
-export * from "./ZipCodeValidator";  // exports class 'ZipCodeValidator'
+export * from "./StringValidator"; // экспортирует интерфейс 'StringValidator'
+export * from "./LettersOnlyValidator"; // экспортирует класс 'LettersOnlyValidator'
+export * from "./ZipCodeValidator";  // экспортирует класс 'ZipCodeValidator'
 ```
 
-# Import
+# Импорт
 
-Importing is just about as easy as exporting from an module.
-Importing an exported declaration is done through using one of the `import` forms below:
+Импортировать практически так же просто, как и экспортировать.
+Импорт экспортированного объявления выполняется с помощью одной из форм `import`, приведённых ниже:
 
-## Import a single export from a module
+## Импорт одного экспортированного элемента
 
 ```ts
 import { ZipCodeValidator } from "./ZipCodeValidator";
@@ -99,38 +99,39 @@ import { ZipCodeValidator } from "./ZipCodeValidator";
 let myValidator = new ZipCodeValidator();
 ```
 
-imports can also be renamed
+импортируемый элемент также может быть переименован
 
 ```ts
 import { ZipCodeValidator as ZCV } from "./ZipCodeValidator";
 let myValidator = new ZCV();
 ```
 
-## Import the entire module into a single variable, and use it to access the module exports
+## Импорт всего модуля в одну переменную, и её использование для доступа к экспортированным элементам модуля
 
 ```ts
 import * as validator from "./ZipCodeValidator";
 let myValidator = new validator.ZipCodeValidator();
 ```
 
-## Import a module for side-effects only
+## Импорт модуля ради «побочных эффектов»
 
-Though not recommended practice, some modules set up some global state that can be used by other modules.
-These modules may not have any exports, or the consumer is not interested in any of their exports.
-To import these modules, use:
+Несмотря на то, что так делать не рекомендуется, некоторые модули устанавливают некое глобальное состояние, которое может быть использовано другими модулями.
+У этих модулей может не быть экспортируемых элементов, или пользователю эти элементы не нужны.
+Для импорта таких модулей используйте команду:
 
 ```ts
 import "./my-module.js";
 ```
 
-# Default exports
+# Экспорт по умолчанию (`default` export)
 
-Each module can optionally export a `default` export.
-Default exports are marked with the keyword `default`; and there can only be one `default` export per module.
-`default` exports are imported using a different import form.
+Каждый модуль может содержать экспорт по умолчанию.
+Экспорт по умолчанию выделяется ключевым словом `default`, и в модуле может быть только одна такая инструкция.
+Для импорта экспорта по умолчанию используется отдельная форма оператора `import`.
 
-`default` exports are really handy.
-For instance, a library like JQuery might have a default export of `jQuery` or `$`, which we'd probably also import under the name `$` or `jQuery`.
+Экспорт по умолчанию может оказаться очень полезным.
+Например, такая библиотека, как Jquery, может по умолчанию экспортировать `jQuery` или `$`, что мы, вероятно, также импортируем под именем `$` или `jQuery`.
+
 
 ##### JQuery.d.ts
 
@@ -147,8 +148,8 @@ import $ from "JQuery";
 $("button.continue").html( "Next Step..." );
 ```
 
-Classes and function declarations can be authored directly as default exports.
-Default export class and function declaration names are optional.
+Классы и определения функций могут быть сразу обозначены в качестве экспортируемых по умолчанию.
+Такие классы и функции могут быть объявлены без указания имён.
 
 ##### ZipCodeValidator.ts
 
@@ -169,7 +170,7 @@ import validator from "./ZipCodeValidator";
 let myValidator = new validator();
 ```
 
-or
+или
 
 ##### StaticZipCodeValidator.ts
 
@@ -188,13 +189,13 @@ import validate from "./StaticZipCodeValidator";
 
 let strings = ["Hello", "98052", "101"];
 
-// Use function validate
+// Использование функции validate
 strings.forEach(s => {
   console.log(`"${s}" ${validate(s) ? " matches" : " does not match"}`);
 });
 ```
 
-`default` exports can also be just values:
+Экспортируемым по умолчанию элементом можно быть обычное значение:
 
 ##### OneTwoThree.ts
 
@@ -210,18 +211,18 @@ import num from "./OneTwoThree";
 console.log(num); // "123"
 ```
 
-# `export =` and `import = require()`
+# `export =` и `import = require()`
 
-Both CommonJS and AMD generally have the concept of an `exports` object which contains all exports from a module.
+У CommonJS и AMD существует концепция объекта `exports`, который содержит весь экспорт модуля.
 
-They also support replacing the `exports` object with a custom single object.
-Default exports are meant to act as a replacement for this behavior; however, the two are incompatible.
-TypeScript supports `export =` to model the traditional CommonJS and AMD workflow.
+Они также поддерживают замену объекта `exports` единичным пользовательским объектом.
+Экспорт по умолчанию призван заменить этот функционал. Оба подхода, однако, несовместимы.
+TypeScript поддерживает конструкцию `export =`, которую можно использовать для моделирования привычной схемы работы CommonJS и AMD.
 
-The `export =` syntax specifies a single object that is exported from the module.
-This can be a class, interface, namespace, function, or enum.
+Конструкция `export =` определяет единичный объект, экспортируемый из модуля.
+Это может быть класс, интерфейс, пространство имён, функция или перечисление.
 
-When importing a module using `export =`, TypeScript-specific `import let = require("module")` must be used to import the module.
+Для импорта модуля, экспортированного с помощью `export =`, должна быть использована специфичная для TypeScript конструкция `import let = require("module")`.
 
 ##### ZipCodeValidator.ts
 
@@ -240,24 +241,24 @@ export = ZipCodeValidator;
 ```ts
 import zip = require("./ZipCodeValidator");
 
-// Some samples to try
+// Несколько тестовых примеров
 let strings = ["Hello", "98052", "101"];
 
-// Validators to use
+// Валидаторы
 let validator = new zip();
 
-// Show whether each string passed each validator
+// Для каждой строки показывает, прошла ли она каждый валидатор
 strings.forEach(s => {
   console.log(`"${ s }" - ${ validator.isAcceptable(s) ? "matches" : "does not match" }`);
 });
 ```
 
-# Code Generation for Modules
+# Генерация кода для модулей
 
-Depending on the module target specified during compilation, the compiler will generate appropriate code for Node.js ([CommonJS](http://wiki.commonjs.org/wiki/CommonJS)), require.js ([AMD](https://github.com/amdjs/amdjs-api/wiki/AMD)), isomorphic ([UMD](https://github.com/umdjs/umd)), [SystemJS](https://github.com/systemjs/systemjs), or [ECMAScript 2015 native modules](http://www.ecma-international.org/ecma-262/6.0/#sec-modules) (ES6) module-loading systems.
-For more information on what the `define`, `require` and `register` calls in the generated code do, consult the documentation for each module loader.
+В зависимости от цели модуля, указанной во время компиляции, компилятор сгенерирует соответствующий код для Node.js ([CommonJS](http://wiki.commonjs.org/wiki/CommonJS)), require.js ([AMD](https://github.com/amdjs/amdjs-api/wiki/AMD)), ([UMD](https://github.com/umdjs/umd)), [SystemJS](https://github.com/systemjs/systemjs) или [собственных модулей ECMAScript 2015](http://www.ecma-international.org/ecma-262/6.0/#sec-modules) (ES6).
+Для получения более подробной информации по поводу того, что делают вызовы `define`, `require` и `register` в сгенерированном коде, смотрите документацию по каждому отдельному модулю.
 
-This simple example shows how the names used during importing and exporting get translated into the module loading code.
+В этом простом примере показано, как имена, используемые во время импорта и экспорта, транслируются в код загрузки модуля.
 
 ##### SimpleModule.ts
 
@@ -297,7 +298,7 @@ exports.t = mod_1.something + 1;
 });
 ```
 
-##### System SimpleModule.js
+##### Система SimpleModule.js
 
 ```js
 System.register(["./mod"], function(exports_1) {
@@ -315,26 +316,26 @@ System.register(["./mod"], function(exports_1) {
 });
 ```
 
-##### Native ECMAScript 2015 modules SimpleModule.js
+##### Собственные модули ECMAScript 2015 SimpleModule.js
 
 ```js
 import { something } from "./mod";
 export var t = something + 1;
 ```
 
-# Simple Example
+# Простой пример
 
-Below, we've consolidated the Validator implementations used in previous examples to only export a single named export from each module.
+Ниже мы упростили реализацию валидатора из предыдущего примера, сведя его к экспорту единичного именованного экспорта из каждого модуля.
 
-To compile, we must specify a module target on the command line. For Node.js, use `--module commonjs`;
-for require.js, use `--module amd`. For example:
+Для успешной компиляции необходимо указать цель модуля в командной строке. Для Node.js, используется `--module commonjs`;
+для require.js — `--module amd`. Например:
 
 ```Shell
 tsc --module commonjs Test.ts
 ```
 
-When compiled, each module will become a separate `.js` file.
-As with reference tags, the compiler will follow `import` statements to compile dependent files.
+В результате компиляции каждый модуль становится отдельным `.js`-файлом.
+Так же как и со ссылочными тегами, компилятор по операторам `import` найдёт и скомпилирует зависимые файлы.
 
 ##### Validation.ts
 
@@ -379,15 +380,15 @@ import { StringValidator } from "./Validation";
 import { ZipCodeValidator } from "./ZipCodeValidator";
 import { LettersOnlyValidator } from "./LettersOnlyValidator";
 
-// Some samples to try
+// Несколько тестовых примеров
 let strings = ["Hello", "98052", "101"];
 
-// Validators to use
+// Валидаторы
 let validators: { [s: string]: StringValidator; } = {};
 validators["ZIP code"] = new ZipCodeValidator();
 validators["Letters only"] = new LettersOnlyValidator();
 
-// Show whether each string passed each validator
+// Для каждой строки показывает, прошла ли она каждый валидатор
 strings.forEach(s => {
     for (let name in validators) {
         console.log(`"${ s }" - ${ validators[name].isAcceptable(s) ? "matches" : "does not match" } ${ name }`);
@@ -395,24 +396,25 @@ strings.forEach(s => {
 });
 ```
 
-# Optional Module Loading and Other Advanced Loading Scenarios
+# Опциональная загрузка модулей и её другие продвинутые сценарии
 
-In some cases, you may want to only load a module under some conditions.
-In TypeScript, we can use the pattern shown below to implement this and other advanced loading scenarios to directly invoke the module loaders without losing type safety.
+В некоторых случаях может потребоваться загрузить модуль только при определённых условиях.
+В TypeScript возможно использовать приведённый ниже пример, чтобы применить данную или иную продвинутую технику загрузки модулей. Этот приём может использоваться для непосредственного вызова загрузчиков модулей без потери типобезопасности.
 
-The compiler detects whether each module is used in the emitted JavaScript.
-If a module identifier is only ever used as part of a type annotations and never as an expression, then no `require` call is emitted for that module.
-This elision of unused references is a good performance optimization, and also allows for optional loading of those modules.
+Компилятор для каждого модуля определяет, используется ли он в генерируемом JavaScript.
+Если идентификатор модуля есть только в описаниях типа и никогда в выражениях, тогда для этого модуля не будет сгенерирован вызов `require`.
+Такое пропускание неиспользуемых ссылок улучшает производительность, а также позволяет организовать опциональную загрузку модулей.
 
-The core idea of the pattern is that the `import id = require("...")` statement gives us access to the types exposed by the module.
-The module loader is invoked (through `require`) dynamically, as shown in the `if` blocks below.
-This leverages the reference-elision optimization so that the module is only loaded when needed.
-For this pattern to work, it's important that the symbol defined via an `import` is only used in type positions (i.e. never in a position that would be emitted into the JavaScript).
+Основная идея примера заключается в том, что команда `import id = require("...")` даёт доступ к типам, раскрываемым данным модулем.
+Как показано в блоке `if` ниже, загрузчик модуля вызывается динамически (с помощью `require`).
+Таким образом применяется оптимизация пропуска неиспользуемых ссылок, что приводит к загрузке модуля только тогда, когда он нужен.
+Чтобы данный приём сработал, необходимо, чтобы идентификатор, определённый с помощью `import`, использовался только в описании типа (т.е. никогда в таком месте кода, которое попадёт в итоговый  JavaScript).
 
-To maintain type safety, we can use the `typeof` keyword.
-The `typeof` keyword, when used in a type position, produces the type of a value, in this case the type of the module.
+Для поддержки типобезопасности используется ключевое слово `typeof`.
+Ключевое слово `typeof`, при использовании его в описании типа, создаёт тип значения (тип модуля в данном случае).
 
-##### Dynamic Module Loading in Node.js
+
+##### Динамическая загрузка модулей в Node.js
 
 ```ts
 declare function require(moduleName: string): any;
@@ -426,7 +428,7 @@ if (needZipValidation) {
 }
 ```
 
-##### Sample: Dynamic Module Loading in require.js
+##### Пример: динамическая загрузка модулей в require.js
 
 ```ts
 declare function require(moduleNames: string[], onLoad: (...args: any[]) => void): void;
@@ -441,7 +443,7 @@ if (needZipValidation) {
 }
 ```
 
-##### Sample: Dynamic Module Loading in System.js
+##### Пример: Динамическая загрузка модулей в System.js
 
 ```ts
 declare const System: any;
@@ -456,23 +458,23 @@ if (needZipValidation) {
 }
 ```
 
-# Working with Other JavaScript Libraries
+# Работа с другими библиотеками JavaScript
 
-To describe the shape of libraries not written in TypeScript, we need to declare the API that the library exposes.
+Чтобы описать библиотеку, написанную не на TypeScript, необходимо объявить API, предоставляемый этой библиотекой.
 
-We call declarations that don't define an implementation "ambient".
-Typically, these are defined in `.d.ts` files.
-If you're familiar with C/C++, you can think of these as `.h` files.
-Let's look at a few examples.
+Мы называем объявления, которые не определяют реализации, "внешними" (ambient).
+Обычно они задаются в файлах `.d.ts`.
+Если вы знакомы с C/C++, можете воспринимать их как заголовочные файлы `.h`.
+Давайте посмотрим на несколько примеров.
 
-## Ambient Modules
+## Внешние модули
 
-In Node.js, most tasks are accomplished by loading one or more modules.
-We could define each module in its own `.d.ts` file with top-level export declarations, but it's more convenient to write them as one larger `.d.ts` file.
-To do so, we use a construct similar to ambient namespaces, but we use the `module` keyword and the quoted name of the module which will be available to a later import.
-For example:
+В Node.js, большинство задач выполняется с помощью загрузки одного или нескольких модулей.
+Мы могли бы определить каждый модуль в его собственном файле `.d.ts` в объявлениями экспорта верхнего уровня, но гораздо удобнее поместить определения всех модулей в одном общем файле `.d.ts`.
+Чтобы это сделать, используйте конструкцию, похожую на внешние пространства имён. В ней используется ключевое слово `module` и заключенное в кавычки имя модуля, которое будет доступно для дальнейшего импорта.
+Например:
 
-##### node.d.ts (simplified excerpt)
+##### node.d.ts (упрощенный отрывок)
 
 ```ts
 declare module "url" {
@@ -492,7 +494,7 @@ declare module "path" {
 }
 ```
 
-Now we can `/// <reference>` `node.d.ts` and then load the modules using `import url = require("url");`.
+Теперь мы можем указать `/// <reference>` `node.d.ts` и загрузить модули с помощью `import url = require("url");`.
 
 ```ts
 /// <reference path="node.d.ts"/>
@@ -500,9 +502,9 @@ import * as URL from "url";
 let myUrl = URL.parse("http://www.typescriptlang.org");
 ```
 
-### Shorthand ambient modules
+### Сокращенная запись объявления внешних модулей
 
-If you don't want to take the time to write out declarations before using a new module, you can use a shorthand declaration to get started quickly.
+Если вы не хотите тратить время на написание объявлений до начала использования нового модуля, можно воспользоваться сокращенным объявлением.
 
 ##### declarations.d.ts
 
@@ -510,33 +512,33 @@ If you don't want to take the time to write out declarations before using a new 
 declare module "hot-new-module";
 ```
 
-All imports from a shorthand module will have the `any` type.
+Все импортируемые элементы такого модуля будут иметь тип `any`.
 
 ```ts
 import x, {y} from "hot-new-module";
 x(y);
 ```
 
-### Wildcard module declarations
+### Объявления модулей с использованием знаков подстановки
 
-Some module loaders such as [SystemJS](https://github.com/systemjs/systemjs/blob/master/docs/overview.md#plugin-syntax)
-and [AMD](https://github.com/amdjs/amdjs-api/blob/master/LoaderPlugins.md) allow non-JavaScript content to be imported.
-These typically use a prefix or suffix to indicate the special loading semantics.
-Wildcard module declarations can be used to cover these cases.
+Некоторые загрузчики модулей, такие как [SystemJS](https://github.com/systemjs/systemjs/blob/master/docs/overview.md#plugin-syntax)
+и [AMD](https://github.com/amdjs/amdjs-api/blob/master/LoaderPlugins.md), позволяют импортировать контент, отличный от JavaScript.
+В таких случаях обычно используется префикс или суффикс, чтобы обозначить специальную семантику загрузки.
+Объявления модулей с использованием знаков подстановки могут использоваться для организации загрузок такого типа.
 
 ```ts
 declare module "*!text" {
     const content: string;
     export default content;
 }
-// Some do it the other way around.
+// Некоторые делают это иначе
 declare module "json!*" {
     const value: any;
     export default value;
 }
 ```
 
-Now you can import things that match `"*!text"` or `"json!*"`.
+Теперь можно импортировать элементы, совпадающие с `"*!text"` или `"json!*"`.
 
 ```ts
 import fileContent from "./xyz.txt!text";
@@ -544,12 +546,12 @@ import data from "json!http://example.com/data.json";
 console.log(data, fileContent);
 ```
 
-### UMD modules
+### Модули UMD
 
-Some libraries are designed to be used in many module loaders, or with no module loading (global variables).
-These are known as [UMD](https://github.com/umdjs/umd) or [Isomorphic](http://isomorphic.net) modules.
-These libraries can be accessed through either an import or a global variable.
-For example:
+Некоторые библиотеки созданы таким образом, чтобы использоваться со многими загрузчиками модулей или без загрузчиков вообще (глобальные переменные).
+Их называют [UMD](https://github.com/umdjs/umd) или [изоморфными (Isomorphic)](http://isomorphic.net) модулями.
+Такие библиотеки можно подключить и с помощью импорта, и как глобальную переменную.
+Например:
 
 ##### math-lib.d.ts
 
@@ -558,41 +560,40 @@ export const isPrime(x: number): boolean;
 export as namespace mathLib;
 ```
 
-The library can then be used as an import within modules:
+Эту библиотеку можно подключить внутри модуля с помощью импорта:
 
 ```ts
 import { isPrime } from "math-lib";
 isPrime(2);
-mathLib.isPrime(2); // ERROR: can't use the global definition from inside a module
+mathLib.isPrime(2); // Ошибка: невозможно использовать глобальное определение внутри модуля
 ```
 
-It can also be used as a global variable, but only inside of a script.
-(A script is a file with no imports or exports.)
+Также эту библиотеку можно подключить как глобальную переменную, но это возможно сделать только внутри скрипта.
+(Скрипт — это файл без команд импорта и экспорта.)
 
 ```ts
 mathLib.isPrime(2);
 ```
 
-# Guidance for structuring modules
+# Руководство по структурированию модулей
 
-## Export as close to top-level as possible
+## Экспортируйте настолько близко к верхнему уровню, насколько это возможно
 
-Consumers of your module should have as little friction as possible when using things that you export.
-Adding too many levels of nesting tends to be cumbersome, so think carefully about how you want to structure things.
+Чем меньше будет у пользователей модуля проблем с использованием экспортированных элементов, тем лучше.
+Добавление уровней вложенности делает модуль более громоздким, поэтому необходимо тщательно обдумывать его структуру.
 
-Exporting a namespace from your module is an example of adding too many layers of nesting.
-While namespaces sometimes have their uses, they add an extra level of indirection when using modules.
-This can quickly becomes a pain point for users, and is usually unnecessary.
+Экспорт из модуля пространства имён как раз является примером добавления лишнего уровня вложенности.
+Несмотря на то, что пространства имён бывают полезны, они добавляют в модули ещё один уровень абстракции, что очень скоро может привести к проблемам для пользователей, и обычно не нужно.
 
-Static methods on an exported class have a similar problem - the class itself adds a layer of nesting.
-Unless it increases expressivity or intent in a clearly useful way, consider simply exporting a helper function.
+Статические методы экспортируемых классов вызывают сходные проблемы, так как класс сам по себе добавляет уровень вложенности.
+Допустимо пойти на это в том случае, если вы точно знаете, что делаете, и введение дополнительного уровня вложенности добавит выразительности и ясно отразит назначение модуля. В противном случае рекомендуется использовать вспомогательные функции (helper function).
 
-### If you're only exporting a single `class` or `function`, use `export default`
+### Если вы экспортируете только один `class` или одну `function`, используйте `export default`
 
-Just as "exporting near the top-level" reduces friction on your module's consumers, so does introducing a default export.
-If a module's primary purpose is to house one specific export, then you should consider exporting it as a default export.
-This makes both importing and actually using the import a little easier.
-For example:
+Аналогично "экспорту максимально близко к верхнему уровню", использование экспорта по умолчанию (default export) облегчает жизнь пользователям вашего модуля.
+Если основной задачей модуля является размещение и экспортирование одного специфического элемента, то необходимо всерьез рассмотреть использование экспорта по умолчанию.
+Такой подход делает и саму процедуру импорта, и использование импортированных элементов немного проще.
+Например:
 
 #### MyClass.ts
 
@@ -617,9 +618,9 @@ let x = new t();
 console.log(f());
 ```
 
-This is optimal for consumers. They can name your type whatever they want (`t` in this case) and don't have to do any excessive dotting to find your objects.
+Такой подход оптимален для пользователей модуля. Они могут дать вашему типу наиболее удобное для них наименование (`t` в данном случае) и будут избавлены от лишнего обращения «через точку» для поиска ваших объектов.
 
-### If you're exporting multiple objects, put them all at top-level
+### Если вы экспортируете несколько объектов, поместите их на верхний уровень
 
 #### MyThings.ts
 
@@ -628,9 +629,9 @@ export class SomeType { /* ... */ }
 export function someFunc() { /* ... */ }
 ```
 
-Conversly when importing:
+Соответственно при импорте:
 
-### Explicitly list imported names
+### Явно определяйте импортированные имена
 
 #### Consumer.ts
 
@@ -640,7 +641,8 @@ let x = new SomeType();
 let y = someFunc();
 ```
 
-### Use the namespace import pattern if you're importing a large number of things
+
+### Используйте шаблон импорта пространства имен в случае импорта большого количества элементов
 
 #### MyLargeModule.ts
 
@@ -658,15 +660,15 @@ import * as myLargeModule from "./MyLargeModule.ts";
 let x = new myLargeModule.Dog();
 ```
 
-## Re-export to extend
+## Ре-экспорт с целью расширения функционала
 
-Often you will need to extend functionality on a module.
-A common JS pattern is to augment the original object with *extensions*, similar to how JQuery extensions work.
-As we've mentioned before, modules do not *merge* like global namespace objects would.
-The recommended solution is to *not* mutate the original object, but rather export a new entity that provides the new functionality.
+Зачастую бывает необходимо расширить функциональность модуля.
+В JavaScript наиболее распространён метод дополнения исходного объекта *расширениями* (extensions), аналогично тому, как работает JQuery.
+Как было упомянуто ранее, модули не *сливаются* подобно объектам глобальных пространств имён.
+Рекомендуется не изменять исходный объект, а экспортировать новый элемент, предоставляющий новую функциональность.
 
-Consider a simple calculator implementation defined in module `Calculator.ts`.
-The module also exports a helper function to test the calculator functionality by passing a list of input strings and writing the result at the end.
+Давайте рассмотрим реализацию простого калькулятора, созданную в виде модуля `Calculator.ts`.
+Из модуля также экспортируется вспомогательная функция, предназначенная для тестирования функциональности калькулятора путём передачи списка входных строк и записи результата.
 
 #### Calculator.ts
 
@@ -744,7 +746,7 @@ export function test(c: Calculator, input: string) {
 }
 ```
 
-Here is a simple test for the calculator using the exposed `test` function.
+Ниже приведён простой тест калькулятора с использованием экспортированной функции `test`.
 
 #### TestCalculator.ts
 
@@ -753,10 +755,10 @@ import { Calculator, test } from "./Calculator";
 
 
 let c = new Calculator();
-test(c, "1+2*33/11="); // prints 9
+test(c, "1+2*33/11="); // выведет 9
 ```
 
-Now to extend this to add support for input with numbers in bases other than 10, let's create `ProgrammerCalculator.ts`
+Давайте создадим `ProgrammerCalculator.ts`, который расширяет исходный калькулятор возможностью работы с числами в системах счисления, отличных от десятичной.
 
 #### ProgrammerCalculator.ts
 
@@ -780,15 +782,15 @@ class ProgrammerCalculator extends Calculator {
     }
 }
 
-// Export the new extended calculator as Calculator
+// Экспорт нового расширенного калькулятора как 'Calculator'
 export { ProgrammerCalculator as Calculator };
 
-// Also, export the helper function
+// Экспорт вспомогательной функции
 export { test } from "./Calculator";
 ```
 
-The new module `ProgrammerCalculator` exports an API shape similar to that of the original `Calculator` module, but does not augment any objects in the original module.
-Here is a test for our ProgrammerCalculator class:
+Новый модуль `ProgrammerCalculator` экспортирует такой же API, что и исходный модуль `Calculator`, но при этом не изменяет в нём ни одного объекта.
+Ниже приведён тест класса 'ProgrammerCalculator':
 
 #### TestProgrammerCalculator.ts
 
@@ -796,34 +798,34 @@ Here is a test for our ProgrammerCalculator class:
 import { Calculator, test } from "./ProgrammerCalculator";
 
 let c = new Calculator(2);
-test(c, "001+010="); // prints 3
+test(c, "001+010="); // выведет 3
 ```
 
-## Do not use namespaces in modules
+## Не используйте в модулях пространства имён
 
-When first moving to a module-based organization, a common tendency is to wrap exports in an additional layer of namespaces.
-Modules have their own scope, and only exported declarations are visible from outside the module.
-With this in mind, namespace provide very little, if any, value when working with modules.
+Когда программисты только начинают использовать организацию кода с помощью модулей, они часто размещают экспортируемые элементы в пространствах имён, создавая таким образом дополнительные уровни вложенности.
+Но у модулей есть своя собственная область видимости, и извне видны только экспортированные элементы.
+Поэтому пространства имён не способны принести ощутимую пользу при работе с модулями.
 
-On the organization front, namespaces are handy for grouping together logically-related objects and types in the global scope.
-For example, in C#, you're going to find all the collection types in System.Collections.
-By organizing our types into hierarchical namespaces, we provide a good "discovery" experience for users of those types.
-Modules, on the other hand, are already present in a file system, necessarily.
-We have to resolve them by path and filename, so there's a logical organization scheme for us to use.
-We can have a /collections/generic/ folder with a list module in it.
+Пространства имён удобны для группировки логически связанных объектов и типов глобальной области видимости, что удобно для организации кода.
+Например в C#, все коллекционные типы можно найти в System.Collections.
+Организуя типы в иерархии пространств имён, мы облегчаем пользователям их поиск.
+Модули, напротив, в любом случае уже существуют в виде файлов.
+Мы находим их по пути и имени файла, соответственно, их логическая организация уже присутствует.
+Можно создать директорию /collections/generic/, содержащую списочный модуль.
 
-Namespaces are important to avoid naming collisions in the global scope.
-For example, you might have `My.Application.Customer.AddForm` and `My.Application.Order.AddForm` -- two types with the same name, but a different namespace.
-This, however, is not an issue with modules.
-Within a module, there's no plausible reason to have two objects with the same name.
-From the consumption side, the consumer of any given module gets to pick the name that they will use to refer to the module, so accidental naming conflicts are impossible.
+Пространства имён являются важным инструментом для предотвращения конфликтов имён.
+Например, у вас могут быть `My.Application.Customer.AddForm` и `My.Application.Order.AddForm` — два типа с один именем, но разными пространствами имен.
+А с модулями такой проблемы не будет.
+Нет серьёзных оснований для создания двух объектов с одинаковым именем внутри модуля.
+С точки зрения пользователя, он может выбрать любое имя для импортируемого модуля, поэтому случайные конфликты имен невозможны.
 
-> For more discussion about modules and namespaces see [Namespaces and Modules](./Namespaces and Modules.md).
+> Более подробная информация о пространствах имен и модулях [Namespaces and Modules](./Namespaces and Modules.md).
 
-## Red Flags
+## Индикаторы опасности
 
-All of the following are red flags for module structuring. Double-check that you're not trying to namespace your external modules if any of these apply to your files:
+Ниже приведен список тревожных признаков, касающихся структурирования модулей. Лишний раз убедитесь, что вы не пытаетесь создавать пространства имен для ваших внешних модулей, если любое из следующих утверждений относится к вашей ситуации:
 
-* A file whose only top-level declaration is `export namespace Foo { ... }` (remove `Foo` and move everything 'up' a level)
-* A file that has a single `export class` or `export function` (consider using `export default`)
-* Multiple files that have the same `export namespace Foo {` at top-level (don't think that these are going to combine into one `Foo`!)
+* Файл содержит единственное объявление верхнего уровня `export namespace Foo { ... }` (уберите `Foo` и переместите всё на уровень выше)
+* Файл содержит единственный экземпляр `export class` или `export function` (рассмотрите возможность использования  `export default`)
+* Несколько файлов содержат идентичное `export namespace Foo {` на верхнем уровне (не рассчитывайте на то, что все они соединятся в одно пространство имён `Foo`!)
