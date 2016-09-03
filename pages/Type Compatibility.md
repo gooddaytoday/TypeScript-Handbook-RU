@@ -1,9 +1,9 @@
-# Introduction
+# Введение
 
-Type compatibility in TypeScript is based on structural subtyping.
-Structural typing is a way of relating types based solely on their members.
-This is in contrast with nominal typing.
-Consider the following code:
+Совместимость типов в TypeScript основывается на структурной типизации.
+Структурная типизация — это способ выявления отношений типов на основании исключительно состава их членов.
+Этот подход отличается от номинативной типизации.
+Посмотрим на следующий код:
 
 ```ts
 interface Named {
@@ -15,22 +15,23 @@ class Person {
 }
 
 let p: Named;
-// OK, because of structural typing
+// Все подходит, поскольку используется структурная система типов
 p = new Person();
 ```
 
-In nominally-typed languages like C# or Java, the equivalent code would be an error because the `Person` class does not explicitly describe itself as being an implementor of the `Named` interface.
+В языках, подобных C# и Java, где используется номинативная система типов, аналогичный код привел бы к ошибке, поскольку класс `Person` не описывается явно, как реализующий интерфейс `Named`.
 
-TypeScript's structural type system was designed based on how JavaScript code is typically written.
-Because JavaScript widely uses anonymous objects like function expressions and object literals, it's much more natural to represent the kinds of relationships found in JavaScript libraries with a structural type system instead of a nominal one.
+Структурная система типов TypeScript была спроектирована с учетом того, как обычно пишется код на JavaScript.
+Поскольку в JavaScript широко используются анонимные объекты, такие как функциональные выражения и литералы объектов, гораздо более естественно будет описывать их отношения с помощью структурной системы, а не номинативной.
 
-## A Note on Soundness
+## Замечание относительно надежности
 
-TypeScript's type system allows certain operations that can't be known at compile-time to be safe. When a type system has this property, it is said to not be "sound". The places where TypeScript allows unsound behavior were carefully considered, and throughout this document we'll explain where these happen and the motivating scenarios behind them.
+Система типов TypeScript допускает некоторые операции, относительно которых во время компиляции невозможно сказать, безопасны ли они. Когда система типов обладает подобным свойством, говорят, что она не является "надежной".
+Места, где TypeScript допускает ненадежное поведение, были тщательно обдуманы, и в данной главе мы объясним, где это происходит, и по какой причине было позволено.
 
-# Starting out
+# Для начала
 
-The basic rule for TypeScript's structural type system is that `x` is compatible with `y` if `y` has at least the same members as `x`. For example:
+Основное правило системы типов TypeScript таково — `x` совместимо с `y`, если `y` имеет по крайней мере те же самые члены, что и `x`. К примеру:
 
 ```ts
 interface Named {
@@ -38,80 +39,80 @@ interface Named {
 }
 
 let x: Named;
-// y's inferred type is { name: string; location: string; }
+// выведенный для y тип — { name: string; location: string; }
 let y = { name: "Alice", location: "Seattle" };
 x = y;
 ```
 
-To check whether `y` can be assigned to `x`, the compiler checks each property of `x` to find a corresponding compatible property in `y`.
-In this case, `y` must have a member called `name` that is a string. It does, so the assignment is allowed.
+Чтобы понять, может ли `y` быть присвоена `x`, компилятор для каждого из свойств `x` ищет соответствующее совместимое свойство в `y`.
+В данном случае переменная `y` должна иметь свойство под именем `name` строкового типа. Оно есть, и присваивание допускается.
 
-The same rule for assignment is used when checking function call arguments:
+То же самое правило используется в случае проверки аргументов при вызове функции:
 
 ```ts
 function greet(n: Named) {
-    alert("Hello, " + n.name);
+    alert("Привет, " + n.name);
 }
-greet(y); // OK
+greet(y); // ОК
 ```
 
-Note that `y` has an extra `location` property, but this does not create an error.
-Only members of the target type (`Named` in this case) are considered when checking for compatibility.
+Обратите внимание, что `y` обладает дополнительным свойством `location`, но это не приводит к ошибке.
+При проверке на совместимость учитываются только члены целевого типа (в данном случае это `Named`).
 
-This comparison process proceeds recursively, exploring the type of each member and sub-member.
+Процесс сравнения производится рекурсивно, затрагивая типы всех членов и подчленов.
 
-# Comparing two functions
+# Сравнение двух функций
 
-While comparing primitive types and object types is relatively straightforward, the question of what kinds of functions should be considered compatible is a bit more involved.
-Let's start with a basic example of two functions that differ only in their parameter lists:
+Сравнение типов двух примитивов или объектов происходит относительно просто, однако вопрос о том, какие функции должны считаться совместимыми, немного более сложен.
+Начнем с простого примера с двумя функциями, отличающимися только списками параметров:
 
 ```ts
 let x = (a: number) => 0;
 let y = (b: number, s: string) => 0;
 
-y = x; // OK
-x = y; // Error
+y = x; // Все нормально
+x = y; // Ошибка
 ```
 
-To check if `x` is assignable to `y`, we first look at the parameter list.
-Each parameter in `x` must have a corresponding parameter in `y` with a compatible type.
-Note that the names of the parameters are not considered, only their types.
-In this case, every parameter of `x` has a corresponding compatible parameter in `y`, so the assignment is allowed.
+Чтобы проверить, допустимо ли присваивание `x` к `y`, сначала просматривается список параметров.
+Для каждого параметра функции `x` у функции `y` должен быть соответствующий параметр совместимого типа.
+Имена параметров не принимаются во внимание — важны лишь типы.
+В данном случае для каждого параметра `x` есть соответствующий совместимый параметр в функции `y`, поэтому присваивание допускается.
 
-The second assignment is an error, because y has a required second parameter that 'x' does not have, so the assignment is disallowed.
+Второе присваивание приводит к ошибке, поскольку `y` имеет обязательный второй параметр, которого нет у `x`, и операция не допускается.
 
-You may be wondering why we allow 'discarding' parameters like in the example `y = x`.
-The reason for this assignment to be allowed is that ignoring extra function parameters is actually quite common in JavaScript.
-For example, `Array#forEach` provides three parameters to the callback function: the array element, its index, and the containing array.
-Nevertheless, it's very useful to provide a callback that only uses the first parameter:
+Может показаться интересным, почему разрешается "терять" параметры функции, как это происходит при `y = x`.
+Причина этому то, что игнорирование лишних параметров функции — довольно частая практика в JavaScript.
+К примеру, `Array#forEach` передает функции обратного вызова три параметра: элемент массива, его индекс, и массив, в котором тот содержится.
+Несмотря на это, очень удобно работать с функцией обратного вызова, которая использует лишь первый параметр:
 
 ```ts
 let items = [1, 2, 3];
 
-// Don't force these extra parameters
+// Не заставлять использовать дополнительные параметры
 items.forEach((item, index, array) => console.log(item));
 
-// Should be OK!
+// Все должно работать!
 items.forEach(item => console.log(item));
 ```
 
-Now let's look at how return types are treated, using two functions that differ only by their return type:
+Теперь посмотрим, как обрабатываются типы возвращаемых значений. Для этого используем две функции, отличающиеся только типами возвращаемых значений:
 
 ```ts
 let x = () => ({name: "Alice"});
 let y = () => ({name: "Alice", location: "Seattle"});
 
-x = y; // OK
-y = x; // Error because x() lacks a location property
+x = y; // Работает
+y = x; // Ошибка, поскольку у x() нет свойства location
 ```
 
-The type system enforces that the source function's return type be a subtype of the target type's return type.
+Необходимо, чтобы тип возвращаемого значения исходной функции был подтипом типа возвращаемого значения целевой функции.
 
-## Function Parameter Bivariance
+## Бивариантность параметров функции
 
-When comparing the types of function parameters, assignment succeeds if either the source parameter is assignable to the target parameter, or vice versa.
-This is unsound because a caller might end up being given a function that takes a more specialized type, but invokes the function with a less specialized type.
-In practice, this sort of error is rare, and allowing this enables many common JavaScript patterns. A brief example:
+При сравнении типов параметров присваивание допускается, если параметр исходной функции может быть присвоен параметру целевой функции, или наоборот.
+Это не является надежным, поскольку код может получить функцию, которая принимает более специализированный тип, и передать ей значение менее специализированного типа.
+На практике такого рода ошибки редки, а допущение подобного позволяет использовать многие распространенные практики из JavaScript. Краткий пример:
 
 ```ts
 enum EventType { Mouse, Keyboard }
@@ -124,62 +125,62 @@ function listenEvent(eventType: EventType, handler: (n: Event) => void) {
     /* ... */
 }
 
-// Unsound, but useful and common
+// Ненадежно, но полезно и часто используется
 listenEvent(EventType.Mouse, (e: MouseEvent) => console.log(e.x + "," + e.y));
 
-// Undesirable alternatives in presence of soundness
+// Альтернативы, нежелательные из-за ненадежности
 listenEvent(EventType.Mouse, (e: Event) => console.log((<MouseEvent>e).x + "," + (<MouseEvent>e).y));
 listenEvent(EventType.Mouse, <(e: Event) => void>((e: MouseEvent) => console.log(e.x + "," + e.y)));
 
-// Still disallowed (clear error). Type safety enforced for wholly incompatible types
+// Не допускается (явная ошибка). Требуется безопасность типов для полностью несовместимых типов
 listenEvent(EventType.Mouse, (e: number) => console.log(e));
 ```
 
-## Optional Parameters and Rest Parameters
+# Опциональные и остаточные параметры
 
-When comparing functions for compatibility, optional and required parameters are interchangeable.
-Extra optional parameters of the source type are not an error, and optional parameters of the target type without corresponding parameters in the target type are not an error.
+При проверке функций на совместимость опциональные и обязательные параметры взаимозаменяемы.
+Лишние опциональные параметры исходного типа не приводят к ошибке, так же как и опциональные параметры целевого типа, для которых нет соответствующих параметров.
 
-When a function has a rest parameter, it is treated as if it were an infinite series of optional parameters.
+Когда у функции есть остаточный параметр, он расценивается так, словно представляет собой бесконечное число опциональных параметров.
 
-This is unsound from a type system perspective, but from a runtime point of view the idea of an optional parameter is generally not well-enforced since passing `undefined` in that position is equivalent for most functions.
+С точки зрения системы типов это не является надежным, но с точки зрения выполняющегося кода сами опциональные параметры, как правило, не являются чем-то четко определенным, поскольку для большинства функций они эквивалентны передаче `undefined`.
 
-The motivating example is the common pattern of a function that takes a callback and invokes it with some predictable (to the programmer) but unknown (to the type system) number of arguments:
+В пример полезности этого приведем распространенный прием — функцию, которая принимает функцию обратного вызова и вызывает ее с некоторым предсказуемым (для разработчика), но неизвестным (для системы типов) числом аргументов:
 
 ```ts
 function invokeLater(args: any[], callback: (...args: any[]) => void) {
-    /* ... Invoke callback with 'args' ... */
+    /* ... Вызвать функцию в аргументами `args` ... */
 }
 
-// Unsound - invokeLater "might" provide any number of arguments
+// Ненадежно — invokeLater может получить любое число аргументов
 invokeLater([1, 2], (x, y) => console.log(x + ", " + y));
 
-// Confusing (x and y are actually required) and undiscoverable
+// Сбивает с толку (x и y на самом деле необходимы), и незаметно
 invokeLater([1, 2], (x?, y?) => console.log(x + ", " + y));
 ```
 
-## Functions with overloads
+## Функции с перегрузками
 
-When a function has overloads, each overload in the source type must be matched by a compatible signature on the target type.
-This ensures that the target function can be called in all the same situations as the source function.
+Когда у функции есть перегрузки, для каждой из перегрузок исходного типа у целевого типа должна найтись совместимая сигнатура.
+Это гарантирует, что целевая функция может быть вызвана в каждой из тех ситуаций, в которых может быть вызвана исходная функция.
 
-# Enums
+# Перечисления
 
-Enums are compatible with numbers, and numbers are compatible with enums. Enum values from different enum types are considered incompatible. For example,
+Перечисления совместимы с числами, а числа совместимы с перечислениями. Значения из различных перечислений считаются несовместимыми друг с другом. К примеру,
 
 ```ts
 enum Status { Ready, Waiting };
 enum Color { Red, Blue, Green };
 
 let status = Status.Ready;
-status = Color.Green;  //error
+status = Color.Green;  // ошибка
 ```
 
-# Classes
+# Классы
 
-Classes work similarly to object literal types and interfaces with one exception: they have both a static and an instance type.
-When comparing two objects of a class type, only members of the instance are compared.
-Static members and constructors do not affect compatibility.
+Классы работают подобно типам объектных литералов и интерфейсам, но с одним исключением: у них есть тип статической части и тип экземпляра.
+При сравнении двух объектов, которые имеют классовый тип, сравниваются только члены экземпляра.
+Статические члены и конструкторы не влияют на совместимость.
 
 ```ts
 class Animal {
@@ -199,16 +200,16 @@ a = s;  //OK
 s = a;  //OK
 ```
 
-## Private and protected members in classes
+## Приватные и защищенные члены классов
 
-Private and protected members in a class affect their compatibility.
-When an instance of a class is checked for compatibility, if the instance contains a private member, then the target type must also contain a private member that originated from the same class.
-Likewise, the same applies for an instance with a protected member.
-This allows a class to be assignment compatible with its super class, but *not* with classes from a different inheritance hierarchy which otherwise have the same shape.
+Приватные и защищенные члены классов влияют на их совместимость.
+Когда экземпляр класса проходит проверку на совместимость, то, если у него есть приватный член, у целевого типа тоже должен быть приватный член, объявленный в том же классе.
+Это относится и к экземплярам с защищенными членами.
+Такая особенность позволяет классам быть совместимыми при присваивании базовому классу, но не классу из другой иерархии наследования, даже если бы он имел такую же форму.
 
-# Generics
+# Обобщения
 
-Because TypeScript is a structural type system, type parameters only affect the resulting type when consumed as part of the type of a member. For example,
+Поскольку в TypeScript используется структурная система типов, типовые параметры влияют на получаемый тип только в том случае, если используются как часть типа члена. К примеру,
 
 ```ts
 interface Empty<T> {
@@ -216,11 +217,11 @@ interface Empty<T> {
 let x: Empty<number>;
 let y: Empty<string>;
 
-x = y;  // okay, y matches structure of x
+x = y;  // все в порядке, у подходит по структуре к x
 ```
 
-In the above, `x` and `y` are compatible because their structures do not use the type argument in a differentiating way.
-Changing this example by adding a member to `Empty<T>` shows how this works:
+В вышеприведенном примере `x` и `y` совместимы, поскольку типовый параметр не используется так, чтобы между ними возникла разница.
+Изменим этот пример, добавив член к `Empty<T>`:
 
 ```ts
 interface NotEmpty<T> {
@@ -229,15 +230,15 @@ interface NotEmpty<T> {
 let x: NotEmpty<number>;
 let y: NotEmpty<string>;
 
-x = y;  // error, x and y are not compatible
+x = y;  // ошибка, x и y несовместимы
 ```
 
-In this way, a generic type that has its type arguments specified acts just like a non-generic type.
+В этом случае обобщенный тип, для которого указаны типовые аргументы, ведет себя так же, как и обычный, необобщенный тип.
 
-For generic types that do not have their type arguments specified, compatibility is checked by specifying `any` in place of all unspecified type arguments.
-The resulting types are then checked for compatibility, just as in the non-generic case.
+В случае обобщенных типов, для которых не указаны типовые аргументы, совместимость проверяется, словно в качестве пропущенных типовых аргументов был указан `any`.
+Затем полученные типы проверяются на совместимость, так же, как и обычные.
 
-For example,
+К примеру,
 
 ```ts
 let identity = function<T>(x: T): T {
@@ -248,17 +249,17 @@ let reverse = function<U>(y: U): U {
     // ...
 }
 
-identity = reverse;  // Okay because (x: any)=>any matches (y: any)=>any
+identity = reverse;  // Все хорошо, так как (x: any)=>any совпадает с (y:any)=>any
 ```
 
-# Advanced Topics
+# Продвинутые темы
 
-## Subtype vs Assignment
+## Подтипы и присваивание
 
-So far, we've used 'compatible', which is not a term defined in the language spec.
-In TypeScript, there are two kinds of compatibility: subtype and assignment.
-These differ only in that assignment extends subtype compatibility with rules to allow assignment to and from `any` and to and from enum with corresponding numeric values.
+Все это время мы использовали термин "совместимость", хотя он и не определен в спецификации языка.
+В TypeScript существует два вида совместимости: совместимость подтипов и совместимость при присваивании.
+Различие между ними лишь в том, что совместимость при присваивании расширяет совместимость подтипов правилами, позволяющими присваивать что-либо к `any` и `any` к чему-либо, а также перечисления и соответствующие числовые значения друг другу.
 
-Different places in the language use one of the two compatibility mechanisms, depending on the situation.
-For practical purposes, type compatibility is dictated by assignment compatibility even in the cases of the `implements` and `extends` clauses.
-For more information, see the [TypeScript spec](https://github.com/Microsoft/TypeScript/blob/master/doc/spec.md).
+В различных местах компилятор использует тот или иной механизм проверки совместимости в зависимости от ситуации.
+Из практических соображений совместимость типов диктуется совместимостью при присваивании, в том числе в конструкциях `implements` и `extends`.
+За более подробной информацией обращайтесь к [спецификации TypeScript](https://github.com/Microsoft/TypeScript/blob/master/doc/spec.md).
