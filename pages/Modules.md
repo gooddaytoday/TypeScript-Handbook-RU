@@ -76,7 +76,7 @@ export class ParseIntBasedZipCodeValidator {
 export {ZipCodeValidator as RegExpBasedZipCodeValidator} from "./ZipCodeValidator";
 ```
 
-При использовании модуля качестве обёртки над одним или несколькими другими модулями, есть возможность ре-экспортировать сразу все их операторы экспорта с помощью конструкции `export * from "module"`.
+При использовании модуля в качестве обёртки над одним или несколькими другими модулями, есть возможность ре-экспортировать сразу все их операторы экспорта с помощью конструкции `export * from "module"`.
 
 ##### AllValidators.ts
 
