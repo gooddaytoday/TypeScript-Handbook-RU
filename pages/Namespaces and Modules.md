@@ -1,56 +1,54 @@
-> **A note about terminology:**
-It's important to note that in TypeScript 1.5, the nomenclature has changed.
-"Internal modules" are now "namespaces".
-"External modules" are now simply "modules", as to align with [ECMAScript 2015](http://www.ecma-international.org/ecma-262/6.0/)'s terminology, (namely that `module X {` is equivalent to the now-preferred `namespace X {`).
+﻿> **Замечание по поводу терминологии:**
+Важно отметить, что в TypeScript 1.5 изменилась номенклатура.
+"Внутренние модули" теперь называются "пространства имён".
+"Внешние модули" стали просто "модулями". Это было сделано, чтобы согласовать терминологию с [ECMAScript 2015](http://www.ecma-international.org/ecma-262/6.0/), (а именно: `module X {` эквивалентен предпочитаемому в настоящее время `namespace X {`).
 
-# Introduction
+# Введение
 
-This post outlines the various ways to organize your code using namespaces and modules in TypeScript.
-We'll also go over some advanced topics of how to use namespaces and modules, and address some common pitfalls when using them in TypeScript.
+Данный раздел документации описывает различные пути организации вашего кода в TypeScript с помощью пространств имён и модулей.
+Мы также затронем несколько сложных вопросов и отметим основные подводные камни, которые могут встретиться при использовании пространств имен и модулей в Typescript.
 
-See the [Modules](./Modules.md) documentation for more information about modules.
-See the [Namespaces](./Namespaces.md) documentation for more information about namespaces.
+См. [модули](./Modules.md) для получения более подробной информации о модулях.
+См. [пространства имен](./Namespaces.md) для получения более подробной информации о пространствах имен.
 
-# Using Namespaces
+# Использование пространств имен
 
-Namespaces are simply named JavaScript objects in the global namespace.
-This makes namespaces a very simple construct to use.
-They can span multiple files, and can be concatenated using `--outFile`.
-Namespaces can be a good way to structure your code in a Web Application, with all dependencies included as `<script>` tags in your HTML page.
+Пространства имен — это просто именованные объекты JavaScript, расположенные в глобальном пространстве имен. И это делает их очень простыми в использовании.
+Пространства имен могут располагаться в нескольких файлах и могут быть объединены с помощью ключа `--outFile`.
+Они удобны для структурирования кода в веб-приложении, когда все зависимости находятся в тегах `<script>` вашей HTML-станицы.
 
-Just like all global namespace pollution, it can be hard to identify component dependencies, especially in a large application.
+Так же как и в случае замусоривания глобального пространства имён, может оказаться трудно определить зависимости компонентов, особенно в больших приложениях.
 
-# Using Modules
+# Использование модулей
 
-Just like namespaces, modules can contain both code and declarations.
-The main difference is that modules *declare* their dependencies.
+Аналогично пространствам имен, модули могут содержать и код, и объявления. Основное отличие состоит в том, что модули *объявляют* свои зависимости.
 
-Modules also have a dependency on a module loader (such as CommonJs/Require.js).
-For a small JS application this might not be optimal, but for larger applications, the cost comes with long term modularity and maintainability benefits.
-Modules provide for better code reuse, stronger isolation and better tooling support for bundling.
+Модули также зависят от загрузчиков (например CommonJs/Require.js).
+Для небольшого JS-приложения такой подход может оказаться неоптимальным, но для более крупных решений усилия окупаются модульностью и удобством поддержки.
+Модули также удобнее с точки зрения повторного использования кода, более сильной изоляции и лучшей поддержки в инструментах создания пакетов.
 
-It is also worth noting that, for Node.js applications, modules are the default and the recommended approach to structure your code.
+Также стоит отметить, что для приложений Node.js модули являются основным и рекомендуемым способом структурирования кода.
 
-Starting with ECMAScript 2015, modules are native part of the language, and should be supported by all compliant engine implementations.
-Thus, for new projects modules would be the recommended code organization mechanism.
+Начиная с ECMAScript 2015, модули являются неотъемлемой частью языка и должны поддерживаться всеми совместимыми реализациями JavaScript-движков.
+Таким образом, для новых проектов модули должны быть рекомендуемым способом организации кода.
 
-# Pitfalls of Namespaces and Modules
+# Ошибки при работе с пространствами имен и модулями
 
-In this section we'll describe various common pitfalls in using namespaces and modules, and how to avoid them.
+В этой части описаны основные ловушки, в которые можно попасть при работе с модулями и пространствами имен, а также способы их обхода.
 
-## `/// <reference>`-ing a module
+## Ссылка (`/// <reference>`) на модуль
 
-A common mistake is to try to use the `/// <reference ... />` syntax to refer to a module file, rather than using an `import` statement.
-To understand the distinction, we first need to understand how compiler can locate the type information for a module based on the path of an `import` (e.g. the `...` in `import x from "...";`, `import x = require("...");`, etc.) path.
+Часто встречается ошибка, при которой для того, чтобы сослаться на файл модуля, вместо оператора `import` используется конструкция `/// <reference ... />`.
+Чтобы разобраться, в чем разница, необходимо сначала понять, как на основе пути, заданного в операторе `import` (например: `...` в `import x from "...";`, `import x = require("...");`, и т.д.) компилятор находит для модуля информацию о типах.
 
-The compiler will try to find a `.ts`, `.tsx`, and then a `.d.ts` with the appropriate path.
-If a specific file could not be found, then the compiler will look for an *ambient module declaration*.
-Recall that these need to be declared in a `.d.ts` file.
+Компилятор попытается найти `.ts`, `.tsx`, и затем `.d.ts`, используя указанный путь.
+Если определённый файл не может быть найден, компилятор начнёт искать *объявления внешних модулей* (ambient module declaration).
+Напомним, что такие модули должны быть объявлены в файле `.d.ts`.
 
 * `myModules.d.ts`
 
   ```ts
-  // In a .d.ts file or .ts file that is not a module:
+  // В файле .d.ts или в файле .ts, который не является модулем:
   declare module "SomeModule" {
       export function fn(): string;
   }
@@ -63,12 +61,12 @@ Recall that these need to be declared in a `.d.ts` file.
   import * as m from "SomeModule";
   ```
 
-The reference tag here allows us to locate the declaration file that contains the declaration for the ambient module.
-This is how the `node.d.ts` file that several of the TypeScript samples use is consumed.
+Здесь ссылочный тег позволяет найти файл, содержащий объявления внешних модулей.
+Таким образом подключается файл `node.d.ts`, используемый в нескольких примерах использования TypeScript.
 
-## Needless Namespacing
+## Использование пространств имен без необходимости
 
-If you're converting a program from namespaces to modules, it can be easy to end up with a file that looks like this:
+Если вы переводите программу с пространств имен на модули, в итоге легко прийти к файлу следующего вида:
 
 * `shapes.ts`
 
@@ -79,8 +77,8 @@ If you're converting a program from namespaces to modules, it can be easy to end
   }
   ```
 
-The top-level module here `Shapes` wraps up `Triangle` and `Square` for no reason.
-This is confusing and annoying for consumers of your module:
+В том, что модуль верхнего уровня `Shapes` "оборачивает" `Triangle` и `Square`, нет никакого смысла.
+Это сбивает с толку и раздражает пользователей вашего модуля:
 
 * `shapeConsumer.ts`
 
@@ -89,13 +87,13 @@ This is confusing and annoying for consumers of your module:
   let t = new shapes.Shapes.Triangle(); // shapes.Shapes?
   ```
 
-A key feature of modules in TypeScript is that two different modules will never contribute names to the same scope.
-Because the consumer of a module decides what name to assign it, there's no need to proactively wrap up the exported symbols in a namespace.
+Ключевой особенностью модулей в TypeScript является то, что в одной области видимости модули никогда не сливаются друг с другом.
+Поскольку пользователь модуля решает, какое имя ему назначить, нет необходимости заранее заключать экспортируемые элементы в отдельное пространство имен.
 
-To reiterate why you shouldn't try to namespace your module contents, the general idea of namespacing is to provide logical grouping of constructs and to prevent name collisions.
-Because the module file itself is already a logical grouping, and its top-level name is defined by the code that imports it, it's unnecessary to use an additional module layer for exported objects.
+Чтобы повторить, почему не следует пытаться заключать содержимое модуля в пространства имен, вспомним, что основной их идеей является обеспечение логической группировки кода и предотвращение конфликтов имен.
+А модуль сам по себе уже обеспечивает логическую группировку, и его имя верхнего уровня определяется импортирующим кодом, поэтому нет никакой необходимости использовать дополнительный уровень вложенности для экспортируемых из модуля объектов.
 
-Here's a revised example:
+Отредактированный пример:
 
 * `shapes.ts`
 
@@ -111,7 +109,7 @@ Here's a revised example:
   let t = new shapes.Triangle();
   ```
 
-## Trade-offs of Modules
+## Недостатки модулей
 
-Just as there is a one-to-one correspondence between JS files and modules, TypeScript has a one-to-one correspondence between module source files and their emitted JS files.
-One effect of this is that it's not possible to use the `--outFile` compiler switch to concatenate multiple module source files into a single JavaScript file.
+Поскольку соотношение между JS-файлами и модулями — один к одному, в TypeScript существует такое же соотношение между исходными и сгенерированными  JavaScript-файлами.
+Это проявляется в том числе в невозможности использовать опцию компилятора `--outFile` для соединения нескольких исходных файлов модулей в один JavaScript-файл.
