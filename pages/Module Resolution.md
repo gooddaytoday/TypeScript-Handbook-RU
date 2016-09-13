@@ -1,69 +1,67 @@
-> This section assumes some basic knowledge about modules.
-Please see the [Modules](./Modules.md) documentation for more information.
+﻿> Для лучшего понимания данного раздела документации необходимо знание основ работы с модулями.
+См. [modules](./Modules.md) для получения более подробной информации.
 
-*Module resolution* is the process the compiler uses to figure out what an import refers to.
-Consider an import statement like `import { a } from "moduleA"`;
-in order to check any use of `a`, the compiler needs to know exactly what it represents, and will need to check its definition `moduleA`.
+*Разрешение модулей* (Module resolution) — это используемый компилятором процесс выяснения того, на что ссылается команда импорта.
+Рассмотрим инструкцию следующего вида: `import { a } from "moduleA"`. Чтобы проверить корректность использования `a`, компилятор должен точно знать, что представляет из себя этот элемент, для чего необходимо проверить соответствующее определение - `moduleA`.
 
-At this point, the compiler will ask "what's the shape of `moduleA`?"
-While this sounds straightforward, `moduleA` could be defined in one of your own `.ts`/`.tsx` files, or in a `.d.ts` that your code depends on.
+На данном этапе компилятор должен узнать, какова форма `moduleA`.
+Пока всё кажется просто, но `moduleA` может быть определён в одном из файлов `.ts`/`.tsx` или `.d.ts`.
 
-First, the compiler will try to locate a file that represents the imported module.
-To do so the compiler follows one of two different strategies: [Classic](#classic) or [Node](#node).
-These strategies tell the compiler *where* to look for `moduleA`.
+Сначала компилятор попытается найти файл, представляющий импортируемый модуль.
+Для этого он должен выбрать одну из двух стратегий: [Classic](#classic) или [Node](#node).
+С помощью этих стратегий компилятор определяет, *где* искать `moduleA`.
 
-If that didn't work and if the module name is non-relative (and in the case of `"moduleA"`, it is), then the compiler will attempt to locate an [ambient module declaration](./Modules.md#ambient-modules).
-We'll cover non-relative imports next.
+Если найти файл не удалось, и имя модуля не относительное (как в случае `"moduleA"`), тогда компилятор попытается найти [объявление внешнего модуля (ambient module declaration)](./Modules.md#ambient-modules).
+Неотносительный импорт (non-relative imports) описан далее.
 
-Finally, if the compiler could not resolve the module, it will log an error.
-In this case, the error would be something like `error TS2307: Cannot find module 'moduleA'.`
+В итоге, если компилятор не смог разрешить модуль, он выведет ошибку вида `error TS2307: Cannot find module 'moduleA'.`
 
-## Relative vs. Non-relative module imports
+## Относительный и неотносительный импорт модулей
 
-Module imports are resolved differently based on whether the module reference is relative or non-relative.
+Импорт модуля разрешается разными способами в зависимости от того, является ли ссылка относительной или неотносительной.
 
-A *relative import* is one that starts with `/`, `./` or `../`.
-Some examples include:
+*Относительный импорт* начинается с `/`, `./` или `../`.
+Примеры:
 
 * `import Entry from "./components/Entry";`
 * `import { DefaultHeaders } from "../constants/http";`
 * `import "/mod";`
 
-Any other import is considered **non-relative**.
-Some examples include:
+Любой другой импорт считается **неотносительным**.
+Примеры:
 
 * `import * as $ from "jQuery";`
 * `import { Component } from "angular2/core";`
 
-A relative import is resolved relative to the importing file and *cannot* resolve to an ambient module declaration.
-You should use relative imports for your own modules that are guaranteed to maintain their relative location at runtime.
+Относительный импорт разрешается относительно импортируемого файла и *не может* разрешиться объявлением внешнего модуля.
+Относительный импорт лучше использовать для своих модулей, которые во время выполнения программы гарантированно находятся в указанном месте.
 
-A non-relative import can be resolved relative to `baseUrl`, or through path mapping, which we'll cover below.
-They can also resolve to [ambient module declarations](./Modules.md#ambient-modules).
-Use non-relative paths when importing any of your external dependnecies.
+Неотносительный импорт может быть разрешен относительно `baseUrl` или с помощью сопоставления путей, которое будет описано ниже.
+Он также может разрешаться [объявлениями внешних модулей](./Modules.md#ambient-modules).
+Используйте неотносительные пути при импорте любых внешних зависимостей.
 
-## Module Resolution Strategies
+## Стратегии разрешения модулей
 
-There are two possible module resolution strategies: [Node](#node) and [Classic](#classic).
-You can use the `--moduleResolution` flag to specify the module resolution strategy.
-The default if not specified is [Node](#node).
+Существует две стратегии разрешения модулей: [Node](#node) и [Classic](#classic).
+Для указания выбранной стратегии вы можете использовать флаг `--moduleResolution`.
+По умолчанию используется стратегия [Node](#node).
 
 ### Classic
 
-This used to be TypeScript's default resolution strategy.
-Nowadays, this strategy is mainly present for backward compatibility.
+Эта стратегия раньше была принята в TypeScript's по умолчанию.
+Но теперь она сохранена лишь для обратной совместимости.
 
-A relative import will be resolved relative to the importing file.
-So `import { b } from "./moduleB"` in source file `/root/src/folder/A.ts` would result in the following lookups:
+Относительный импорт будет разрешен относительно импортируемого файла.
+Таким образом, `import { b } from "./moduleB"` в исходном файле `/root/src/folder/A.ts` приведет к поиску следующих файлов:
 
 1. `/root/src/folder/moduleB.ts`
 2. `/root/src/folder/moduleB.d.ts`
 
-For non-relative module imports, however, the compiler walks up the directory tree starting with the directory containing the importing file, trying to locate a matching definition file.
+При неотносительном импорте модулей, компилятор, пытаясь найти подходящий файл определений, пройдет по дереву каталогов, начиная с директории, содержащей импортирующий файл.
 
-For example:
+Например:
 
-A non-relative import to `moduleB` such as `import { b } from "moduleB"`, in a source file `/root/src/folder/A.ts`, would result in attempting the following locations for locating `"moduleB"`:
+Неотносительный импорт из `moduleB`, такой как `import { b } from "moduleB"`, расположенный в файле с исходным кодом `/root/src/folder/A.ts`, приведет к поиску `"moduleB"` в следующих местах:
 
 1. `/root/src/folder/moduleB.ts`
 2. `/root/src/folder/moduleB.d.ts`
@@ -76,78 +74,77 @@ A non-relative import to `moduleB` such as `import { b } from "moduleB"`, in a s
 
 ### Node
 
-This resolution strategy attempts to mimic the [Node.js](https://nodejs.org/) module resolution mechanism at runtime.
-The full Node.js resolution algorithm is outlined in [Node.js module documentation](https://nodejs.org/api/modules.html#modules_all_together).
+Эта стратегия копирует поведение работающего динамически механизма разрешения модулей [Node.js](https://nodejs.org/).
+См. полное описание алгоритма разрешения Node.js в [документации по модулям Node.js](https://nodejs.org/api/modules.html#modules_all_together).
 
-#### How Node.js resolves modules
+#### Как Node.js разрешает модули
 
-To understand what steps the TS compiler will follow, it is important to shed some light on Node.js modules.
-Traditionally, imports in Node.js are performed by calling a function named `require`.
-The behavior Node.js takes will differ depending on if `require` is given a relative path or a non-relative path.
+Чтобы понять, каким путем пойдет компилятор TS, важно немного разобраться в модулях Node.js.
+Импорт в Node.js выполняется с помощью вызова функции `require`.
+Node.js будет действовать по-разному в зависимости от того, указан ли в  `require` относительный или неотносительный путь.
 
-Relative paths are fairly straightforward.
-As an example, let's consider a file located at `/root/src/moduleA.js`, which contains the import `var x = require("./moduleB");`
-Node.js resolves that import in the following order:
+Использование относительных путей обычно не вызывает затруднений.
+Для примера давайте рассмотрим файл `/root/src/moduleA.js`, в котором есть следующая инструкция иморта `var x = require("./moduleB");`
+Node.js разрешает этот импорт в таком порядке:
 
-1. As the file named `/root/src/moduleB.js`, if it exists.
+1. Как файл с именем `/root/src/moduleB.js`, если он существует.
 
-2. As the folder `/root/src/moduleB` if it contains a file named `package.json` that specifies a `"main"` module.
-   In our example, if Node.js found the file `/root/src/moduleB/package.json` containing `{ "main": "lib/mainModule.js" }`, then Node.js will refer to `/root/src/moduleB/lib/mainModule.js`.
+2. Как каталог `/root/src/moduleB`, если в нём есть файл `package.json`, который определяет модуль `"main"`.
+   В нашем примере, если Node.js нашла файл `/root/src/moduleB/package.json`, содержащий `{ "main": "lib/mainModule.js" }`, тогда она сошлётся на `/root/src/moduleB/lib/mainModule.js`.
 
-3. As the folder `/root/src/moduleB` if it contains a file named `index.js`.
-   That file is implicitly considered that folder's "main" module.
+3. Если каталог `/root/src/moduleB` содержит файл с именем `index.js`, по умолчанию считается, что он является main-модулем данного каталога.
 
-You can read more about this in Node.js documentation on [file modules](https://nodejs.org/api/modules.html#modules_file_modules) and [folder modules](https://nodejs.org/api/modules.html#modules_folders_as_modules).
+Вы можете найти дополнительную информацию в документации по Node.js: [file modules](https://nodejs.org/api/modules.html#modules_file_modules) и [folder modules](https://nodejs.org/api/modules.html#modules_folders_as_modules).
 
-However, resolution for a [non-relative module name](#relative-vs-non-relative-module-imports) is performed differently.
-Node will look for your modules in special folders named `node_modules`.
-A `node_modules` folder can be on the same level as the current file, or higher up in the directory chain.
-Node will walk up the directory chain, looking through each `node_modules` until it finds the module you tried to load.
+Однако, разрешение [неотносительных имен модулей](#relative-vs-non-relative-module-imports) выполняется иным способом.
+Node будет искать ваши модули в специальном каталоге, называемом `node_modules`.
+Он может быть на том же уровне иерархии каталогов, что и текущий файл, или выше.
+Node пойдет вверх по цепочке каталогов, просматривая каждый `node_modules`, пока не найдет модуль, который вы пытались загрузить.
 
-Following up our example above, consider if `/root/src/moduleA.js` instead used a non-relative path and had the import `var x = require("moduleB");`.
-Node would then try to resolve `moduleB` to each of the locations until one worked.
+Продолжая рассматривать наш пример, предположим, что в `/root/src/moduleA.js` использовался неотносительный путь, и команда импорта выглядела следующим образом: `var x = require("moduleB");`.
+Node попытается разрешить `moduleB` в один из следующих путей и остановится на первом подходящем.
 
 1. `/root/src/node_modules/moduleB.js`
-2. `/root/src/node_modules/moduleB/package.json` (if it specifies a `"main"` property)
+2. `/root/src/node_modules/moduleB/package.json` (если он определяет свойство `"main"`)
 3. `/root/src/node_modules/moduleB/index.js`
    <br /><br />
 4. `/root/node_modules/moduleB.js`
-5. `/root/node_modules/moduleB/package.json` (if it specifies a `"main"` property)
+5. `/root/node_modules/moduleB/package.json` (если он определяет свойство `"main"`)
 6. `/root/node_modules/moduleB/index.js`
    <br /><br />
 7. `/node_modules/moduleB.js`
-8. `/node_modules/moduleB/package.json` (if it specifies a `"main"` property)
+8. `/node_modules/moduleB/package.json` (если он определяет свойство `"main"`)
 9. `/node_modules/moduleB/index.js`
 
-Notice that Node.js jumped up a directory in steps (4) and (7).
+Заметьте, что Node.js поднялась на один уровень на шагах (4) и (7).
 
-You can read more about the process in Node.js documentation on [loading modules from `node_modules`](https://nodejs.org/api/modules.html#modules_loading_from_node_modules_folders).
+Вы можете найти дополнительную информацию в документации по Node.js в разделе  [загрузка модулей из `node_modules`](https://nodejs.org/api/modules.html#modules_loading_from_node_modules_folders).
 
-#### How TypeScript resolves modules
+#### Как TypeScript разрешает модули
 
-TypeScript will mimic the Node.js run-time resolution strategy in order to locate definition files for modules at compile-time.
-To accomplish this, TypeScript overlays the TypeScript source file extensions (`.ts`, `.tsx`, and `.d.ts`) over the Node's resolution logic.
-TypeScript will also use a field in `package.json` named `"typings"` to mirror the purpose of `"main"` - the compiler will use it to find the "main" definition file to consult.
+TypeScript копирует стратегию динамического разрешения модулей в Node.js с целью поиска файлов с определениями модулей во время компиляции.
+С этой целью TypeScript применяет логику Node.js для работы с собственными типами файлов `.ts`, `.tsx` и `.d.ts`.
+TypeScript также использует поле `"typings"` в `package.json`, чтобы отразить назначение `"main"` - указание компилятору, где находится "основной" файл определений ("main" definition file).
 
-For example, an import statement like `import { b } from "./moduleB"` in  `/root/src/moduleA.ts` would result in attempting the following locations for locating `"./moduleB"`:
+Например, команда импорта `import { b } from "./moduleB"` в  `/root/src/moduleA.ts` приведёт к поиску `"./moduleB"` в следующих местах:
 
 1. `/root/src/moduleB.ts`
 2. `/root/src/moduleB.tsx`
 3. `/root/src/moduleB.d.ts`
-4. `/root/src/moduleB/package.json` (if it specifies a `"typings"` property)
+4. `/root/src/moduleB/package.json` (если он определяет свойство `"typings"`)
 5. `/root/src/moduleB/index.ts`
 6. `/root/src/moduleB/index.tsx`
 7. `/root/src/moduleB/index.d.ts`
 
-Recall that Node.js looked for a file named `moduleB.js`, then an applicable `package.json`, and then for an `index.js`.
+Напомним, что Node.js пыталась найти файл `moduleB.js`, затем подходящий `package.json`, а после `index.js`.
 
-Similarly a non-relative import will follow the Node.js resolution logic, first looking up a file, then looking up an applicable folder.
-So `import { b } from "moduleB"` in source file `/src/moduleA.ts` would result in the following lookups:
+Неотносительный импорт будет следовать логике разрешения модулей Node.js, сначала пытаясь найти файл, а затем подходящую директорию.
+Таким образом, `import { b } from "moduleB"` в файле с исходным кодом `/src/moduleA.ts` приведёт к поиску в следующих местах:
 
 1. `/root/src/node_modules/moduleB.ts`
 2. `/root/src/node_modules/moduleB.tsx`
 3. `/root/src/node_modules/moduleB.d.ts`
-4. `/root/src/node_modules/moduleB/package.json` (if it specifies a `"typings"` property)
+4. `/root/src/node_modules/moduleB/package.json` (если он определяет свойство `"typings"`)
 5. `/root/src/node_modules/moduleB/index.ts`
 6. `/root/src/node_modules/moduleB/index.tsx`
 7. `/root/src/node_modules/moduleB/index.d.ts`
@@ -155,7 +152,7 @@ So `import { b } from "moduleB"` in source file `/src/moduleA.ts` would result i
 8. `/root/node_modules/moduleB.ts`
 9. `/root/node_modules/moduleB.tsx`
 10. `/root/node_modules/moduleB.d.ts`
-11. `/root/node_modules/moduleB/package.json` (if it specifies a `"typings"` property)
+11. `/root/node_modules/moduleB/package.json` (если он определяет свойство `"typings"`)
 12. `/root/node_modules/moduleB/index.ts`
 13. `/root/node_modules/moduleB/index.tsx`
 14. `/root/node_modules/moduleB/index.d.ts`
@@ -163,52 +160,52 @@ So `import { b } from "moduleB"` in source file `/src/moduleA.ts` would result i
 15. `/node_modules/moduleB.ts`
 16. `/node_modules/moduleB.tsx`
 17. `/node_modules/moduleB.d.ts`
-18. `/node_modules/moduleB/package.json` (if it specifies a `"typings"` property)
+18. `/node_modules/moduleB/package.json` (если он определяет свойство `"typings"`)
 19. `/node_modules/moduleB/index.ts`
 20. `/node_modules/moduleB/index.tsx`
 21. `/node_modules/moduleB/index.d.ts`
 
-Don't be intimidated by the number of steps here - TypeScript is still only jumping up directories twice at steps (8) and (15).
-This is really no more complex than what Node.js itself is doing.
+Не пугайтесь большого количества пунктов - TypeScript также перешёл на уровень вверх лишь дважды: на шагах (8) и (15).
+На самом деле это не сложнее того, что делает Node.js.
 
-## Additional module resolution flags
+## Дополнительные флаги системы разрешения модулей
 
-A project source layout sometimes does not match that of the output.
-Usually a set of build steps result in generating the final output.
-These include compiling `.ts` files into `.js`, and copying dependencies from different source locations to a single output location.
-The net result is that modules at runtime may have different names than the source files containing their definitions.
-Or module paths in the final output may not match their corresponding source file paths at compile time.
+Исходная структура проекта не всегда соответствует тому, что получается на выходе.
+Обычно для достижения результата нужно несколько шагов.
+Это и компиляция файлов `.ts` в `.js`, и копирование зависимостей из различных источников в один выходной файл.
+В итоге получается, что модули в процессе выполнения могут иметь имена, отличные от имен исходных файлов с их определениями.
+Пути модулей в итоговом выводе также могут отличаться от соответствующих первоначальных путей на этапе компиляции.
 
-The TypeScript compiler has a set of additional flags to *inform* the compiler of transformations that are expected to happen to the sources to generate the final output.
+В TypeScript есть набор дополнительных флагов, с помощью которых можно *сообщить* компилятору о тех трансформациях, которые должны произойти с исходниками, чтобы сгенерировать итоговый вывод.
 
-It is important to note that the compiler will *not* perform any of these transformations;
-it just uses these pieces of information to guide the process of resolving a module import to its definition file.
+Важно отметить, что компилятор *не* будет выполнять эти трансформации. Он лишь
+использует полученную информацию, чтобы выполнить процесс разрешения импорта модуля в его файл определения.
 
 ### Base URL
 
-Using a `baseUrl` is a common practice in applications using AMD module loaders where modules are "deployed" to a single folder at run-time.
-The sources of these modules can live in different directories, but a build script will put them all together.
+`baseUrl` часто используется в приложениях, использующих загрузчик модулей AMD, где модули динамически "разворачиваются" в одном каталоге.
+Исходные файлы этих модулей могут находиться в разных местах, но скрипт сборки поместит их все в одну директорию.
 
-Setting `baseUrl` informs the compiler where to find modules.
-All module imports with non-relative names are assumed to be relative to the `baseUrl`.
+Установка `baseUrl` сообщает компилятору о том, где искать модули.
+Все команды импорта модулей с неотносительными именами считаются относительными `baseUrl`.
 
-Value of *baseUrl* is determined as either:
+Значение *baseUrl* определяется как одно из:
 
-* value of *baseUrl* command line argument (if given path is relative, it is computed based on current directory)
-* value of *baseUrl* property in 'tsconfig.json' (if given path is relative, it is computed based on the location of 'tsconfig.json')
+* значение аргумента командной строки *baseUrl* (если передан относительный путь, он рассчитывается относительно текущей директории)
+* значение свойства *baseUrl* в 'tsconfig.json' (если передан относительный путь, он рассчитывается на основе расположения 'tsconfig.json')
 
-Note that relative module imports are not impacted by setting the baseUrl, as they are always resolved relative to their importing files.
+Заметьте, что установка baseUrl не влияет на команды относительного импорта модулей, так как они всегда разрешаются относительно импортирующих файлов.
 
-You can find more documentation on baseUrl in [RequireJS](http://requirejs.org/docs/api.html#config-baseUrl) and [SystemJS](https://github.com/systemjs/systemjs/blob/master/docs/overview.md#baseurl) documentation.
+См. дополнительную информацию о baseUrl в документации по [RequireJS](http://requirejs.org/docs/api.html#config-baseUrl) and [SystemJS](https://github.com/systemjs/systemjs/blob/master/docs/overview.md#baseurl).
 
-### Path mapping
+### Сопоставление путей
 
-Sometimes modules are not directly located under *baseUrl*.
-For instance, an import to a module `"jquery"` would be translated at runtime to `"node_modules\jquery\dist\jquery.slim.min.js"`.
-Loaders use a mapping configuration to map module names to files at run-time, see [RequireJs documentation](http://requirejs.org/docs/api.html#config-paths) and [SystemJS documentation](https://github.com/systemjs/systemjs/blob/master/docs/overview.md#map-config).
+Иногда модули не находятся прямо под *baseUrl*.
+Например, команда импорта модуля `"jquery"` во время выполнения будет преобразована к `"node_modules\jquery\dist\jquery.slim.min.js"`.
+Загрузчики используют конфигурацию сопоставления путей, чтобы динамически установить соответствие имен модулей и соответствующих файлов, см. документацию по [RequireJs](http://requirejs.org/docs/api.html#config-paths) и [SystemJS](https://github.com/systemjs/systemjs/blob/master/docs/overview.md#map-config).
 
-The TypeScript compiler supports the declaration of such mappings using `"paths"` property in `tsconfig.json` files.
-Here is an example for how to specify the `"paths"` property for `jquery`.
+Компилятор TypeScript поддерживает объявление подобных сопоставлений в свойстве `"paths"` файла `tsconfig.json`.
+Вот пример того, как можно указать свойство `"paths"` для `jquery`.
 
 ```json
 {
@@ -219,15 +216,15 @@ Here is an example for how to specify the `"paths"` property for `jquery`.
 }
 ```
 
-Using `"paths"` also allow for more sophisticated mappings including multiple fall back locations.
-Consider a project configuration where only some modules are available in one location, and the rest are in another.
-A build step would put them all together in one place.
-The project layout may look like:
+Свойство `"paths"` позволяет использовать более сложные методы сопоставления, включая множественные резервные пути.
+Давайте рассмотрим конфигурацию, в которой в одном расположении доступны лишь некоторые модули, оставшиеся же находятся в другом.
+При сборке все эти модули будут помещены в одно место.
+Схема проекта может выглядеть следующим образом:
 
 ```tree
 projectRoot
 ├── folder1
-│   ├── file1.ts (imports 'folder1/file2' and 'folder2/file3')
+│   ├── file1.ts (импортирует 'folder1/file2' и 'folder2/file3')
 │   └── file2.ts
 ├── generated
 │   ├── folder1
@@ -236,7 +233,7 @@ projectRoot
 └── tsconfig.json
 ```
 
-The corresponding `tsconfig.json` would look like:
+Соответствующий `tsconfig.json` будет выглядеть следующим образом:
 
 ```json
 {
@@ -252,57 +249,57 @@ The corresponding `tsconfig.json` would look like:
 }
 ```
 
-This tells the compiler for any module import that matches the pattern `"*"` (i.e. all values), to look in two locations:
+Таким образом мы сообщаем компилятору, что для каждого модуля, инструкция импорта которого соответствует шаблону `"*"` (то есть любые значения), он должен выполнить поиск в двух местах:
 
- 1. `"*"`: meaning the same name unchanged, so map `<moduleName>` => `<baseUrl>\<moduleName>`
- 2. `"generated\*"` meaning the module name with an appended prefix "generated", so map `<moduleName>` => `<baseUrl>\generated\<moduleName>`
+ 1. `"*"`: означающее то же самое имя без изменений, поэтому сопоставляем `<moduleName>` => `<baseUrl>\<moduleName>`
+ 2. `"generated\*"` означающее имя модуля с добавленным префиксом "generated", поэтому сопоставляем `<moduleName>` => `<baseUrl>\generated\<moduleName>`
 
-Following this logic, the compiler will attempt to resolve the two imports as such:
+Следуя этой логике, компилятор попытается разрешить указанные инструкции импорта следующим образом:
 
 * import 'folder1/file2'
-  1. pattern '*' is matched and wildcard captures the whole module name
-  2. try first substitution in the list: '*' -> `folder1/file2`
-  3. result of substitution is relative name - combine it with *baseUrl* -> `projectRoot/folder1/file2.ts`.
-  4. File exists. Done.
+  1. есть соответствие шаблону '*', под который подпадает имя модуля целиком;
+  2. пробуем первую замену по списку: '*' -> `folder1/file2`;
+  3. результатом замены является относительное имя, соединяем его с *baseUrl* -> `projectRoot/folder1/file2.ts`;
+  4. Файл существует. Готово.
 * import 'folder2/file3'
-  1. pattern '*' is matched and wildcard captures the whole module name
-  2. try first substitution in the list: '*' -> `folder2/file3`
-  3. result of substitution is relative name - combine it with *baseUrl* -> `projectRoot/folder2/file3.ts`.
-  4. File does not exist, move to the second substitution
-  5. second substitution 'generated/*' -> `generated/folder2/file3`
-  6. result of substitution is relative name - combine it with *baseUrl* -> `projectRoot/generated/folder2/file3.ts`.
-  7. File exists. Done.
+  1. есть соответствие шаблону '*', под который подпадает имя модуля целиком;
+  2. пробуем первую замену по списку: '*' -> `folder2/file3`
+  3. результатом замены является относительное имя, соединяем его с *baseUrl* -> `projectRoot/folder2/file3.ts`.
+  4. Файл не существует, переходим к следующей замене
+  5. вторая замена 'generated/*' -> `generated/folder2/file3`
+  6. результатом замены является относительное имя, соединяем его с *baseUrl* -> `projectRoot/generated/folder2/file3.ts`.
+  7. Файл существует. Готово.
 
-### Virtual Directories with `rootDirs`
+### Виртуальные каталоги с `rootDirs`
 
-Sometimes the project sources from multiple directories at compile time are all combined to generate a single output directory.
-This can be viewed as a set of source directories create a "virtual" directory.
+Исходные файлы проекта, находящиеся в разных каталогах, иногда объединяются на этапе компиляции, чтобы сгенерировать единственный выходной каталог.
+Это можно рассматривать как создание из набора исходных каталогов одного "виртуального" каталога.
 
-Using 'rootDirs', you can inform the compiler of the *roots* making up this "virtual" directory;
-and thus the compiler can resolve relative modules imports within these "virtual" directories *as if* were merged together in one directory.
+Используя 'rootDirs', можно сообщить компилятору о *корневых каталогоах* (roots), составляющих этот "виртуальный" каталог,
+давая возможность компилятору разрешить команды относительного импорта модулей в пределах этих "виртуальных" каталогов, *как если бы* они были объединены в один каталог.
 
-For example consider this project structure:
+Для примера давайте рассмотрим следующую структуру проекта:
 
 ```tree
  src
  └── views
-     └── view1.ts (imports './template1')
+     └── view1.ts (импортирует './template1')
      └── view2.ts
 
  generated
  └── templates
          └── views
-             └── template1.ts (imports './view2')
+             └── template1.ts (импортирует './view2')
 ```
 
-Files in `src/views` are user code for some UI controls.
-Files in `generated/templates` are UI template binding code auto-generated by a template generator as part of the build.
-A build step will copy the files in `/src/views` and `/generated/templates/views` to the same directory in the output.
-At run-time, a view can expect its template to exist next to it, and thus should import it using a relative name as `"./template"`.
+В `src/views` находятся файлы с пользовательским кодом для элементов UI.
+Файлы в `generated/templates` содержат код связывания шаблонов пользовательского интерфейса, автоматически сгенерированный генератором шаблонов как часть сборки.
+На одном из шагов сборки файлы из `/src/views` и `/generated/templates/views` будут скопированы в такие же директории в выходной структуре проекта.
+Представление (view) во время выполнения программы ожидает, что её шаблон находится рядом, и его можно импортировать с помощью относительного пути `"./template"`.
 
-To specify this relationship to the compiler, use`"rootDirs"`.
-`"rootDirs"` specify a list of *roots* whose contents are expected to merge at run-time.
-So following our example, the `tsconfig.json` file should look like:
+Чтобы указать компилятору на эту связь, используйте `"rootDirs"`.
+`"rootDirs"` определяет список *корневых директорий* (roots), чьё содержимое необходимо объединить динамически.
+Продолжая наш пример, файл `tsconfig.json` должен выглядеть следующим образом:
 
 ```json
 {
@@ -315,16 +312,16 @@ So following our example, the `tsconfig.json` file should look like:
 }
 ```
 
-Every time the compiler sees a relative module import in a subfolder of one of the `rootDirs`, it will attempt to look for this import in each of the entries of `rootDirs`.
+Каждый раз, когда компилятор встречает относительный импорт модуля в подкаталоге одного из `rootDirs`, он пытается найти этот импорт в записях `rootDirs`.
 
-## Tracing module resolution
+## Отслеживание разрешения модулей
 
-As discussed earlier, the compiler can visit files outside the current folder when resolving a module.
-This can be hard when diagnosing why a module is not resolved, or is resolved to an incorrect definition.
-Enabling the compiler module resolution tracing using `--traceResolution` provides insight in what happened during the module resolution process.
+Как упоминалось ранее, компилятор имеет возможность выходить за пределы текущей директории при разрешении модулей.
+Такое поведение может затруднять диагностику причин, по которым модуль не был разрешен или был разрешен неверно.
+Чтобы получить представление о том, как проходит процесс разрешения модулей, можно воспользоваться ключом компилятора `--traceResolution`.
 
-Let's say we have a sample application that uses the `typescript` module.
-`app.ts` has an import like `import * as ts from "typescript"`.
+Предположим, что у нас есть простое приложение, использующее модуль `typescript`.
+В `app.ts` находится инструкция импорта `import * as ts from "typescript"`.
 
 ```tree
 │   tsconfig.json
@@ -336,13 +333,13 @@ Let's say we have a sample application that uses the `typescript` module.
         app.ts
 ```
 
-Invoking the compiler with `--traceResolution`
+Вызываем компилятор с опцией `--traceResolution`
 
 ```shell
 tsc --traceResolution
 ```
 
-Results in an output as such:
+Результаты вывода:
 
 ```txt
 ======== Resolving module 'typescript' from 'src/app.ts'. ========
@@ -361,60 +358,60 @@ File 'node_modules/typescript/lib/typescript.d.ts' exist - use it as a module re
 ======== Module name 'typescript' was successfully resolved to 'node_modules/typescript/lib/typescript.d.ts'. ========
 ```
 
-#### Things to look out for
+#### Что искать в трассировке
 
-* Name and location of the import
+* Имя и расположение инструкции импорта
 
  > ======== Resolving module **'typescript'** from **'src/app.ts'**. ========
 
-* The strategy the compiler is following
+* Стратегию, которой придерживается компилятор
 
  > Module resolution kind is not specified, using **'NodeJs'**.
 
-* Loading of typings from npm packages
+* Загрузку объявлений типов (typings) из npm-пакетов
 
  > 'package.json' has **'typings'** field './lib/typescript.d.ts' that references 'node_modules/typescript/lib/typescript.d.ts'.
 
-* Final result
+* Конечный результат
 
  > ======== Module name 'typescript' was **successfully resolved** to 'node_modules/typescript/lib/typescript.d.ts'. ========
 
-## Using `--noResolve`
+## Использование `--noResolve`
 
-Normally the compiler will attempt to resolve all module imports before it starts the compilation process.
-Every time it successfully resolves an `import` to a file, the file is added to the set of files the compiler will process later on.
+Обычно компилятор пытается разрешить все инструкции импорта модулей до начала процесса компиляции.
+Каждый раз, когда он успешно разрешает `import` в файл, этот файл добавляется в набор файлов, который компилятор обработает позже.
 
-The `--noResolve` compiler options instructs the compiler not to "add" any files to the compilation that were not passed on the command line.
-It will still try to resolve the module to files, but if the file as not specified, it will not be included.
+Опция `--noResolve` говорит компилятору не "добавлять" в компиляцию файлы, которые не были явно указаны в командной строке.
+Компилятор всё равно попытается разрешить модули в файлы, но не включит в сборку те, которые не были явно указаны.
 
-For instance:
+Например:
 
 #### app.ts
 
 ```ts
-import * as A from "moduleA" // OK, 'moduleA' passed on the command-line
-import * as B from "moduleB" // Error TS2307: Cannot find module 'moduleB'.
+import * as A from "moduleA" // OK, 'moduleA' был передан в командной строке
+import * as B from "moduleB" // Ошибка TS2307: Cannot find module 'moduleB'.
 ```
 
 ```shell
 tsc app.ts moduleA.ts --noResolve
 ```
 
-Compiling `app.ts` using `--noResolve` should result in:
+Компиляция `app.ts` с использованием `--noResolve` приведет к следующим результатам:
 
-* Correctly finding `moduleA` as it was passed on the command-line.
-* Error for not finding `moduleB` as it was not passed.
+* `moduleA` будет успешно найдено, поскольку было передано в командной строке.
+* Поиск `moduleB` завершится ошибкой, так как его не было в командной строке.
 
-## Common Questions
+## Общие вопросы
 
-### Why does a module in the exclude list still get picked up by the compiler?
+### Почему модуль, находящийся в списке исключенных, тем не менее используется компилятором?
 
-`tsconfig.json` turns a folder into a “project”.
-Without specifying any `“exclude”` or `“files”` entries, all files in the folder containing the `tsconfig.json` and all its sub-directories are included in your compilation.
-If you want to exclude some of the files use `“exclude”`, if you would rather specify all the files instead of letting the compiler look them up, use `“files”`.
+`tsconfig.json` преобразует каталог в “проект”.
+Без указания пунктов `“exclude”` или `“files”` в сборку включаются все файлы в каталоге, содержащем `tsconfig.json`, а также в его подкаталогах.
+Для исключения некоторых файлов, используйте `“exclude”`. Используйте `“files”`, если удобнее явно указать все файлы, вместо того чтобы давать возможность компилятору искать их самостоятельно.
 
-That was `tsconfig.json` automatic inclusion.
-That does not embed module resolution as discussed above.
-If the compiler identified a file as a target of a module import, it will be included in the compilation regardless if it was excluded in the previous steps.
+Здесь мы говорили об автоматическом включении с `tsconfig.json`.
+Согласно обсуждавшемуся выше, это правило не охватывает разрешение модулей.
+Если компилятор определит, что какой-либо файл является целевым для импорта модуля, этот файл будет включен в сборку независимо от того, был ли он исключен на предыдущих шагах.
 
-So to exclude a file from the compilation, you need to exclude it and **all** files that have an `import` or `/// <reference path="..." />` directive to it.
+Таким образом, чтобы исключить файл из сборки, необходимо исключить его самого и  **все** файлы, в которых есть команды `import` или `/// <reference path="..." />`, ссылающиеся на него.
