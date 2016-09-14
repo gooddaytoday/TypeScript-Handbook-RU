@@ -1,77 +1,77 @@
-## Compiler Options
+## Опции компилятора
 
-Option                                         | Type      | Default                        | Description
+Опция                                          | Тип       | Значение по умолчанию          | Описание
 -----------------------------------------------|-----------|--------------------------------|----------------------------------------------------------------------
-`--allowJs`                                    | `boolean` | `true`                         | Allow JavaScript files to be compiled.
-`--allowSyntheticDefaultImports`               | `boolean` | `module === "system"`          | Allow default imports from modules with no default export. This does not affect code emit, just typechecking.
-`--allowUnreachableCode`                       | `boolean` | `false`                        | Do not report errors on unreachable code.
-`--allowUnusedLabels`                          | `boolean` | `false`                        | Do not report errors on unused labels.
-`--baseUrl`                                    | `string`  |                                | Base directory to resolve non-relative module names. See [Module Resolution documentation](./Module Resolution.md#base-url) for more details.
-`--charset`                                    | `string`  | `"utf8"`                       | The character set of the input files.
-`--declaration`<br/>`-d`                       | `boolean` | `false`                        | Generates corresponding '.d.ts' file.
-`--declarationDir`                             | `string`  |                                | Output directory for generated declaration files.
-`--diagnostics`                                | `boolean` | `false`                        | Show diagnostic information.
-`--disableSizeLimit`                           | `boolean` | `false`                        | Disable size limitation on JavaScript project.
-`--emitBOM`                                    | `boolean` | `false`                        | Emit a UTF-8 Byte Order Mark (BOM) in the beginning of output files.
-`--emitDecoratorMetadata`<sup>[1]</sup>        | `boolean` | `false`                        | Emit design-type metadata for decorated declarations in source. See [issue #2577](https://github.com/Microsoft/TypeScript/issues/2577) for details.
-`--experimentalDecorators`<sup>[1]</sup>       | `boolean` | `false`                        | Enables experimental support for ES7 decorators.
-`--forceConsistentCasingInFileNames`           | `boolean` | `false`                        | Disallow inconsistently-cased references to the same file.
-`--help`<br/>`-h`                              |           |                                | Print help message.
-`--inlineSourceMap`                            | `boolean` | `false`                        | Emit a single file with source maps instead of having a separate file.
-`--inlineSources`                              | `boolean` | `false`                        | Emit the source alongside the sourcemaps within a single file; requires `--inlineSourceMap` or `--sourceMap` to be set.
-`--init`                                       |           |                                | Initializes a TypeScript project and creates a `tsconfig.json` file.
-`--isolatedModules`                            | `boolean` | `false`                        | Unconditionally emit imports for unresolved files.
-`--jsx`                                        | `string`  | `"Preserve"`                   | Support JSX in '.tsx' files: `'React'` or `'Preserve'`. See [JSX](./JSX.md).
-`--lib`                                        | `string[]`|                                | List of library files to be included in the compilation.</br>Possible values are:  <br/>► `es5` <br/>► `es6` <br/>► `es2015` <br/>► `es7` <br/>► `es2016` <br/>► `es2017` `dom` `webworker` `scripthost` <br/>► `es2015.core` <br/>► `es2015.collection` <br/>► `es2015.generator` <br/>► `es2015.iterable` <br/>► `es2015.promise` <br/>► `es2015.proxy` <br/>► `es2015.reflect` <br/>► `es2015.symbol` <br/>► `es2015.symbol.wellknown` <br/>► `es2016.array.include` <br/>► `es2017.object` <br/>► `es2017.sharedmemory`
-`--listEmittedFiles`                           | `boolean` | `false`                        | Print names of generated files part of the compilation.
-`--listFiles`                                  | `boolean` | `false`                        | Print names of files part of the compilation.
-`--locale`                                     | `string`  | *(platform specific)*          | The locale to use to show error messages, e.g. en-us.
-`--mapRoot`                                    | `string`  |                                | Specifies the location where debugger should locate map files instead of generated locations. Use this flag if the .map files will be located at run-time in a different location than the .js files. The location specified will be embedded in the sourceMap to direct the debugger where the map files will be located.
-`--module`<br/>`-m`                            | `string`  | `target === 'ES6' ? 'ES6' : 'commonjs'`   | Specify module code generation: `'none'`, `'commonjs'`, `'amd'`, `'system'`, `'umd'`, `'es6'`, or `'es2015'`.<br/>► Only `'amd'` and `'system'` can be used in conjunction with `--outFile`.<br/>► `'es6'` and `'es2015'` values may not be used when targeting ES5 or lower.
-`--moduleResolution`                           | `string`  | `module === 'amd' | 'system' | 'ES6' ?  'classic' : 'node'`                    | Determine how modules get resolved. Either `'node'` for Node.js/io.js style resolution, or `'classic'`. See [Module Resolution documentation](./Module Resolution.md) for more details.
-`--newLine`                                    | `string`  | *(platform specific)*          | Use the specified end of line sequence to be used when emitting files: `'crlf'` (windows) or `'lf'` (unix)."
-`--noEmit`                                     | `boolean` | `false`                        | Do not emit outputs.
-`--noEmitHelpers`                              | `boolean` | `false`                        | Do not generate custom helper functions like `__extends` in compiled output.
-`--noEmitOnError`                              | `boolean` | `false`                        | Do not emit outputs if any errors were reported.
-`--noFallthroughCasesInSwitch`                 | `boolean` | `false`                        | Report errors for fallthrough cases in switch statement.
-`--noImplicitAny`                              | `boolean` | `false`                        | Raise error on expressions and declarations with an implied 'any' type.
-`--noImplicitReturns`                          | `boolean` | `false`                        | Report error when not all code paths in function return a value.
-`--noImplicitThis`                             | `boolean` | `false`                        | Raise error on `this` expressions with an implied 'any' type.
-`--noImplicitUseStrict`                        | `boolean` | `false`                        | Do not emit `"use strict"` directives in module output.
-`--noLib`                                      | `boolean` | `false`                        | Do not include the default library file (lib.d.ts).
-`--noResolve`                                  | `boolean` | `false`                        | Do not add triple-slash references or module import targets to the list of compiled files.
-`--noUnusedLocals`                             | `boolean` | `false`                        | Report errors on unused locals.
-`--noUnusedParameters`                         | `boolean` | `false`                        | Report errors on unused parameters.
-~~`--out`~~                                    | `string`  |                                | DEPRECATED. Use `--outFile` instead.
-`--outDir`                                     | `string`  |                                | Redirect output structure to the directory.
-`--outFile`                                    | `string`  |                                | Concatenate and emit output to single file. The order of concatenation is determined by the list of files passed to the compiler on the command line along with triple-slash references and imports. See output file order documentation for more details.
-`paths`<sup>[2]</sup>                          | `Object`  |                                | List of path mapping entries for module names to locations relative to the `baseUrl`. See [Module Resolution documentation](./Module Resolution.md#path-mapping) for more details.
-`--preserveConstEnums`                         | `boolean` | `false`                        | Do not erase const enum declarations in generated code. See [const enums documentation](https://github.com/Microsoft/TypeScript/blob/master/doc/spec.md#94-constant-enum-declarations) for more details.
-`--pretty`<sup>[1]</sup>                       | `boolean` | `false`                        | Stylize errors and messages using color and context.
-`--project`<br/>`-p`                           | `string`  |                                | Compile a project given a valid configuration file.<br/>The argument can be an file path to a valid JSON configuration file, or a directory path to a directory containing a `tsconfig.json` file.<br/>See [tsconfig.json](./tsconfig.json.md) documentation for more details.
-`--reactNamespace`                             | `string`  | `"React"`                      | Specifies the object invoked for `createElement` and `__spread` when targeting 'react' JSX emit.
-`--removeComments`                             | `boolean` | `false`                        | Remove all comments except copy-right header comments beginning with `/*!`
-`--rootDir`                                    | `string`  | *(common root directory is computed from the list of input files)*   | Specifies the root directory of input files. Only use to control the output directory structure with `--outDir`.
-`rootDirs`<sup>[2]</sup>                       | `string[]`|                                | List of <i>root</i> folders whose combined content represent the structure of the project at runtime. See [Module Resolution documentation](./Module Resolution.md#virtual-directories-with-rootdirs) for more details.
-`--skipLibCheck`                               | `boolean` | `false`                        | Don't check a the default library (`lib.d.ts`) file's valitidy.
-`--skipDefaultLibCheck`                        | `boolean` | `false`                        | Don't check a user-defined default library (`*.d.ts`) file's valitidy.
-`--sourceMap`                                  | `boolean` | `false`                        | Generates corresponding '.map' file.
-`--sourceRoot`                                 | `string`  |                                | Specifies the location where debugger should locate TypeScript files instead of source locations. Use this flag if the sources will be located at run-time in a different location than that at design-time. The location specified will be embedded in the sourceMap to direct the debugger where the source files will be located.
-`--strictNullChecks`                           | `boolean` | `false`                        | In strict null checking mode, the `null` and `undefined` values are not in the domain of every type and are only assignable to themselves and `any` (the one exception being that `undefined` is also assignable to `void`).
-`--stripInternal`<sup>[1]</sup>                | `boolean` | `false`                        | Do not emit declarations for code that has an `/** @internal */` JSDoc annotation.
-`--suppressExcessPropertyErrors`               | `boolean` | `false`                        | Suppress excess property checks for object literals.
-`--suppressImplicitAnyIndexErrors`             | `boolean` | `false`                        | Suppress `--noImplicitAny` errors for indexing objects lacking index signatures. See [issue #1232](https://github.com/Microsoft/TypeScript/issues/1232#issuecomment-64510362) for more details.
-`--target`<br/>`-t`                            | `string`  | `"ES3"`                        | Specify ECMAScript target version: `'es3'` (default), `'es5'`, or `'es6'`.
-`--traceResolution`                            | `boolean` | `false`                        | Report module resolution log messages.
-`--types`                                      | `string[]`|                                | List of names of type definitions to include.
-`--typeRoots`                                  | `string[]`|                                | List of folders to include type definitions from.
-`--version`<br/>`-v`                           |           |                                | Print the compiler's version.
-`--watch`<br/>`-w`                             |           |                                | Run the compiler in watch mode. Watch input files and trigger recompilation on changes.
+`--allowJs`                                    | `boolean` | `true`                         | Позволяет компилировать JavaScript-файлы.
+`--allowSyntheticDefaultImports`               | `boolean` | `module === "system"`          | Позволяет использовать импорт по умолчанию из модулей без экспорта по умолчанию. Не влияет на генерируемый код, только на проверку типов.
+`--allowUnreachableCode`                       | `boolean` | `false`                        | Не сообщать об ошибках при обнаружении недоступного для выполнения кода.
+`--allowUnusedLabels`                          | `boolean` | `false`                        | Не сообщать об ошибках при обнаружении неиспользуемых меток.
+`--baseUrl`                                    | `string`  |                                | Базовая директория для разрешения имен модулей, не являющихся относительными. См. [Разрешение модулей](./Module Resolution.md#base-url) для большей информации.
+`--charset`                                    | `string`  | `"utf8"`                       | Кодировка входных файлов.
+`--declaration`<br/>`-d`                       | `boolean` | `false`                        | Создает соответствующие файлы `.d.ts`.
+`--declarationDir`                             | `string`  |                                | Выходная директория для генерируемых файлов определений.
+`--diagnostics`                                | `boolean` | `false`                        | Показывать диагностическую информацию.
+`--disableSizeLimit`                           | `boolean` | `false`                        | Отключить ограничение размера для JavaScript-проектов.
+`--emitBOM`                                    | `boolean` | `false`                        | Добавлять метку порядка байтов (BOM) для создаваемых UTF-8 файлов.
+`--emitDecoratorMetadata`<sup>[1]</sup>        | `boolean` | `false`                        | Добавлять метаданные времени разработки (т. е., доступные еще до выполнения сгенерированного кода) для декорированных объявлений. См. [issue #2577](https://github.com/Microsoft/TypeScript/issues/2577) для большей информации.
+`--experimentalDecorators`<sup>[1]</sup>       | `boolean` | `false`                        | Включает экспериментальную поддержку декораторов из ES7.
+`--forceConsistentCasingInFileNames`           | `boolean` | `false`                        | Запрещает использовать различающиеся регистром ссылки на один и тот же файл.
+`--help`<br/>`-h`                              |           |                                | Показать справочную информацию.
+`--inlineSourceMap`                            | `boolean` | `false`                        | Генерировать карту кода в том же файле, что и код, а не в отдельном.
+`--inlineSources`                              | `boolean` | `false`                        | Внедрять исходный код в файл с картой кода; требует установки `--inlineSourceMap` или `--sourceMap`.
+`--init`                                       |           |                                | Инициализирует TypeScript проект и создает файл `tsconfig.json`.
+`--isolatedModules`                            | `boolean` | `false`                        | Безоговорочно добавлять в код импорты для неразрешенных файлов.
+`--jsx`                                        | `string`  | `"Preserve"`                   | Поддержка JSX в файлах `.tsx`. `'React'` или `'Preserve'`. См. [JSX](./JSX.md).
+`--lib`                                        | `string[]`|                                | Список файлов библиотек, включаемых в компиляцию. </br>Допустимые значения:  <br/>► `es5` <br/>► `es6` <br/>► `es2015` <br/>► `es7` <br/>► `es2016` <br/>► `es2017` `dom` `webworker` `scripthost` <br/>► `es2015.core` <br/>► `es2015.collection` <br/>► `es2015.generator` <br/>► `es2015.iterable` <br/>► `es2015.promise` <br/>► `es2015.proxy` <br/>► `es2015.reflect` <br/>► `es2015.symbol` <br/>► `es2015.symbol.wellknown` <br/>► `es2016.array.include` <br/>► `es2017.object` <br/>► `es2017.sharedmemory`
+`--listEmittedFiles`                           | `boolean` | `false`                        | Выводить имена генерируемых файлов во время компиляции.
+`--listFiles`                                  | `boolean` | `false`                        | Выводить имена файлов во время компиляции.
+`--locale`                                     | `string`  | *(зависит от платформы)*       | Локаль для сообщений об ошибках, например `en-us`.
+`--mapRoot`                                    | `string`  |                                | Указывает местоположение, где отладчик должен искать карты кода вместо сгенерированного. Использовать данный флаг, если .map файлы во время выполнения будут находиться не там, где .js файлы. Указанный путь будет внедрен в директиву `sourceMap`, указывая отладчику местоположение карт кода.
+`--module`<br/>`-m`                            | `string`  | `target === 'ES6' ? 'ES6' : 'commonjs'`   | Указывает тип генерируемых модулей: `'none'`, `'commonjs'`, `'amd'`, `'system'`, `'umd'`, `'es6'`, or `'es2015'`.<br/>► Только `'amd'` и `'system'` могут быть использованы с `--outFile`.<br/>► `'es6'` и `'es2015'` не могут быть использованы при генерации кода для ES5 и ниже.
+`--moduleResolution`                           | `string`  | `module === 'amd' | 'system' | 'ES6' ?  'classic' : 'node'`                    | Указывает метод разрешения модулей. Либо `'node'` для разрешения в стиле Node.js/io.js, либо `'classic'`. См. [Разрешение модулей](./Module Resolution.md) для большей информации.
+`--newLine`                                    | `string`  | *(зависит от платформы)*       | Использовать указанный формат перевода строк для создаваемых файлов: `'crlf'` (windows) or `'lf'` (unix)."
+`--noEmit`                                     | `boolean` | `false`                        | Не создавать выходных файлов.
+`--noEmitHelpers`                              | `boolean` | `false`                        | Не генерировать вспомогательные функции наподобие `__extends` в выходных файлах.
+`--noEmitOnError`                              | `boolean` | `false`                        | Не создавать выходных файлов, если были ошибки.
+`--noFallthroughCasesInSwitch`                 | `boolean` | `false`                        | Сообщать об ошибке при "проваливающихся" условиях в `switch`.
+`--noImplicitAny`                              | `boolean` | `false`                        | Сообщать об ошибке при выражениях и объявлениях с подразумеваемым типом `any`.
+`--noImplicitReturns`                          | `boolean` | `false`                        | Сообщать об ошибке, если не все пути в функции возвращают значение.
+`--noImplicitThis`                             | `boolean` | `false`                        | Сообщать об ошибке при выражениях с `this` с подразумеваемым типом `any`.
+`--noImplicitUseStrict`                        | `boolean` | `false`                        | Не добавлять директиву `use strict` в код генерируемых модулей.
+`--noLib`                                      | `boolean` | `false`                        | Не включать файл библиотеки по умолчанию (lib.d.ts).
+`--noResolve`                                  | `boolean` | `false`                        | Не добавлять в список компилируемых файлов файлы, на которые код ссылается с помощью ссылок с тройной косой чертой или импорта.
+`--noUnusedLocals`                             | `boolean` | `false`                        | Сообщать об ошибках при неиспользуемых локальных переменных.
+`--noUnusedParameters`                         | `boolean` | `false`                        | Сообщать об ошибках при неиспользуемых параметрах.
+~~`--out`~~                                    | `string`  |                                | УСТАРЕЛО. Используйте `--outFile`.
+`--outDir`                                     | `string`  |                                | Перенаправить вывод в указанную директорию.
+`--outFile`                                    | `string`  |                                | Объединить и вывести все в один файл. Порядок объединения определяется списком входных файлов, переданном через командную строку, а также ссылками с тройной косой чертой и импортом. См. документацию о порядке файлов для большей информации.
+`paths`<sup>[2]</sup>                          | `Object`  |                                | Список соответствий имен модулей путям, относительным к `baseUrl`. См. [Разрешение модулей](./Module Resolution.md#path-mapping) для большей информации.
+`--preserveConstEnums`                         | `boolean` | `false`                        | Не удалять объявления константных перечислений из сгенерированного кода. См. [документацию на константные перечисления](https://github.com/Microsoft/TypeScript/blob/master/doc/spec.md#94-constant-enum-declarations) для большей информации.
+`--pretty`<sup>[1]</sup>                       | `boolean` | `false`                        | Стилизовать цветом ошибки и сообщения в зависимости от контекста.
+`--project`<br/>`-p`                           | `string`  |                                | Компилировать проект, используя указанный корректный конфигурационный файл. <br/>Аргумент может быть либо путем к корректному JSON-файлу конфигурации, либо к директории, содержащей файл `tsconfig.json`.<br/>См. [документацию о tsconfig.json](./tsconfig.json.md) для большей информации.
+`--reactNamespace`                             | `string`  | `"React"`                      | Указывает объект, на котором будут вызваны методы `createElement` и `__spread` при генерации React JSX.
+`--removeComments`                             | `boolean` | `false`                        | Удалить все комментарии, кроме заголовка, начинающегося с `/*!` (копирайт).
+`--rootDir`                                    | `string`  | *(общая корневая директория вычисляется на основании списка входных файлов)*   | Указывает корневую директорию для входных файлов. Используется только для управления структурой выходной директории с `--outDir`.
+`rootDirs`<sup>[2]</sup>                       | `string[]`|                                | Список <i>корневых</i> директорий, чье объединенное содержимое отражает структуру проекта во время выполнения. См. [Разрешение модулей](./Module Resolution.md#virtual-directories-with-rootdirs) для большей информации.
+`--skipLibCheck`                               | `boolean` | `false`                        | Не проверять правильность файла библиотеки по умолчанию (`lib.d.ts`).
+`--skipDefaultLibCheck`                        | `boolean` | `false`                        | Не проверять правильность файла пользовательской библиотеки по умолчанию (`*.d.ts`).
+`--sourceMap`                                  | `boolean` | `false`                        | Генерирует соответствующий `.map` файл.
+`--sourceRoot`                                 | `string`  |                                | Указывает местоположение, где отладчик должен искать файлы TypeScript вместо директории с исходными файлами. Использовать данный флаг, если исходные файлы во время выполнения будут находиться в ином месте, нежели во время разработки. Указанный путь будет внедрен в директиву `sourceMap`, указывая отладчику местоположение исходных файлов.
+`--strictNullChecks`                           | `boolean` | `false`                        | Включает режим строгой проверки на `null`, в котором `null` и `undefined` не включаются во все типы, и могут быть присвоены только к самим себе и к `any` (с одним исключением — `undefined` также может присваиваться к `void`).
+`--stripInternal`<sup>[1]</sup>                | `boolean` | `false`                        | Не создавать определения для кода с JSDoc-аннотацией `/** @internal */`.
+`--suppressExcessPropertyErrors`               | `boolean` | `false`                        | Отключить проверку на избыточные свойства объектных литералов.
+`--suppressImplicitAnyIndexErrors`             | `boolean` | `false`                        | Подавлять ошибки `--noImplicitAny` для индексируемых объектов без сигнатуры индекса. См. [issue #1232](https://github.com/Microsoft/TypeScript/issues/1232#issuecomment-64510362) для большей информации.
+`--target`<br/>`-t`                            | `string`  | `"ES3"`                        | Указать версию ECMAScript, для которой будет генерироваться код: `'es3'` (по умолчанию), `'es5'`, или `'es6'`.
+`--traceResolution`                            | `boolean` | `false`                        | Выводить статусные сообщения для разрешения модулей.
+`--types`                                      | `string[]`|                                | Список включаемых имен определений типов.
+`--typeRoots`                                  | `string[]`|                                | Список директорий, откуда будут включаться определения типов.
+`--version`<br/>`-v`                           |           |                                | Вывести версию компилятора.
+`--watch`<br/>`-w`                             |           |                                | Запустить компилятор в режиме слежения. Следит за входными файлами и запускает перекомпиляцию в случае их изменения.
 
-* <sup>[1]</sup> These options are experimental.
-* <sup>[2]</sup> These options are only allowed in `tsconfig.json`, and not through command-line switches.
+* <sup>[1]</sup> Экспериментальные опции.
+* <sup>[2]</sup> Данные опции допускаются только в файле `tsconfig.json`, но не в командной строке.
 
-## Related
+## Связанные темы
 
-* Setting compiler options in [`tsconfig.json`](./tsconfig.json.md) files.
-* Setting compiler options in [MSBuild projects](./Compiler Options in MSBuild.md).
+* Установка опций компилятора в файлах [`tsconfig.json`](./tsconfig.json.md).
+* Установка опций компилятора в [проектах MSBuild](./Compiler Options in MSBuild.md).
