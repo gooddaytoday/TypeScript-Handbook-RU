@@ -1,13 +1,13 @@
-# Iterables
+﻿# Итерируемые элементы
 
-An object is deemed iterable if it has an implementation for the [`Symbol.iterator`](Symbols.md#symboliterator) property.
-Some built-in types like `Array`, `Map`, `Set`, `String`, `Int32Array`, `Uint32Array`, etc. have their `Symbol.iterator` property already implemented.
-`Symbol.iterator` function on an object is responsible for returning the list of values to iterate on.
+Итерируемым является такой объект, который содержит реализацию свойства [`Symbol.iterator`](Symbols.md#symboliterator).
+Некоторые встроенный типы, такие как `Array`, `Map`, `Set`, `String`, `Int32Array`, `Uint32Array` и т.д., содержат уже реализованное свойство `Symbol.iterator`.
+Взятая от объекта функция `Symbol.iterator` должна возвратить список значений для организации цикла.
 
-## `for..of` statements
+## Оператор `for..of`
 
-`for..of` loops over an iterable object, invoking the `Symbol.iterator` property on the object.
-Here is a simple `for..of` loop on an array:
+Для перебора итерируемого объекта в цикле `for..of`, на нём вызывается свойство `Symbol.iterator`.
+Вот простой пример прохождения цикла `for..of` по массиву:
 
 ```ts
 let someArray = [1, "string", false];
@@ -17,11 +17,11 @@ for (let entry of someArray) {
 }
 ```
 
-### `for..of` vs. `for..in` statements
+### `for..of` против `for..in`
 
-Both `for..of` and `for..in` statements iterate over lists; the values iterated on are different though, `for..in` returns a list of *keys* on the object being iterated, whereas `for..of` returns a list of *values* of the numeric properties of the object being iterated.
+И `for..of`, и `for..in` используются для перебора списков. При этом значения, по которым выполняется обход, различаются. `for..in` возвращает список *ключей* итерируемого объекта, когда как `for..of` возвращает список *значений* его числовых свойств.
 
-Here is an example that demonstrates this distinction:
+Следующий пример демонстрирует различие:
 
 ```ts
 let list = [4, 5, 6];
@@ -35,8 +35,8 @@ for (let i of list) {
 }
 ```
 
-Another distinction is that `for..in` operates on any object; it serves as a way to inspect properties on this object.
-`for..of` on the other hand, is mainly interested in values of iterable objects. Built-in objects like `Map` and `Set` implement `Symbol.iterator` property allowing access to stored values.
+Ещё одно различие заключается в том, что `for..in` может использоваться для обхода любого объекта, являясь средством инспектирования его свойств.
+А `for..of` в первую очередь предназначен для получения значений. Такие встроенные объекты, как `Map` и `Set`, реализуют свойство `Symbol.iterator`, предоставляя с его помощью доступ к хранимым значениям.
 
 ```ts
 let pets = new Set(["Cat", "Dog", "Hamster"]);
@@ -51,14 +51,14 @@ for (let pet of pets) {
 }
 ```
 
-### Code generation
+### Генерация кода
 
-#### Targeting ES5 and ES3
+#### Соответствие ES5 и ES3
 
-When targeting an ES5 or ES3, iterators are only allowed on values of `Array` type.
-It is an error to use `for..of` loops on non-Array values, even if these non-Array values implement the `Symbol.iterator` property.
+Если целевым стандартом являются ES5 или ES3, допускается использование итераторов только для объектов типа `Array`.
+Попытка обхода объектов других типов с помощью `for..of` будет ошибкой, даже если эти объекты реализуют свойство `Symbol.iterator`.
 
-The compiler will generate a simple `for` loop for a `for..of` loop, for instance:
+Компилятор сгенерирует простой цикл `for` вместо цикла `for..of`, например:
 
 ```ts
 let numbers = [1, 2, 3];
@@ -67,7 +67,7 @@ for (let num of numbers) {
 }
 ```
 
-will be generated as:
+будет сгенерировано в виде:
 
 ```js
 var numbers = [1, 2, 3];
@@ -77,6 +77,6 @@ for (var _i = 0; _i < numbers.length; _i++) {
 }
 ```
 
-#### Targeting ECMAScript 2015 and higher
+#### Соответствие ECMAScript 2015 и выше
 
-When targeting an ECMAScipt 2015-compliant engine, the compiler will generate `for..of` loops to target the built-in iterator implementation in the engine.
+В том случае, если целевым стандартом является ECMAScipt 2015, компилятор сгенерирует циклы `for..of` в соответствии со встроенной в движок реализацией итераторов.
