@@ -1,25 +1,25 @@
-# Introduction
+# Введение
 
-Starting with ECMAScript 2015, `symbol` is a primitive data type, just like `number` and `string`.
+В ECMAScript 2015 введен тип `symbol` (символ) — примитивный тип данных, такой же, как `number` и `string`.
 
-`symbol` values are created by calling the `Symbol` constructor.
+Значения типа `symbol` создаются с помощью вызова конструктора `Symbol`.
 
 ```ts
 let sym1 = Symbol();
 
-let sym2 = Symbol("key"); // optional string key
+let sym2 = Symbol("key"); // Необязательный строковый ключ
 ```
 
-Symbols are immutable, and unique.
+Символы неизменяемы и уникальны.
 
 ```ts
 let sym2 = Symbol("key");
 let sym3 = Symbol("key");
 
-sym2 === sym3; // false, symbols are unique
+sym2 === sym3; // false, символы уникальны
 ```
 
-Just like strings, symbols can be used as keys for object properties.
+Подобно строкам, символы можно использовать как ключи для свойств объекта.
 
 ```ts
 let sym = Symbol();
@@ -31,7 +31,7 @@ let obj = {
 console.log(obj[sym]); // "value"
 ```
 
-Symbols can also be combined with computed property declarations to declare object properties and class members.
+Символы можно использовать вместе с вычисляемыми свойствами, чтобы объявлять свойства объектов и члены классов:
 
 ```ts
 const getClassNameSymbol = Symbol();
@@ -46,56 +46,56 @@ let c = new C();
 let className = c[getClassNameSymbol](); // "C"
 ```
 
-# Well-known Symbols
+# Заранее определенные символы
 
-In addition to user-defined symbols, there are well-known built-in symbols.
-Built-in symbols are used to represent internal language behaviors.
+Кроме символов, определяемых пользователем, существуют заранее определенные встроенные символы.
+Встроенные символы нужны для отражения внутреннего поведения языка.
 
-Here is a list of well-known symbols:
+Список заранее определенных символов:
 
 ## `Symbol.hasInstance`
 
-A method that determines if a constructor object recognizes an object as one of the constructor’s instances. Called by the semantics of the instanceof operator.
+Метод, который определяет, распознает ли объект конструктора переданный объект как экземпляр этого конструктора. Вызывается оператором `instanceof`.
 
 ## `Symbol.isConcatSpreadable`
 
-A Boolean value indicating that an object should be flatten to its array elements by Array.prototype.concat.
+Логическое значение, означающее, должен ли объект раскладываться на элементы массива при использовании с `Array.prototype.concat`.
 
 ## `Symbol.iterator`
 
-A method that returns the default iterator for an object. Called by the semantics of the for-of statement.
+Метод, который возвращает итератор по умолчанию для объекта. Вызывается конструкцией `for-of`.
 
 ## `Symbol.match`
 
-A regular expression method that matches the regular expression against a string. Called by the `String.prototype.match` method.
+Метод для регулярных выражений, который сопоставляет регулярное выражение со строкой. Вызывается методом `String.prototype.match`.
 
 ## `Symbol.replace`
 
-A regular expression method that replaces matched substrings of a string. Called by the `String.prototype.replace` method.
+Метод для регулярных выражений, который заменяет совпавшие подстроки в строке. Вызывается методом `String.prototype.replace`.
 
 ## `Symbol.search`
 
-A regular expression method that returns the index within a string that matches the regular expression. Called by the `String.prototype.search` method.
+Метод для регулярных выражений, который возвращает позицию в строке, где находится совпадение с регулярным выражением. Вызывается методом `String.prototype.search`.
 
 ## `Symbol.species`
 
-A function valued property that is the constructor function that is used to create derived objects.
+Свойство, содержащее функцию, которая служит в качестве конструктора для унаследованных объектов.
 
 ## `Symbol.split`
 
-A regular expression method that splits a string at the indices that match the regular expression.
-Called by the `String.prototype.split` method.
+Метод для регулярных выражений, который разбивает строку по позициям совпадений с регулярным выражением.
+Вызывается методом `String.prototype.split`.
 
 ## `Symbol.toPrimitive`
 
-A method that converts an object to a corresponding primitive value.
-Called by the `ToPrimitive` abstract operation.
+Метод, который превращает объект в соответствующее примитивное значение.
+Вызывается абстрактной операцией `ToPrimitive`.
 
 ## `Symbol.toStringTag`
 
-A String value that is used in the creation of the default string description of an object.
-Called by the built-in method `Object.prototype.toString`.
+Строковое значение, которое используется для создания строкового значения по умолчанию, описывающего объект.
+Вызывается встроенным методом `Object.prototype.toString`.
 
 ## `Symbol.unscopables`
 
-An Object whose own property names are property names that are excluded from the 'with' environment bindings of the associated objects.
+Объект, имена собственных свойств которого — это имена свойств, привязки к которым не включаются в окружение, создаваемое конструкцией `with` для соответствующих объектов.
