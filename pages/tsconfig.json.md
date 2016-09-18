@@ -1,21 +1,21 @@
-## Overview
+## Обзор
 
-The presence of a `tsconfig.json` file in a directory indicates that the directory is the root of a TypeScript project.
-The `tsconfig.json` file specifies the root files and the compiler options required to compile the project.
-A project is compiled in one of the following ways:
+Наличие файла `tscofnig.json` в директории означает, что данная директория является корнем TypeScript-проекта.
+Файл `tsconfig.json` указывает входные файлы и опции компилятора для сборки проекта.
+Проект компилируется одним из следующих способов:
 
-## Using tsconfig.json
+## Использование tsconfig.json
 
-* By invoking tsc with no input files, in which case the compiler searches for the `tsconfig.json` file starting in the current directory and continuing up the parent directory chain.
-* By invoking tsc with no input files and a `--project` (or just `-p`) command line option that specifies the path of a directory containing a `tsconfig.json` file.
+* Вызов `tsc` без указания входных файлов, в случае чего компилятор ищет файл `tsconfig.json`, начиная с текущей директории и поднимаясь вверх по цепочке родительских директорий.
+* Вызов `tsc` без указания входных файлов и опцией `--project` (или просто `-p`), которая указывает путь к директории, содержащей файл `tsconfig.json`.
 
-When input files are specified on the command line, `tsconfig.json` files are ignored.
+Когда входные файлы указываются в командной строке, файлы `tsconfig.json` игнорируются.
 
-## Examples
+## Примеры
 
-Example `tsconfig.json` files:
+Примеры файлов `tsconfig.json`:
 
-* Using the `"files"` property
+* Использование свойства `"files"`
 
   ```json
   {
@@ -45,7 +45,7 @@ Example `tsconfig.json` files:
   }
   ```
 
-* Using the `"include"` and `"exclude"` properties
+* Использование свойств `"include"` и `"exclude"`
 
   ```json
   {
@@ -67,38 +67,38 @@ Example `tsconfig.json` files:
   }
   ```
 
-## Details
+## Подробности
 
-The `"compilerOptions"` property can be omitted, in which case the compiler's defaults are used. See our full list of supported [Compiler Options](./Compiler Options.md).
+Свойство `"compilerOptions"` можно пропускать, в этом случае компилятор использует значения по умолчанию. Смотрите полный список [опций компилятора](./Compiler Options.md).
 
-The `"files"` property takes a list of relative or absolute file paths.
-The `"include"` and `"exclude"` properties take a list of glob-like file patterns.
-The supported glob wildcards are:
+Свойство `"files"` принимает список относительных или абсолютных путей к файлам.
+Свойства `"include"` и `"exclude"` принимают  список файловых масок.
+Поддерживаемые символы замены в файловых масках:
 
-* `*` matches zero or more characters (excluding directory separators)
-* `?` matches any one character (excluding directory separators)
-* `**/` recursively matches any subdirectory
+* `*` соответствует нулю или более символам (кроме разделителей директорий)
+* `?` соответствует одному любому символу (кроме разделителя директорий)
+* `**/` рекурсивно соответствует любой поддиректории
 
-If a segment of a glob pattern includes only `*` or `.*`, then only files with supported extensions are included (e.g. `.ts`, `.tsx`, and `.d.ts` by default with `.js` and `.jsx` if `allowJs` is set to true).
+Если сегмент файловой маски содержит только `*` или `.*`, то включены будут только файлы с поддерживаемыми расширениями (т. е., `.ts`, `.tsx` или `.d.ts` по умолчанию, и `.js` и `.jsx` если `allowJs` установлено в `true`).
 
-If the `"files"` and `"include"` are both left unspecified, the compiler defaults to including all TypeScript (`.ts`, `.d.ts` and `.tsx`) files in the containing directory and subdirectories except those excluded using the `"exclude"` property. JS files (`.js` and `.jsx`) are also included if `allowJs` is set to true.
-If the `"files"` or `"include"` properties are specified, the compiler will instead include the union of the files included by those two properties.
-Files in the directory specified using the `"outDir"` compiler option are always excluded unless explicitly included via the `"files"` property (even when the "`exclude`" property is specified).
+Если и `"files"` и `"includes"` не указаны, компилятор включает все файлы TypeScript (`.ts`, `.d.ts` и `.tsx`) в содержащей директории и ее поддиректориях кроме тех, которые исключены с помощью свойства `"exclude"`. Также включаются JS-файлы (`.js` и `.jsx`), если `allowJs` установлено в `true`.
+Если указаны свойства `"files"` или `"include"`, компилятор вместо этого включит объединение файлов, указанных в этих двух свойствах.
+Файлы в директории, указанной посредством опции компилятора `"outDir"` всегда исключаются, если только явно не включены через свойство `"files"` (даже если указано свойство `exclude`).
 
-Files included using `"include"` can be filtered using the `"exclude"` property.
-However, files included explicitly using the `"files"` property are always included regardless of `"exclude"`.
-The `"exclude"` property defaults to excluding the `node_modules`, `bower_components`, and `jspm_packages` directories when not specified.
+Файлы, включенные с помощью `"include"` могут быть отфильтрованы с помощью свойства `"exclude"`.
+Тем не менее, файлы, явно включенные через свойство `"files"` включаются всегда, несмотря на `"exclude"`.
+Свойство `"exclude"`, если не указано, по умолчанию исключает директории `node_modules`, `bower_components`, и `jspm_packages`.
 
-Any files that are referenced by files included via the `"files"` or `"include"` properties are also included.
-Similarly, if a file `B.ts` is referenced by another file `A.ts`, then `B.ts` cannot be excluded unless the referencing file `A.ts` is also specified in the `"exclude"` list.
+Любые файлы, на которые ссылаются файлы, включенные через `"files"` или `"include"`, также включаются.
+Аналогично, если файл `A.ts` ссылается на `B.ts`, то `B.ts` не может быть исключен, если только ссылающийся на него файл `A.ts` также не будет указан в списке `"exclude"`.
 
-A `tsconfig.json` file is permitted to be completely empty, which compiles all files included by default (as described above) with the default compiler options.
+Файл `tsconfig.json` может быть совершенно пуст, в таком случае компилируются все файлы, включаемые по умолчанию (как указано выше) с опциями компилятора по умолчанию.
 
-Compiler options specified on the command line override those specified in the `tsconfig.json` file.
+Опции компилятора, указываемые через командную строку, перезаписывают опции, указанные в файле `tsconfig.json`.
 
 ## `compileOnSave`
 
-Setting a top-level property `compileOnSave` signals to the IDE to generate all files for a given tsconfig.json upon saving.
+Указание на верхнем уровне свойства `compileOnSave` указывает IDE генерировать все файлы для данного `tsconfig.json` при сохранении.
 
 ```json
 {
@@ -109,8 +109,8 @@ Setting a top-level property `compileOnSave` signals to the IDE to generate all 
 }
 ```
 
-This feature is currently supported in Visual Studio 2015 with TypeScript 1.8.4 and above, and [atom-typescript](https://github.com/TypeStrong/atom-typescript/blob/master/docs/tsconfig.md#compileonsave) plugin.
+Эта возможность на данный момент поддерживается в Visual Studio 2015 с TypeScript 1.8.4 и выше и дополнением [atom-typescript](https://github.com/TypeStrong/atom-typescript/blob/master/docs/tsconfig.md#compileonsave).
 
-## Schema
+## Структура
 
-Schema can be found at: [http://json.schemastore.org/tsconfig](http://json.schemastore.org/tsconfig)
+Описание структуры находится по адресу: [http://json.schemastore.org/tsconfig](http://json.schemastore.org/tsconfig)
