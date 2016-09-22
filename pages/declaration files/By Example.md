@@ -1,84 +1,83 @@
-# Introduction
+# Введение
 
-The purpose of this guide is to teach you how to write a high-quality definition file.
-This guide is structured by showing documentation for some API, along with sample usage of that API,
-  and explaining how to write the corresponding declaration.
+Цель данного руководства -- научить созданию высококачественных файлов объявлений.
+Руководство структурировано так, что вместе с документацией для определенного API показывается пример его использования, и объясняется, как нужно записать соответствующее объявление.
 
-These examples are ordered in approximately increasing order of complexity.
+Примеры упорядочены в порядке примерного возрастания сложности.
 
-* [Global Variables](#global-variables)
-* [Global Functions](#global-functions)
-* [Objects with Properties](#objects-with-properties)
-* [Overloaded Function](#overloaded-functions)
-* [Reusable Types (Interfaces)](#reusable-types-interfaces)
-* [Reusable Types (Type Aliases)](#reusable-types-type-aliases)
-* [Organizing Types](#organizing-types)
-* [Classes](#classes)
+* [Глобальные переменные](#глобальные-переменные)
+* [Глобальные функции](#глобальные-функции)
+* [Объекты со свойствами](#объекты-со-свойствами)
+* [Перегруженные функции](#перегруженные функции)
+* [Переиспользуемые типы (интерфейсы)](#переиспользуемые-типы-интерфейсы)
+* [Переиспользуемые типы (псевдонимы типов)](#переиспользуемые-типы-псевдонимы-типов)
+* [Упорядочение типов](#упорядочение-типов)
+* [Классы](#классы)
 
-# The Examples
+# Примеры
 
-## Global Variables
+## Глобальные переменные
 
-*Documentation*
+*Документация*
 
-> The global variable `foo` contains the number of widgets present.
+> Глобальная переменная `foo` содержит число виджетов.
 
-*Code*
+*Код*
 
 ```ts
-console.log("Half the number of widgets is " + (foo / 2));
+console.log("Половина числа виджетов: " + (foo / 2));
 ```
 
-*Declaration*
+*Объявление*
 
-Use `declare var` to declare variables.
-If the variable is read-only, you can use `declare const`.
-You can also use `declare let` if the variable is block-scoped.
+Используйте `declare var`, чтобы объявлять переменные.
+Если переменная только для чтения, можно использовать `declare const`.
+Также можно использовать `declare let`, если область видимости переменной ограничена блоком.
 
 ```ts
-/** The number of widgets present */
+/** Число виджетов */
 declare var foo: number;
 ```
 
-## Global Functions
+## Глобальные функции
 
-*Documentation*
+*Документация*
 
-> You can call the function `greet` with a string to show a greeting to the user.
+> Можно вызвать функцию `greet` со строкой, чтобы вывести пользователю приветствие.
 
-*Code*
+*Код*
 
 ```ts
-greet("hello, world");
+greet("привет, мир");
 ```
 
-*Declaration*
+*Объявление*
 
-Use `declare function` to declare functions.
+Используйте `declare function`, чтобы объявить функцию.
 
 ```ts
 declare function greet(greeting: string): void;
 ```
 
-## Objects with Properties
+## Объекты со свойствами
 
-*Documentation*
+*Документация*
 
-> The global variable `myLib` has a function `makeGreeting` for creating greetings,
-> and a property `numberOfGreetings` indicating the number of greetings made so far.
+> У глобальной переменной `myLib` есть функция `makeGreeting` для создания приветствий,
+> и свойство `numberOfGreetings`, отражающее число уже созданных приветствий.
 
-*Code*
+*Код*
 
 ```ts
-let result = myLib.makeGreeting("hello, world");
-console.log("The computed greeting is:" + result);
+let result = myLib.makeGreeting("привет, мир");
+console.log("Вычисленное приветствие:" + result);
 
 let count = myLib.numberOfGreetings;
 ```
 
-*Declaration*
+*Объявление*
 
-Use `declare namespace` to describe types or values accessed by dotted notation.
+Используйте `declare namespace`, чтобы описать типы или значения, доступные посредством синтаксиса с точкой.
 
 ```ts
 declare namespace myLib {
@@ -87,49 +86,48 @@ declare namespace myLib {
 }
 ```
 
-## Overloaded Functions
+## Перегруженные функции
 
-*Documentation*
+*Документация*
 
-The `getWidget` function accepts a number and returns a Widget, or accepts a string and returns a Widget array.
+Функция `getWidget` принимает число и возвращает объект `Widget`, или же принимает строку и возвращает массив объектов `Widget`.
 
-*Code*
+*Код*
 
 ```ts
 let x: Widget = getWidget(43);
 
-let arr: Widget[] = getWidget("all of them");
+let arr: Widget[] = getWidget("все виджеты");
 ```
 
-*Declaration*
+*Объявление*
 
 ```ts
 declare function getWidget(n: number): Widget;
 declare function getWidget(s: string): Widget[];
 ```
 
-## Reusable Types (Interfaces)
+## *Переиспользуемые типы (интерфейсы)*
 
-*Documentation*
+*Документация*
 
-> When specifying a greeting, you must pass a `GreetingSettings` object.
-> This object has the following properties:
-> - greeting: Mandatory string
-> - duration: Optional length of time (in milliseconds)
-> - color: Optional string, e.g. '#ff00ff'
+> При указании приветствия нужно передать объект `GreetingSettings`.
+> Этот объект обладает следующими свойствами:
+> - greeting: Обязательная строка
+> - color: Необязательная строка, например '#ff00ff'
 
-*Code*
+*Код*
 
 ```ts
 greet({
-  greeting: "hello world",
+  greeting: "привет, мир",
   duration: 4000
 });
 ```
 
-*Declaration*
+*Объявление*
 
-Use an `interface` to define a type with properties.
+Используйте `interface`, чтобы объявить тип со свойствами.
 
 ```ts
 interface GreetingSettings {
@@ -141,28 +139,28 @@ interface GreetingSettings {
 declare function greet(setting: GreetingSettings): void;
 ```
 
-## Reusable Types (Type Aliases)
+## Переиспользуемые типы (псевдонимы типов)
 
-*Documentation*
+*Документация*
 
-> Anywhere a greeting is expected, you can provide a `string`, a function returning a `string`, or a `Greeter` instance.
+> Везде, где ожидается приветствие, можно указать `string`, функцию, возвращающую `string`, или экземпляр `Greeter`.
 
-*Code*
+*Код*
 
 ```ts
 function getGreeting() {
-    return "howdy";
+    return "как дела?";
 }
 class MyGreeter extends Greeter { }
 
-greet("hello");
+greet("привет");
 greet(getGreeting);
 greet(new MyGreeter());
 ```
 
-*Declaration*
+*Объявление*
 
-You can use a type alias to make a shorthand for a type:
+Можно использовать псевдоним типа и создать сокращение:
 
 ```ts
 type GreetingLike = string | (() => string) | Greeting;
@@ -170,24 +168,24 @@ type GreetingLike = string | (() => string) | Greeting;
 declare function greet(g: GreetingLike): void;
 ```
 
-## Organizing Types
+## Упорядочение типов
 
-*Documentation*
+*Документация*
 
-> The `greeter` object can log to a file or display an alert.
-> You can provide LogOptions to `.log(...)` and alert options to `.alert(...)`
+> Объект `greeter` может записывать журнал в файл либо показывать уведомления.
+> Можно передать `LogOptions` функции `.log(...)` и `AlertOptions` функции `.alert(...)`
 
-*Code*
+*Код*
 
 ```ts
-const g = new Greeter("Hello");
+const g = new Greeter("Привет");
 g.log({ verbose: true });
-g.alert({ modal: false, title: "Current Greeting" });
+g.alert({ modal: false, title: "Текущее приветствие" });
 ```
 
-*Declaration*
+*Объявление*
 
-Use namespaces to organize types.
+Используйте пространства имен для упорядочения типов:
 
 ```ts
 declare namespace GreetingLib {
@@ -202,11 +200,11 @@ declare namespace GreetingLib {
 }
 ```
 
-You can also created nested namespaces in one declaration:
+Также можно создавать вложенные пространства имен в одном объявлении:
 
 ```ts
 declare namespace GreetingLib.Options {
-    // Refer to via GreetingLib.Options.Log
+    // Можно использовать как GreetingLib.Options.Log
     interface Log {
         verbose?: boolean;
     }
@@ -218,30 +216,30 @@ declare namespace GreetingLib.Options {
 }
 ```
 
-## Classes
+## Классы
 
-*Documentation*
+*Документация*
 
-> You can create a greeter by instantiating the `Greeter` object, or create a customized greeter by extending from it.
+> Можно создать объект `Greeter` с помощью конструктора, либо создать измененный `Greeter`, производный от него.
 
-*Code*
+*Код*
 
 ```ts
-const myGreeter = new Greeter("hello, world");
-myGreeter.greeting = "howdy";
+const myGreeter = new Greeter("привет, мир");
+myGreeter.greeting = "как дела?";
 myGreeter.showGreeting();
 
 class SpecialGreeter extends Greeter {
     constructor() {
-        super("Very special greetings");
+        super("Особенное приветствие");
     }
 }
 ```
 
-*Declaration*
+*Объявление*
 
-Use `declare class` to describe a class or class-like object.
-Classes can have properties and methods as well as a constructor.
+Используйте `declare class`, чтобы описать класс или объект, похожий на класс.
+Классы могут иметь свойства, методы, а также конструктор.
 
 ```ts
 declare class Greeter {
@@ -252,23 +250,3 @@ declare class Greeter {
 }
 ```
 
-<!-- Template
-
-##
-
-*Documentation*
->
-
-*Code*
-
-```ts
-
-```
-
-*Declaration*
-
-```ts
-
-```
-
--->

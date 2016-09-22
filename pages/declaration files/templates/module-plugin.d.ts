@@ -1,33 +1,33 @@
-// Type definitions for [~THE LIBRARY NAME~] [~OPTIONAL VERSION NUMBER~]
-// Project: [~THE PROJECT NAME~]
-// Definitions by: [~YOUR NAME~] <[~A URL FOR YOU~]>
+// Type definitions for [~НАЗВАНИЕ БИБЛИОТЕКИ~] [~НЕОБЯЗАТЕЛЬНЫЙ НОМЕР ВЕРСИИ~]
+// Project: [~НАЗВАНИЕ ПРОЕКТА~]
+// Definitions by: [~ВАШЕ ИМЯ~] <[~ВАШ АДРЕС В ИНТЕРНЕТЕ~]>
 
-/*~ This is the module plugin template file. You should rename it to index.d.ts
- *~ and place it in a folder with the same name as the module.
- *~ For example, if you were writing a file for "super-greeter", this
- *~ file should be 'super-greeter/index.d.ts'
+/*~ Это шаблон плагина модуля. Его нужно переименовать в index.d.ts
+ *~ и поместить в папку с тем же именем, что и имя модуля.
+ *~ Например, если вы создаете файл для "super-greeter", то этот файл
+ *~ должен называться "super-greeter/index.d.ts"
  */
 
-/*~ On this line, import the module which this module adds to */
+/*~ В этой строке импортируйте модуль, который дополняет этот плагин */
 import * as m from 'someModule';
 
-/*~ You can also import other modules if needed */
+/*~ Если необходимо, можно экспортировать и другие модули */
 import * as other from 'anotherModule';
 
-/*~ Here, declare the same module as the one you imported above */
+/*~ Здесь объявите такой же модуль, что экспортированный выше */
 declare module 'someModule' {
-	/*~ Inside, add new function, classes, or variables. You can use
-	 *~ unexported types from the original module if needed. */
+	/*~ Внутри него добавьте новые функции, классы или переменные.
+	 *~ Можно использовать типы, которые не были экспортированы из исходного модуля */
 	export function theNewMethod(x: m.foo): other.bar;
 
-	/*~ You can also add new properties to existing interfaces from
-	 *~ the original module by writing interface augmentations */
+	/*~ Также можно добавлять новые свойства к существующим интерфейсам
+	 *~ из оригинального модуля, создавая дополнения интефейсов */
 	export interface SomeModuleOptions {
 		someModuleSetting?: string;
 	}
 
-	/*~ New types can also be declared and will appear as if they
-	 *~ are in the original module */
+	/*~ Можно объявлять новые типы, которые будут работать так же, словно
+	 *~ объявленные в оригинальном модуле */
 	export interface MyModulePluginOptions {
 		size: number;
 	}

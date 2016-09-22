@@ -1,119 +1,112 @@
-# General Types
+# Основные типы
 
-## `Number`, `String`, `Boolean`, and `Object`
+## `Number`, `String`, `Boolean`, и `Object`
 
-*Don't* ever use the types `Number`, `String`, `Boolean`, or `Object`.
-These types refer to non-primitive boxed objects that are almost never used appropriately in JavaScript code.
+Никогда *не используйте* типы `Number`, `String`, `Boolean` или `Object`.
+Эти типы ссылаются на непримитивные упакованные типы, которые почти никогда не используются в JavaScript-коде.
 
 ```ts
-/* WRONG */
+/* НЕПРАВИЛЬНО */
 function reverse(s: String): String;
 ```
 
-*Do* use the types `number`, `string`, and `boolean`.
+*Используйте* типы `number`, `string` и `boolean`.
 
 ```ts
-/* OK */
+/* ПРАВИЛЬНО */
 function reverse(s: string): string;
 ```
 
-If you're tempted to use the type `Object`, consider using `any` instead.
-There is currently no way in TypeScript to specify an object that is "not a primitive".
-<!--(Revisit if/when #1809 is implemented)-->
+Если вам хочется применить тип `Object`, используйте вместо него `any`.
+На данный момент в TypeScript нет способа указать, что объект должен быть "непримитивным".
 
-## Generics
+## Обобщения
 
-*Don't* ever have a generic type which doesn't use its type parameter.
-See more details in [TypeScript FAQ page](https://github.com/Microsoft/TypeScript/wiki/FAQ#why-doesnt-type-inference-work-on-this-interface-interface-foot---).
+Никогда *не создавайте* обобщенный тип, который не использует типовый параметр.
+Больше информации на странице [часто задаваемых вопросов](https://github.com/Microsoft/TypeScript/wiki/FAQ#why-doesnt-type-inference-work-on-this-interface-interface-foot---).
 
-<!-- TODO: More -->
+# Типы функций обратного вызова
 
-# Callback Types
+## Типы возвращаемых значений функций обратного вызова
 
-## Return Types of Callbacks
-
-<!-- TODO: Reword; these examples make no sense in the context of a declaration file -->
-
-*Don't* use the return type `any` for callbacks whose value will be ignored:
+*Не используйте* `any` в качестве типа возвращаемого значения для функций обратного вызова, чье возвращаемое значение игнорируется:
 
 ```ts
-/* WRONG */
+/* НЕПРАВИЛЬНО */
 function fn(x: () => any) {
     x();
 }
 ```
 
-*Do* use the return type `void` for callbacks whose value will be ignored:
+*Используйте* тип `void` в подобных случаях:
 
 ```ts
-/* OK */
+/* ПРАВИЛЬНО */
 function fn(x: () => void) {
     x();
 }
 ```
 
-*Why*: Using `void` is safer because it prevents you from accidently using the return value of `x` in an unchecked way:
+*Почему*: использование `void` более безопасно, поскольку защищает от случайного использования возвращаемого значения `x` без проверки типов:
 
 ```ts
 function fn(x: () => void) {
-    var k = x(); // oops! meant to do something else
-    k.doSomething(); // error, but would be OK if the return type had been 'any'
+    var k = x(); // упс! планировалось написать что-то другое
+    k.doSomething(); // ошибка, но все было бы нормально, если бы тип возвращаемого значения был 'any'
 }
 ```
 
-## Optional Parameters in Callbacks
+## Необязательные параметры в функциях обратного вызова
 
-*Don't* use optional parameters in callbacks unless you really mean it:
+*Не используйте* необязательные параметры в функциях обратного вызова, кроме случаев, когда они необходимы:
 
 ```ts
-/* WRONG */
+/* НЕПРАВИЛЬНО */
 interface Fetcher {
     getObject(done: (data: any, elapsedTime?: number) => void): void;
 }
 ```
 
-This has a very specific meaning: the `done` callback might be invoked with 1 argument or might be invoked with 2 arguments.
-The author probably intended to say that the callback might not care about the `elapsedTime` parameter,
-  but there's no need to make the parameter optional to accomplish this --
-  it's always legal to provide a callback that accepts fewer arguments.
+Это имеет следующее значение: функция обратного вызова `done` может быть вызвана либо с одним, либо с двумя аргументами.
+Разработчик, вероятно, намеревался выразить то, что функция обратного вызова может не обращать внимания на параметр `elapsedTime`, однако для этого не нужно делать параметр необязательным -- передача функции обратного вызова, которая принимает меньшее число аргументов, всегда допускается.
 
-*Do* write callback parameters as non-optional:
+Всегда *используйте* обязательные параметры для функции обратного вызова:
 
 ```ts
-/* OK */
+/* ПРАВИЛЬНО */
 interface Fetcher {
     getObject(done: (data: any, elapsedTime: number) => void): void;
 }
 ```
 
-## Overloads and Callbacks
+## Перегрузки и функции обратного вызова
 
-*Don't* write separate overloads that differ only on callback arity:
+*Не создавайте* отдельных перегрузок, различающихся только числом аргументов у функции обратного вызова:
 
 ```ts
-/* WRONG */
+/* НЕПРАВИЛЬНО */
 declare function beforeAll(action: () => void, timeout?: number): void;
 declare function beforeAll(action: (done: DoneFn) => void, timeout?: number): void;
 ```
 
-*Do* write a single overload using the maximum arity:
+*Создавайте* одну общую перегрузку с максимальным числом аргументов:
 
 ```ts
-/* OK */
+/* ПРАВИЛЬНО */
 declare function beforeAll(action: (done: DoneFn) => void, timeout?: number): void;
 ```
 
-*Why*: It's always legal for a callback to disregard a parameter, so there's no need for the shorter overload.
-Providing a shorter callback first allows incorrectly-typed functions to be passed in because they match the first overload.
+*Почему*: функция с меньшим числом параметров всегда допустима, поэтому необходимости в более короткой перегрузке нет.
+Добавление в начало варианта с более короткой перегрузкой приводит к тому, что неподходящие по типу функции будут допускаться, поскольку подходят к первой перегрузке.
 
-# Function Overloads
+# Перегрузки функций
 
-## Ordering
+## Упорядочение
 
-*Don't* put more general overloads before more specific overloads:
+*Не помещайте* более общие перегрузки перед более специфичными:
 
 ```ts
-/* WRONG */
+/* НЕПРАВИЛЬНО */
 declare function fn(x: any): any;
 declare function fn(x: HTMLElement): number;
 declare function fn(x: HTMLDivElement): string;
@@ -122,10 +115,10 @@ var myElem: HTMLDivElement;
 var x = fn(myElem); // x: any, wat?
 ```
 
-*Do* sort overloads by putting the more general signatures after more specific signatures:
+*Сортируйте* перегрузки так, чтобы более общие находились после более специфичных:
 
 ```ts
-/* OK */
+/* ПРАВИЛЬНО */
 declare function fn(x: HTMLDivElement): string;
 declare function fn(x: HTMLElement): number;
 declare function fn(x: any): any;
@@ -134,15 +127,15 @@ var myElem: HTMLDivElement;
 var x = fn(myElem); // x: string, :)
 ```
 
-*Why*: TypeScript chooses the *first matching overload* when resolving function calls.
-When an earlier overload is "more general" than a later one, the later one is effectively hidden and cannot be called.
+*Почему*: при разрешении вызовов функции TypeScript выбирает *первую подходящую перегрузку*.
+Если первая перегрузка является более общей, чем последующие, то последующие перегрузки оказываются скрыты и не могут быть вызваны.
 
-## Use Optional Parameters
+## Используйте необязательные параметры
 
-*Don't* write several overloads that differ only in trailing parameters:
+*Не создавайте* несколько перегрузок, отличающихся только конечными аргументами:
 
 ```ts
-/* WRONG */
+/* НЕПРАВИЛЬНО */
 interface Moment {
     diff(b: MomentComparable): number;
     diff(b: MomentComparable, unitOfTime: string): number;
@@ -150,48 +143,47 @@ interface Moment {
 }
 ```
 
-*Do* use optional parameters whenever possible:
+*Используйте* необязательные параметры, если это возможно:
 
 ```ts
-/* OK */
+/* ПРАВИЛЬНО */
 interface Moment {
     diff(b: MomentComparable, unitOfTime?: string, round?: boolean): number;
 }
 ```
 
-Note that this collapsing should only occur when all overloads have the same return type.
+Обратите внимание, что подобное "схлопывание" возможно только если у всех перегрузок один и тот же тип возвращаемого значения.
 
-*Why*: This is important for two reasons.
+*Почему*: Это важно по двум причинам.
 
-TypeScript resolves signature compatibility by seeing if any signature of the target can be invoked with the arguments of the source,
-  *and extraneuous arguments are allowed*.
-This code, for example, exposes a bug only when the signature is correctly written using optional parameters:
+TypeScript определяет совместимость сигнатур, определяя, может ли какая-либо сигнатура цели вызвана с аргументами исходной сигнатуры, причем *лишние аргументы допускаются*.
+Следующий код, например, позволяет обнаружить ошибку только в том случае, если сигнатура правильно записана с использованием необязательных параметров:
 
 ```ts
 function fn(x: (a: string, b: number, c: number) => void) { }
 var x: Moment;
-// When written with overloads, OK -- used first overload
-// When written with optionals, correctly an error
+// Если записано с перегрузками, все нормально -- использована первая перегрузка
+// Если записано с необязательными параметрами, обнаруживается ошибка
 fn(x.diff);
 ```
 
-The second reason is when a consumer uses the "strict null checking" feature of TypeScript.
-Because unspecified parameters appear as `undefined` in JavaScript, it's usually fine to pass an explicit `undefined` to a function with optional arguments.
-This code, for example, should be OK under strict nulls:
+Вторая причина -- применение к коду, использующему библиотеку, "строгой проверки на `null`".
+Поскольку пропущенные параметры для JavaScript выглядят как `undefined`, то, как правило, функции с необязательными параметрами можно явно передать `undefined`.
+Следующий код, например, должен компилироваться при строгой проверке на `null`:
 
 ```ts
 var x: Moment;
-// When written with overloads, incorrectly an error because of passing 'undefined' to 'string'
-// When written with optionals, correctly OK
+// Если записано с перегрузками, то несправедливая ошибка, так как передается 'undefined' вместо 'string'
+// Если записано с необязательными параметрами, то все нормально
 x.diff(something, someOtherThing ? undefined : "hour");
 ```
 
-## Use Union Types
+## Используйте объединения
 
-*Don't* write overloads that differ by type in only one argument position:
+*Не создавайте* перегрузок, которые отличаются только типом одного аргумента:
 
 ```ts
-/* WRONG */
+/* НЕПРАВИЛЬНО */
 interface Moment {
     utcOffset(): number;
     utcOffset(b: number): Moment;
@@ -199,26 +191,26 @@ interface Moment {
 }
 ```
 
-*Do* use union types whenver possible:
+*Используйте* объединения, если это возможно:
 
 ```ts
-/* OK */
+/* ПРАВИЛЬНО */
 interface Moment {
     utcOffset(): number;
     utcOffset(b: number|string): Moment;
 }
 ```
 
-Note that we didn't make `b` optional here because the return types of the signatures differ.
+Обратите внимание, что параметр `b` не сделан необязательным, так как типы возвращаемых значений различаются.
 
-*Why*: This is important for people who are "passing through" a value to your function:
+*Почему*: Это важно для тех, кто передает значения "сквозь" функцию:
 
 ```ts
 function fn(x: string): void;
 function fn(x: number): void;
 function fn(x: number|string) {
-    // When written with separate overloads, incorrectly an error
-    // When written with union types, correctly OK
+    // Если записано с отдельными перегрузками, то несправедливая ошибка
+    // Если записано с объединениями, то все нормально
     return moment().utcOffset(x);
 }
 ```

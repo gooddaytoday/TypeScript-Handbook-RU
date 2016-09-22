@@ -1,17 +1,17 @@
-Now that you have authored a declaration file following the steps of this guide, it is time to publish it to npm.
-There are two main ways you can publish your declaration files to npm:
+Теперь, когда вы, следуя шагам из этого руководства, создали файл объявлений, пришло время опубликовать его в npm.
+Есть два основных пути для этого:
 
-1. bundling with your npm package, or
-2. publishing to the [@types organization](https://www.npmjs.com/~types) on npm.
+1. включить объявления в npm-пакет
+2. опубликовать в [организации @types](https://www.npmjs.com/~types) в npm.
 
-If you control the npm package you are publishing declarations for, then the first approach is favored.
-That way, your declarations and JavaScript always travel together.
+Если вы управляете пакетом, для которого собираетесь опубликовать объявления, то первый способ подойдет лучше всего.
+В этом случае объявления и JavaScript-код всегда будут вместе.
 
-# Including declarations in your npm package
+# Включение объявлений в свой npm-пакет
 
-If your package has a main `.js` file, you will need to indicate the main declaration file in your `package.json` file as well.
-Set the `types` property to point to your bundled declaration file.
-For example:
+Если у пакета есть главный `.js`-файл, то в `package.json` нужно также указать главный файл с объявлениями.
+Для этого установите свойство `types`, которое должно указывать на файл объявлений.
+Например:
 
 ```json
 {
@@ -23,15 +23,15 @@ For example:
 }
 ```
 
-Note that the `"typings"` field is synonymous with `"types"`, and could be used as well.
+Стоит отметить, что поле `"typings"` синонимично `"types"` и также может быть использовано.
 
-Also note that if your main declaration file is named `index.d.ts` and lives at the root of the package (next to `index.js`) you do not need to mark the `"types"` property, though it is advisable to do so.
+Также отметим, что если главный файл объявлений имеет имя `index.d.ts` и находится в корне директории пакета (рядом с `index.js`), то указывать свойство `"types"` не обязательно, хотя и желательно.
 
-## Dependencies
+## Зависимости
 
-All dependencies are managed by npm.
-Make sure all the declaration packages you depend on are marked appropriately in the `"dependencies"` section in your `package.json`.
-For example, imagine we authored a package that used Browserify and TypeScript.
+Все зависимости управляются npm.
+Убедитесь, что все пакеты с объявлениями, от которых зависит ваш пакет, указаны в файле `package.json` в секции `"dependencies"`.
+Например, представим, что мы создали пакет, который использует Browserify и TypeScript.
 
 ```json
 {
@@ -48,51 +48,49 @@ For example, imagine we authored a package that used Browserify and TypeScript.
 }
 ```
 
-Here, our package depends on the `browserify` and `typescript` packages.
-`browserify` does not bundle its declaration files with its npm packages, so we needed to depend on `@types/browserify` for its declarations.
-`typescript`, on the other hand, packages its declaration files, so there was no need for any additional dependencies
+Здесь указывается, что пакет зависит от пакетов `browserify` и `typescript`.
+Пакет `browserify` из npm не поставляется со своими файлами объявлений, поэтому для добавления объявлений необходимо добавить зависимость от `@types/browserify`.
+`typescript`, напротив, поставляется с файлами объявлений, поэтому никаких дополнительных зависимостей не требуется.
 
-Our package exposes declarations from each of those, so any user of our `browserify-typescript-extension` package needs to have these dependencies as well.
-For that reason, we used `"dependencies"` and not `"devDependencies"`, because otherwise our consumers would have needed to manually install those packages.
-If we had just written a command line application and not expected our package to be used as a library, we might have used `devDependencies`.
+Наш пакет представляет доступ к объявлениям из обоих этих пакетов, и поэтому у пользователя нашего пакета `browserify-typescript-extension` также должны быть установлены эти зависимости.
+По этой причине используется `"dependencies"`, а не `"devDependencies"`, поскольку во втором случае нашим пользователям пришлось бы вручную устанавливать эти пакеты.
+Если бы мы писали приложение, работающее из командной строки, и этот пакет не предполагалось бы использовать как библиотеку, то можно было бы использовать `devDependencies`.
 
-## Red flags
+## Опасные места
 
 ### `/// <reference path="..." />`
 
-*Don't* use `/// <reference path="..." />` in your declaration files.
+*Не* используйте `/// <reference path="..." />` в файлах объявлений.
 
 ```ts
 /// <reference path="../typescript/lib/typescriptServices.d.ts" />
 ....
 ```
 
-*Do* use `/// <reference types="..." />` instead.
+Вместо этого *используйте* `/// <reference types="..." />`.
 
 ```ts
 /// <reference types="typescript" />
 ....
 ```
 
-Make sure to revisit the [Consuming dependencies](./Library Structures.md#consuming-dependencies) section for more information.
+Обязательно еще раз прочтите [Использование зависимостей](./Library Structures.md#использование-зависимостей) для большей информации.
 
-### Packaging dependent declarations
+### Упаковка зависимых объявлений
 
-If your type definitions depend on another package:
+Если объявления типов зависят от других пакетов:
 
-* *Don't* combine it with yours, keep each in their own file.
-* *Don't* copy the declarations in your package either.
-* *Do* depend on the npm type declaration package if it doesn't package its declaration files.
+* *Не объединяйте* их со своими, храните каждый в своем файле.
+* *Не копируйте* объявления в свой пакет.
+* *Добавьте зависимость* от npm-пакета с объявлениями для нужного пакета, если объявления не поставляются вместе с ним.
 
-## Publicize your declaration file
+## Публикация файлов объявлений
 
-After publishing your declaration file with your package, make sure to add a reference to it in the [DefinitelyTyped repo external package list](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/types-2.0/notNeededPackages.json).
-Adding this will allow search tools to know that your package provides its own declarations.
+После публикации файлов объявлений со своим пакетом, добавьте ссылку на него в [список внешних пакетов репозитория DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/types-2.0/notNeededPackages.json).
+Это позволит инструментам поиска понять, что ваш пакет предоставляет свои собственные объявления.
 
-<!-- TODO: more about this. -->
+# Публикация в [@types](https://www.npmjs.com/~types)
 
-# Publish to [@types](https://www.npmjs.com/~types)
-
-Packages on under the [@types](https://www.npmjs.com/~types) organization are published automatically from [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) using the [types-publisher tool](https://github.com/Microsoft/types-publisher).
-To get your declarations published as an @types package, please submit a pull request to [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped).
-You can find more details in the [contribution guidelines page](http://definitelytyped.org/guides/contributing.html).
+Пакеты организации [@types](https://www.npmjs.com/~types) автоматически публикуются из репозитория [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) с помощью [инструмента types-publisher](https://github.com/Microsoft/types-publisher).
+Чтобы опубликовать свои объявления как пакет в организации @types, отправьте запрос на включение изменений (pull request) в репозиторий [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped).
+Больше информации можно найти на странице [руководства по участию](http://definitelytyped.org/guides/contributing.html).

@@ -1,42 +1,41 @@
-// Type definitions for [~THE LIBRARY NAME~] [~OPTIONAL VERSION NUMBER~]
-// Project: [~THE PROJECT NAME~]
-// Definitions by: [~YOUR NAME~] <[~A URL FOR YOU~]>
+// Type definitions for [~НАЗВАНИЕ БИБЛИОТЕКИ~] [~НЕОБЯЗАТЕЛЬНЫЙ НОМЕР ВЕРСИИ~]
+// Project: [~НАЗВАНИЕ ПРОЕКТА~]
+// Definitions by: [~ВАШЕ ИМЯ~] <[~ВАШ АДРЕС В ИНТЕРНЕТЕ~]>
 
-/*~ This is the module template file. You should rename it to index.d.ts
- *~ and place it in a folder with the same name as the module.
- *~ For example, if you were writing a file for "super-greeter", this
- *~ file should be 'super-greeter/index.d.ts'
+/*~ Это шаблон модуля. Его нужно переименовать в index.d.ts
+ *~ и поместить в папку с тем же именем, что и имя модуля.
+ *~ Например, если вы создаете файл для "super-greeter", то этот файл
+ *~ должен называться "super-greeter/index.d.ts"
  */
 
-/*~ If this module is a UMD module that exposes a global variable 'myLib' when
- *~ loaded outside a module loader environment, declare that global here.
- *~ Otherwise, delete this declaration.
+/*~ Если это UMD-модуль, который предоставляет глобальную переменную 'myClassLib'
+ *~ при загрузке в окружении без загрузчика модулей, объявите эту переменную здесь.
+ *~ В противном случае удалите это объявление.
  */
 export as namespace myLib;
 
-/*~ If this module has methods, declare them as functions like so.
+/*~ Если у этого модуля есть методы, объявите их как функции вот так:
  */
 export function myMethod(a: string): string;
 export function myOtherMethod(a: number): number;
 
-/*~ You can declare types that are available via importing the module */
+/*~ Можно объявить типы, которые будут доступны через импорт */
 export interface someType {
 	name: string;
 	length: number;
 	extras?: string[];
 }
 
-/*~ You can declare properties of the module using const, let, or var */
+/*~ Свойства модуля можно объявлять c помощью const, let или var */
 export const myField: number;
 
-/*~ If there are types, properties, or methods inside dotted names
- *~ of the module, declare them inside a 'namespace'.
- */
+/*~ Если существуют типы, свойства или методы модуля, доступные через точку,
+ *~ объявите их внутри пространства имен */
 export namespace subProp {
-	/*~ For example, given this definition, someone could write:
+	/*~ Например, с этим объявлением можно написать:
 	 *~   import { subProp } from 'yourModule';
 	 *~   subProp.foo();
-     *~ or
+     *~ или
      *~   import * as yourMod from 'yourModule';
      *~   yourMod.subProp.foo();
      */

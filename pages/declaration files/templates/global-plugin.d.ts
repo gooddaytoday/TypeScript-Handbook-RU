@@ -1,20 +1,20 @@
-// Type definitions for [~THE LIBRARY NAME~] [~OPTIONAL VERSION NUMBER~]
-// Project: [~THE PROJECT NAME~]
-// Definitions by: [~YOUR NAME~] <[~A URL FOR YOU~]>
+// Type definitions for [~НАЗВАНИЕ БИБЛИОТЕКИ~] [~НЕОБЯЗАТЕЛЬНЫЙ НОМЕР ВЕРСИИ~]
+// Project: [~НАЗВАНИЕ ПРОЕКТА~]
+// Definitions by: [~ВАШЕ ИМЯ~] <[~ВАШ АДРЕС В ИНТЕРНЕТЕ~]>
 
-/*~ This template shows how to write a global plugin. */
+/*~ Этот шаблон показывает, как создать глобальный плагин */
 
-/*~ Write a declaration for the original type and add new members.
- *~ For example, this adds a 'toBinaryString' method with to overloads to
- *~ the built-in number type.
+/*~ Напишите объявление для исходного типа и добавьте новые члены.
+ *~ Например, здесь к встроенному типу `number` добавляется метод
+ *~ 'toBinaryString' с двумя перегрузками
  */
 interface Number {
 	toBinaryString(opts?: MyLibrary.BinaryFormatOptions): string;
 	toBinaryString(callback: MyLibrary.BinaryFormatCallback, opts?: MyLibrary.BinaryFormatOptions): string;
 }
 
-/*~ If you need to declare several types, place them inside a namespace
- *~ to avoid adding too many things to the global namespace.
+/*~ Если нужно объявить несколько типов, поместите их в пространство имен, чтобы
+ *~ сократить добавления к глобальному пространству имен
  */
 declare namespace MyLibrary {
 	type BinaryFormatCallback = (n: number) => string;
