@@ -1,37 +1,36 @@
-# Introduction
+# Введение
 
-Some of the unique concepts in TypeScript describe the shape of JavaScript objects at the type level.
-One example that is especially unique to TypeScript is the concept of 'declaration merging'.
-Understanding this concept will give you an advantage when working with existing JavaScript.
-It also opens the door to more advanced abstraction concepts.
+Для описания JavaScript-объектов на уровне типов в TypeScript используется несколько уникальных принципов.
+Один из примеров подобного совершенно исключительного для TypeScript принципа — 'слияние объявлений'.
+Понимание работы данного механизма дает преимущество при работе с уже существующим JavaScript-кодом, а также открывает дверь к более сложным принципам абстракции.
 
-For the purposes of this article, "declaration merging" means that the compiler merges two separate declarations declared with the same name into a single definition.
-This merged definition has the features of both of the original declarations.
-Any number of declarations can be merged; it's not limited to just two declarations.
+В данной главе "слияние объявлений" означает, что компилятор объединяет два отдельных объявления с одинаковыми именами в одно определение.
+Полученное определение имеет свойства, присущие обоим исходным объявлениям.
+Объединены могут быть не только два, но любое количество объявлений.
 
-# Basic Concepts
+# Основные понятия
 
-In TypeScript, a declaration creates entities in at least one of three groups: namespace, type, or value.
-Namespace-creating declarations create a namespace, which contains names that are accessed using a dotted notation.
-Type-creating declarations do just that: they create a type that is visible with the declared shape and bound to the given name.
-Lastly, value-creating declarations create values that are visible in the output JavaScript.
+В TypeScript объявление создает сущности по крайней мере в одной из трех групп: пространства имен, типы или значения.
+Создающие пространства имен объявления создают пространства имен, содержащие имена, доступные посредством синтаксиса с точкой.
+Создающие типы объявления создают тип с описанной формой, привязанный к указанному имени.
+И наконец, создающие значения объявления создают значения, доступные в сгенерированном JavaScript-коде.
 
-| Declaration Type | Namespace | Type | Value |
-|------------------|:---------:|:----:|:-----:|
-| Namespace        |     X     |      |   X   |
-| Class            |           |   X  |   X   |
-| Enum             |           |   X  |   X   |
-| Interface        |           |   X  |       |
-| Type Alias       |           |   X  |       |
-| Function         |           |      |   X   |
-| Variable         |           |      |   X   |
+| Вид объявления    | Пространство имен | Тип | Значение |
+|-------------------|:-----------------:|:---:|:--------:|
+| Пространство имен |         X         |     |     X    |
+| Класс             |                   |  X  |     X    |
+| Перечисление      |                   |  X  |     X    |
+| Интерфейс         |                   |  X  |          |
+| Псевдоним типа    |                   |  X  |          |
+| Функция           |                   |     |     X    |
+| Переменная        |                   |     |     X    |
 
-Understanding what is created with each declaration will help you understand what is merged when you perform a declaration merge.
+Понимание того, что создается тем или иным объявлением, помогает разобраться, как происходит слияние.
 
-# Merging Interfaces
+# Слияние интерфейсов
 
-The simplest, and perhaps most common, type of declaration merging is interface merging.
-At the most basic level, the merge mechanically joins the members of both declarations into a single interface with the same name.
+Самый простой и, возможно, наиболее часто используемый вид слияния — слияние интерфейсов.
+На самом простом уровне такое слияние механически объединяет члены обоих объявлений в один интерфейс с тем же именем.
 
 ```ts
 interface Box {
@@ -46,13 +45,13 @@ interface Box {
 let box: Box = {height: 5, width: 6, scale: 10};
 ```
 
-Non-function members of the interfaces must be unique.
-The compiler will issue an error if the interfaces both declare a non-function member of the same name.
+Члены интерфейсов, которые не являются функциями, должны быть уникальны.
+Компилятор выдаст ошибку, если оба интерфейса определяют член с одним и тем же именем, не являющийся функцией.
 
-For function members, each function member of the same name is treated as describing an overload of the same function.
-Of note, too, is that in the case of interface `A` merging with later interface `A`, the second interface will have a higher precedence than the first.
+Каждая функция-член с тем же именем расценивается как описание перегрузки для одной и той же функции.
+Также стоит отметить, что при слиянии интерфейса `A` с последующим интерфейсом `A` второй будет иметь больший приоритет, чем первый.
 
-That is, in the example:
+Таким образом, в данном примере:
 
 ```ts
 interface Cloner {
@@ -69,7 +68,7 @@ interface Cloner {
 }
 ```
 
-The three interfaces will merge to create a single declaration as so:
+три интерфейса будут слиты вместе и получится следующее объявление:
 
 ```ts
 interface Cloner {
@@ -80,12 +79,12 @@ interface Cloner {
 }
 ```
 
-Notice that the elements of each group maintains the same order, but the groups themselves are merged with later overload sets ordered first.
+Обратите внимание, что элементы внутри групп сохраняют свой порядок, однако сами группы упорядочены так, что более поздние перегрузки находятся в начале.
 
-One exception to this rule is specialized signatures.
-If a signature has a parameter whose type is a *single* string literal type (e.g. not a union of string literals), then it will be bubbled toward the top of its merged overload list.
+Единственное исключение из этого правила — специализированные сигнатуры.
+Если у сигнатуры есть параметр с типом *одиночного* строкового литерала (т. е., не объединение строковых литералов, например), то она поднимется к верху объединенного списка перегрузок.
 
-For instance, the following interfaces will merge together:
+К примеру, следующие интерфейсы будут слиты друг с другом:
 
 ```ts
 interface Document {
@@ -101,7 +100,7 @@ interface Document {
 }
 ```
 
-The resulting merged declaration of `Document` will be the following:
+И результирующее объявление`Document` будет следующим:
 
 ```ts
 interface Document {
@@ -113,16 +112,16 @@ interface Document {
 }
 ```
 
-# Merging Namespaces
+# Слияние пространств имен
 
-Similarly to interfaces, namespaces of the same name will also merge their members.
-Since namespaces create both a namespace and a value, we need to understand how both merge.
+Подобно интерфейсам, члены пространств имен с одинаковыми именами также объединяются.
+Поскольку объявление пространства имен создает и пространство имен, и значение, необходимо понять, как все они объединяются.
 
-To merge the namespaces, type definitions from exported interfaces declared in each namespace are themselves merged, forming a single namespace with merged interface definitions inside.
+Для слияния пространств имен объявления типов из экспортируемых интерфейсов в каждом из пространств имен объединяются, и образуется единое пространство имен с объединенными определениями интерфейсов внутри.
 
-To merge the namespace value, at each declaration site, if a namespace already exists with the given name, it is further extended by taking the existing namespace and adding the exported members of the second namespace to the first.
+При слиянии значений пространства имен берется каждое определение, и, если пространство имен с таким именем уже существует, то оно расширяется добавлением экспортируемых членов из второго пространства имен.
 
-The declaration merge of `Animals` in this example:
+В данном примере объединенное объявление `Animals`
 
 ```ts
 namespace Animals {
@@ -135,7 +134,7 @@ namespace Animals {
 }
 ```
 
-is equivalent to:
+эквивалентно:
 
 ```ts
 namespace Animals {
@@ -146,10 +145,10 @@ namespace Animals {
 }
 ```
 
-This model of namespace merging is a helpful starting place, but we also need to understand what happens with non-exported members.
-Non-exported members are only visible in the original (un-merged) namespace. This means that after merging, merged members that came from other declarations cannot see non-exported members.
+Такая модель слияния пространств имен неплоха для начала, но необходимо понять, что происходит с членами, которые не экспортируются.
+Неэкспортируемые члены видны только в оригинальном (не объединенном) пространстве имен. Это значит, что после слияния они не будут видны членам из других объявлений.
 
-We can see this more clearly in this example:
+Более ясно это видно на следующем примере:
 
 ```ts
 namespace Animal {
@@ -162,23 +161,23 @@ namespace Animal {
 
 namespace Animal {
     export function doAnimalsHaveMuscles() {
-        return haveMuscles;  // <-- error, haveMuscles is not visible here
+        return haveMuscles;  // <-- ошибка, haveMuscles здесь не видна
     }
 }
 ```
 
-Because `haveMuscles` is not exported, only the `animalsHaveMuscles` function that shares the same un-merged namespace can see the symbol.
-The `doAnimalsHaveMuscles` function, even though it's part of the merged `Animal` namespace can not see this un-exported member.
+Поскольку `haveMuscles` не экспортируется, она видна только в функции `animalsHaveMuscles` из того же необъединенного пространства имен.
+Функция `doAnimalsHaveMuscles`, хотя и входит в объединенное пространство имен `Animal`, не видит неэкспортируемый член.
 
-# Merging Namespaces with Classes, Functions, and Enums
+# Слияние пространств имен с классами, функциями и перечислениями
 
-Namespaces are flexible enough to also merge with other types of declarations.
-To do so, the namespace declaration must follow the declaration it will merge with. The resulting declaration has properties of both declaration types.
-TypeScript uses this capability to model some of patterns in JavaScript as well as other programming languages.
+Пространства имен достаточно гибки, чтобы объединяться с другими типами объявлений.
+Для этого объявление пространства имен должно находиться после объявления, с которым будет происходить слияние. Полученное объявление будет иметь свойства обоих исходных объявлений.
+Такая возможность используется в TypeScript для моделирования ряда приемов из JavaScript и других языков программирования.
 
-## Merging Namespaces with Classes
+## Слияние пространств имен с классами
 
-This gives the user a way of describing inner classes.
+Это позволяет описывать вложенные классы.
 
 ```ts
 class Album {
@@ -189,12 +188,12 @@ namespace Album {
 }
 ```
 
-The visibility rules for merged members is the same as described in the 'Merging Namespaces' section, so we must export the `AlbumLabel` class for the merged class to see it.
-The end result is a class managed inside of another class.
-You can also use namespaces to add more static members to an existing class.
+Правила видимости для объединяемых членов такие же, как те, что описаны в разделе 'Слияние пространств имен', поэтому `AlbumClass` должен быть экспортирован, чтобы он был виден в объединенном классе.
+Итоговый результат — класс, используемый изнутри другого класса.
+Кроме того, пространства имен можно использовать для добавления статических членов к существующим классам.
 
-In addition to the pattern of inner classes, you may also be familiar with JavaScript practice of creating a function and then extending the function further by adding properties onto the function.
-TypeScript uses declaration merging to build up definitions like this in a type-safe way.
+Кроме приема с вложенным классом, вы, вероятно, знакомы с практикой из JavaScript, когда создается функция, которая затем расширяется с помощью добавления к ней свойств.
+Для того, чтобы создавать подобные структуры типобезопасно, в TypeScript используется слияние объявлений:
 
 ```ts
 function buildLabel(name: string): string {
@@ -209,7 +208,7 @@ namespace buildLabel {
 alert(buildLabel("Sam Smith"));
 ```
 
-Similarly, namespaces can be used to extend enums with static members:
+Похожим образом пространства имен можно использовать для расширения перечислений статическими членами:
 
 ```ts
 enum Color {
@@ -236,35 +235,35 @@ namespace Color {
 }
 ```
 
-# Disallowed Merges
+# Запрещенные слияния
 
-Not all merges are allowed in TypeScript.
-Currently, classes can not merge with other classes or with variables.
-For information on mimicking class merging, see the [Mixins in TypeScript](./Mixins.md) section.
+Не все слияния допустимы.
+На данный момент классы не могут объединяться с другими классами или с переменными.
+Для информации о том, как можно эмулировать слияние классов, см. раздел [Примеси в TypeScript](./Mixins.md).
 
-# Module Augmentation
+# Дополнения модулей
 
-Although JavaScript modules do not support merging, you can patch existing objects by importing and then updating them.
-Let's look at a toy Observable example:
+Хотя JavaScript-модули не поддерживают слияние, уже существующие объекты можно модифицировать, импортируя и затем изменяя их.
+Посмотрим на пример реализации шаблона проектирования 'Наблюдатель' (`Observable`):
 
 ```js
 // observable.js
 export class Observable<T> {
-    // ... implementation left as an exercise for the reader ...
+    // ... реализация оставлена в качестве упражнения для читателя ...
 }
 
 // map.js
 import { Observable } from "./observable";
 Observable.prototype.map = function (f) {
-    // ... another exercise for the reader
+    // ... еще одно упражнение для читателя
 }
 ```
 
-This works fine in TypeScript too, but the compiler doesn't know about `Observable.prototype.map`.
-You can use module augmentation to tell the compiler about it:
+Это отлично работает и в TypeScript, но компилятор ничего не знает о `Observable.prototype.map`.
+Чтобы рассказать компилятору об этом свойстве, можно использовать дополнение модуля:
 
 ```ts
-// observable.ts stays the same
+// observable.ts остается тем же
 // map.ts
 import { Observable } from "./observable";
 declare module "./observable" {
@@ -273,7 +272,7 @@ declare module "./observable" {
     }
 }
 Observable.prototype.map = function (f) {
-    // ... another exercise for the reader
+    // ... еще одно упражнение для читателя
 }
 
 
@@ -284,19 +283,19 @@ let o: Observable<number>;
 o.map(x => x.toFixed());
 ```
 
-The module name is resolved the same way as module specifiers in `import`/`export`.
-See [Modules](./Modules.md) for more information.
-Then the declarations in an augmentation are merged as if they were declared in the same file as the original.
-However, you can't declare new top-level declarations in the augmentation -- just patches to existing declarations.
+Имя модуля разрешается так же, как и спецификаторы модуля в `import`/`export`.
+См. [Модули](./Modules.md) для большей информации.
+После этого объявления в дополнении сливаются, словно бы они определены в том же модуле, что и исходный.
+Создавать новое определение верхнего уровня в дополнении нельзя — только модификации для уже существующих определений.
 
-## Global augmentation
+## Глобальное дополнение
 
-You can also add declarations to the global scope from inside a module:
+Кроме того, из модуля можно добавлять объявления в глобальную область видимости:
 
 ```ts
 // observable.ts
 export class Observable<T> {
-    // ... still no implementation ...
+    // ... все еще не реализовано ...
 }
 
 declare global {
@@ -310,4 +309,4 @@ Array.prototype.toObservable = function () {
 }
 ```
 
-Global augmentations have the same behavior and limits as module augmentations.
+Глобальные дополнения ведут себя так же, как и дополнения модулей, и имеют такие же ограничения.
