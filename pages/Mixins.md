@@ -1,15 +1,15 @@
-# Introduction
+﻿# Введение
 
-Along with traditional OO hierarchies, another popular way of building up classes from reusable components is to build them by combining simpler partial classes.
-You may be familiar with the idea of mixins or traits for languages like Scala, and the pattern has also reached some popularity in the JavaScript community.
+Помимо принятой в ООП традиционной иерархии, существует способ создания классов из повторно используемых компонентов путем комбинирования более простых неполных классов.
+Возможно, вы знакомы с идеей примесей (англ. mixins) или типажей (англ. traits), используемых в таких языках, как Scala. Этот подход также получил некоторое распространение в сообществе пользователей JavaScript.
 
-# Mixin sample
+# Пример примеси
 
-In the code below, we show how you can model mixins in TypeScript.
-After the code, we'll break down how it works.
+Ниже приведен код, демонстрирующий использование примесей в TypeScript.
+После примера последует его подробное объяснение.
 
 ```ts
-// Disposable Mixin
+// Disposable (одноразовый) mixin
 class Disposable {
     isDisposed: boolean;
     dispose() {
@@ -18,7 +18,7 @@ class Disposable {
 
 }
 
-// Activatable Mixin
+// Activatable (активируемый) mixin
 class Activatable {
     isActive: boolean;
     activate() {
@@ -52,7 +52,7 @@ let smartObj = new SmartObject();
 setTimeout(() => smartObj.interact(), 1000);
 
 ////////////////////////////////////////
-// In your runtime library somewhere
+// Где-то в вашей динамической библиотеке
 ////////////////////////////////////////
 
 function applyMixins(derivedCtor: any, baseCtors: any[]) {
@@ -64,14 +64,14 @@ function applyMixins(derivedCtor: any, baseCtors: any[]) {
 }
 ```
 
-# Understanding the sample
+# Разбор примера
 
-The code sample starts with the two classes that will act as our mixins.
-You can see each one is focused on a particular activity or capability.
-We'll later mix these together to form a new class from both capabilities.
+Код начинается с определения двух классов, которые и будут задействованы в качестве примесей.
+Каждый из них нацелен на демонстрацию определенной активности или возможности.
+Позже мы их смешаем, чтобы сформировать новый объединяющий их свойства класс.
 
 ```ts
-// Disposable Mixin
+// Disposable mixin
 class Disposable {
     isDisposed: boolean;
     dispose() {
@@ -80,7 +80,7 @@ class Disposable {
 
 }
 
-// Activatable Mixin
+// Activatable mixin
 class Activatable {
     isActive: boolean;
     activate() {
@@ -92,21 +92,21 @@ class Activatable {
 }
 ```
 
-Next, we'll create the class that will handle the combination of the two mixins.
-Let's look at this in more detail to see how it does this:
+Далее мы создадим новый класс, который будет объединять обе примеси.
+Давайте рассмотрим, как этого добиться:
 
 ```ts
 class SmartObject implements Disposable, Activatable {
 ```
 
-The first thing you may notice in the above is that instead of using `extends`, we use `implements`.
-This treats the classes as interfaces, and only uses the types behind Disposable and Activatable rather than the implementation.
-This means that we'll have to provide the implementation in class.
-Except, that's exactly what we want to avoid by using mixins.
+Первое, на что вы могли обратить внимание, - вместо `extends` используется `implements`.
+Такой подход позволяет рассматривать классы как интерфейсы и использовать только типы Disposable и Activatable, а не их реализации.
+Получается, что реализацию мы должны будем создать в новом классе.
+Но проблема в том, что именно этого мы бы и хотели избежать при использовании примесей.
 
-To satisfy this requirement, we create stand-in properties and their types for the members that will come from our mixins.
-This satisfies the compiler that these members will be available at runtime.
-This lets us still get the benefit of the mixins, albeit with some bookkeeping overhead.
+Чтобы не делать реализации заново, мы создаем свойства-дублёры (stand-in properties), типы которых будут получены из соответствующих примесей.
+Компилятору достаточно, чтобы эти элементы были доступны динамически.
+Такой подход позволяет нам пользоваться преимуществами примесей, но при условии дополнительной нагрузки по учёту подобных нюансов.
 
 ```ts
 // Disposable
@@ -118,14 +118,14 @@ activate: () => void;
 deactivate: () => void;
 ```
 
-Finally, we mix our mixins into the class, creating the full implementation.
+В итоге мы соединяем наши примеси в классе, создавая полную реализацию.
 
 ```ts
 applyMixins(SmartObject, [Disposable, Activatable]);
 ```
 
-Lastly, we create a helper function that will do the mixing for us.
-This will run through the properties of each of the mixins and copy them over to the target of the mixins, filling out the stand-in properties with their implementations.
+В завершение напишем вспомогательную функцию, предназначенную для создания примесей.
+Она будет пробегать по свойствам примесей и копировать их в целевой элемент, заполняя свойства-дублёры их реализациями.
 
 ```ts
 function applyMixins(derivedCtor: any, baseCtors: any[]) {
