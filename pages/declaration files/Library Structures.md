@@ -4,22 +4,22 @@
 В JavaScript существует много способов предоставить библиотеку для использования, и файл объявлений должен соответствовать выбранному способу.
 Данное руководство описывает, как определить часто используемые шаблоны построения библиотек и создать файлы определений, соответствующие данной практике.
 
-Для каждого распространенного типа библиотек в директории [`templates`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates) есть соответствующий файл.
+Для каждого распространенного типа библиотек в директории [`templates`](https://github.com/gooddaytoday/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates) есть соответствующий файл.
 Чтобы продвигаться быстрее, можно начать с этих файлов.
 
 # Определение типов библиотек
 
 В первую очередь рассмотрим типы библиотек, которые могут описываться файлами определений.
-Мы кратко покажем, как *используется* каждый из типов, как *пишется ее код* и перечислим примеры таких библиотек.
+Мы кратко покажем, как *используется* каждый из типов, как *пишется код* для них и перечислим примеры таких библиотек.
 
-Первый шаг для написания файла объявлений -- определение ее типа.
+Первый шаг для написания файла объявлений — определение типа библиотеки.
 Мы дадим несколько советов для того, чтобы определить тип библиотеки на основании ее *кода* и того, как она используется.
 Тот или иной способ может оказаться проще в зависимости от документации и организации кода.
 Используйте тот, который покажется более удобным.
 
 ## Глобальные библиотеки
 
-*Глобальные* библиотеки -- те, которые доступны в глобальной области видимости (т. е., без какой-либо формы импорта).
+*Глобальные* библиотеки — те, которые доступны в глобальной области видимости (т. е., без импорта в какой-либо форме).
 Многие библиотеки просто предоставляют для использования одну или несколько глобальных переменных.
 К примеру, с [jQuery](https://jquery.com/) переменную `$` можно использовать, просто обратившись к ней:
 
@@ -27,7 +27,7 @@
 $(() => { console.log('hello!'); } );
 ```
 
-Как правило, в документации таких библиотек можно увидеть описание того, как использовать ее с тегом `script`:
+Как правило, в документации таких библиотек описывается, как использовать ее с тегом `script`:
 
 ```html
 <script src="http://a.great.cdn.for/someLib.js"></script>
@@ -76,15 +76,15 @@ window.createGreeting = function(s) {
 
 ### Шаблон глобальной библиотеки
 
-Шаблон [`global.d.ts`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates/global.d.ts) описывает библиотеку `myLib`.
-Обязательно прочтите [замечание относительно предотвращения конфликтов имен](#предотвращение-конфликтов-имен).
+Шаблон [`global.d.ts`](https://github.com/gooddaytoday/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates/global.d.ts) описывает библиотеку `myLib`.
+Обязательно прочтите [замечание о предотвращении конфликтов имен](#Предотвращение-конфликтов-имен).
 
 ## Модульные библиотеки
 
 Некоторые библиотеки работают только в окружении с загрузчиком модулей.
 Например, `express` работает только в Node.js и загружается с помощью функции `require` из CommonJS.
 
-В ECMAScript 2015 (также называемый ES2015, ECMAScript 6 или ES6), CommonJS и RequireJS существуют схожие между собой понятия *импортирования модулей*.
+В ECMAScript 2015 (также называемом ES2015, ECMAScript 6 или ES6), CommonJS и RequireJS существуют схожие между собой понятия *импортирования модулей*.
 Используя CommonJS (Node.JS), можно написать, например:
 
 ```ts
@@ -127,7 +127,7 @@ define(..., ['someLib'], function(someLib) {
 
 ### Примеры модульных библиотек
 
-Многие популярные библиотеки Node.js -- модульные, например [`express`](http://expressjs.com/), [`gulp`](http://gulpjs.com/), и [`request`](https://github.com/request/request).
+Многие популярные библиотеки Node.js — модульные, например [`express`](http://expressjs.com/), [`gulp`](http://gulpjs.com/), и [`request`](https://github.com/request/request).
 
 ## *UMD*
 
@@ -165,7 +165,7 @@ console.log(moment.format());
 
 Если в коде библиотеки есть проверки `typeof define`, `typeof window` или `typeof module`, особенно в начале файла, то, скорее всего, это UMD-библиотека.
 
-Документация таких библиотек часто приводит пример использования в Node.js, в котором есть `require`, и пример использования в браузере, где для загрузки кода используется тег `<script>`.
+Документация таких библиотек часто приводит пример использования в Node.js, где есть `require`, и пример использования в браузере, где для загрузки кода используется тег `<script>`.
 
 ### Примеры UMD-библиотек
 
@@ -175,9 +175,9 @@ console.log(moment.format());
 ### Шаблон
 
 Для данного типа модулей доступно три шаблона,
-  [`module.d.ts`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates/module.d.ts), [`module-class.d.ts`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates/module-class.d.ts) и [`module-function.d.ts`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates/module-function.d.ts).
+  [`module.d.ts`](https://github.com/gooddaytoday/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates/module.d.ts), [`module-class.d.ts`](https://github.com/gooddaytoday/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates/module-class.d.ts) и [`module-function.d.ts`](https://github.com/gooddaytoday/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates/module-function.d.ts).
 
-Используйте [`module-function.d.ts`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates/module-function.d.ts), если модуль может *вызываться*, подобно функции:
+Используйте [`module-function.d.ts`](https://github.com/gooddaytoday/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates/module-function.d.ts), если модуль может *вызываться*, подобно функции:
 
 ```ts
 var x = require("foo");
@@ -185,9 +185,9 @@ var x = require("foo");
 var y = x(42);
 ```
 
-Обязательно прочтите [замечание о влиянии ES6 на сигнатуры вызова модулей](#влияние-es6-на-сигнатуры-вызова-модулей).
+Обязательно прочтите [замечание о влиянии ES6 на сигнатуры вызова модулей](#Влияние-es6-на-сигнатуры-вызова-модулей).
 
-Используйте [`module-class.d.ts`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates/module-class.d.ts), если модуль может быть *сконструирован*, используя `new`:
+Используйте [`module-class.d.ts`](https://github.com/gooddaytoday/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates/module-class.d.ts), если модуль может быть *сконструирован*, используя `new`:
 
 ```ts
 var x = require("bar");
@@ -195,25 +195,25 @@ var x = require("bar");
 var y = new x("hello");
 ```
 
-То же самое [замечание](#влияние-es6-на-сигнатуры-вызова-модулей) относится и к таким модулям.
+То же самое [замечание](#Влияние-es6-на-сигнатуры-вызова-модулей) относится и к таким модулям.
 
-Если модуль не может быть вызван или сконструирован, используйте файл [`module.d.ts`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates/module.d.ts).
+Если модуль не может быть вызван или сконструирован, используйте файл [`module.d.ts`](https://github.com/gooddaytoday/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates/module.d.ts).
 
 ## *Плагин модуля* или *UMD-плагин*
 
 *Плагин модуля* изменяет форму другого модуля (простого модуля или UMD).
 Например, в Moment.js `moment-range` добавляет новый метод `range` в объекту `moment`.
 
-С точки зрения написания файла объявлений код остается тем же, вне зависимости от того, является ли изменяемый модуль простым модулем либо UMD.
+Код файла объявлений остается тем же вне зависимости от того, является ли изменяемый модуль простым модулем либо UMD.
 
 ### Шаблон
 
-Используйте [`module-plugin.d.ts`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates/module-plugin.d.ts).
+Используйте [`module-plugin.d.ts`](https://github.com/gooddaytoday/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates/module-plugin.d.ts).
 
 ## *Глобальный плагин*
 
-*Глобальный плагин* -- это глобальный код, который изменяет форму глобальных объектов.
-Так же, как и в случае с *модулями, изменяющими глобальные объекты*, с ними появляется вероятность конфликта имен во время выполнения.
+*Глобальный плагин* — это глобальный код, изменяющий форму глобальных объектов.
+Так же, как и в случае с *модулями, изменяющими глобальные объекты*, в этом случае появляется вероятность конфликта имен во время выполнения.
 
 Например, некоторые библиотеки добавляют новые функции к `Array.prototype` или `String.prototype`.
 
@@ -221,7 +221,7 @@ var y = new x("hello");
 
 Глобальные плагины, как правило, легко узнать по документации.
 
-В ней можно увидеть подобные примеры:
+Там можно увидеть подобные примеры:
 
 ```ts
 var x = "hello, world";
@@ -235,7 +235,7 @@ console.log(y.reverseAndSort());
 
 ### Шаблон
 
-Используйте шаблон [`global-plugin.d.ts`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates/global-plugin.d.ts).
+Используйте шаблон [`global-plugin.d.ts`](https://github.com/gooddaytoday/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates/global-plugin.d.ts).
 
 ## *Модули, изменяющие глобальные объекты*
 
@@ -267,7 +267,7 @@ console.log(y.reverseAndSort());
 
 ### Шаблон
 
-Используйте шаблон [`global-modifying-module.d.ts`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates/global-modifying-module.d.ts).
+Используйте шаблон [`global-modifying-module.d.ts`](https://github.com/gooddaytoday/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates/global-modifying-module.d.ts).
 
 # Использование зависимостей
 
@@ -305,7 +305,7 @@ function getThing(): moment;
 function getThing(): moment;
 ```
 
-## Из модуля или UMD-библиотеки
+### Из модуля или UMD-библиотеки
 
 Если модуль или UMD-библиотека зависит от UMD-библиотеки, используйте `import`:
 
@@ -343,7 +343,7 @@ interface CatsKittySettings { }
 ## Влияние ES6 на плагины модулей
 
 Некоторые плагины добавляют или изменяют экспорты вернего уровня у существующих модулей.
-Это допускается CommonJS и другими загрузчиками, однако ES6-модули считаются неизменяемыми, и такое поведение невозможно.
+CommonJS и другие загрузчики это допускают, однако в ES6 модули считаются неизменяемыми, и такое поведение невозможно.
 TypeScript не зависит от конкретных загрузчиков, поэтому это не проверяется во время компиляции, но разработчики, намеревающиеся переходить на использование ES6-загрузчика, должны это знать.
 
 ## Влияние ES6 на сигнатуры вызова модулей
@@ -357,5 +357,5 @@ var app = exp();
 ```
 
 При использовании загрузчика ES6 объект верхнего уровня (который в данном случае экспортируется как `exp`) может иметь только свойства; вызываемым он ни в коем случае быть не может.
-Самое распространенное решение этой проблемы -- объявить экспортируемый по умолчанию объект, который может быть вызываемым или конструируемым.
+Самое распространенное решение этой проблемы — объявить экспортируемый по умолчанию объект, который может быть вызываемым или конструируемым.
 Некоторые эмуляторы загрузчиков модулей сами обнаруживают подобные ситуации и заменяют объект верхнего уровня объектом, экспортируемым по умолчанию.

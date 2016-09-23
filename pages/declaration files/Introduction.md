@@ -31,7 +31,7 @@
 
 ## `/templates`
 
-В директории [`templates`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates) находятся файлы объявлений, которые могут послужить отправной точкой для создания нового файла объявлений.
+В директории [`templates`](https://github.com/Microsoft/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates) находятся файлы объявлений, которые могут послужить отправной точкой для создания нового файла объявлений.
 См. документацию касательно [структур библиотек](./Library Structures.md), чтобы понять, какой шаблон использовать.
 
 ## Публикация в npm
