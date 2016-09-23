@@ -1,18 +1,18 @@
 # Browserify
 
-### Install
+### Установка
 
 ```sh
 npm install tsify
 ```
 
-### Using Command Line Interface
+### Использование интерфейса командной строки
 
 ```sh
 browserify main.ts -p [ tsify --noImplicitAny ] > bundle.js
 ```
 
-### Using API
+### Использование API
 
 ```js
 var browserify = require("browserify");
@@ -25,23 +25,23 @@ browserify()
     .pipe(process.stdout);
 ```
 
-More details: [smrq/tsify](https://github.com/smrq/tsify)
+Больше информации: [smrq/tsify](https://github.com/smrq/tsify)
 
 # Duo
 
-### Install
+### Установка
 
 ```sh
 npm install duo-typescript
 ```
 
-### Using Command Line Interface
+### Использование интерфейса командной строки
 
 ```sh
 duo --use duo-typescript entry.ts
 ```
 
-### Using API
+### Использование API
 
 ```js
 var Duo = require("duo");
@@ -56,22 +56,22 @@ Duo(__dirname)
     .use(typescript())
     .run(function (err, results) {
         if (err) throw err;
-        // Write compiled result to output file
+        // Записать результат компиляции в файл
         fs.writeFileSync(out, results.code);
     });
 ```
 
-More details: [frankwallis/duo-typescript](https://github.com/frankwallis/duo-typescript)
+Больше информации: [frankwallis/duo-typescript](https://github.com/frankwallis/duo-typescript)
 
 # Grunt
 
-### Install
+### Установка
 
 ```sh
 npm install grunt-ts
 ```
 
-### Basic Gruntfile.js
+### Базовый Gruntfile.js
 
 ````js
 module.exports = function(grunt) {
@@ -86,18 +86,17 @@ module.exports = function(grunt) {
     grunt.registerTask("default", ["ts"]);
 };
 ````
-
-More details: [TypeStrong/grunt-ts](https://github.com/TypeStrong/grunt-ts)
+Больше информации: [TypeStrong/grunt-ts](https://github.com/TypeStrong/grunt-ts)
 
 # gulp
 
-### Install
+### Установка
 
 ```sh
 npm install gulp-typescript
 ```
 
-### Basic gulpfile.js
+### Базовый gulpfile.js
 
 ```js
 var gulp = require("gulp");
@@ -113,29 +112,29 @@ gulp.task("default", function () {
 });
 ```
 
-More details: [ivogabe/gulp-typescript](https://github.com/ivogabe/gulp-typescript)
+Больше информации: [ivogabe/gulp-typescript](https://github.com/ivogabe/gulp-typescript)
 
 # jspm
 
-### Install
+### Установка
 
 ```sh
 npm install -g jspm@beta
 ```
 
-_Note: Currently TypeScript support in jspm is in 0.16beta_
+_Замечание: На данный момент поддержка TypeScript в jspm есть в версии 0.16beta_
 
-More details: [TypeScriptSamples/jspm](https://github.com/Microsoft/TypeScriptSamples/tree/master/jspm)
+Больше информации: [TypeScriptSamples/jspm](https://github.com/Microsoft/TypeScriptSamples/tree/master/jspm)
 
 # webpack
 
-### Install
+### Установка
 
 ```sh
 npm install ts-loader --save-dev
 ```
 
-### Basic webpack.config.js
+### Базовый webpack.config.js
 
 ```js
 module.exports = {
@@ -144,32 +143,32 @@ module.exports = {
         filename: "bundle.js"
     },
     resolve: {
-        // Add '.ts' and '.tsx' as a resolvable extension.
+        // Добавить расширения '.ts' и '.tsx' в список разрешаемых
         extensions: ["", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
     },
     module: {
         loaders: [
-            // all files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'
+            // все файлы с расширениями 'ts' или '.tsx' будет обрабатывать `ts-loader'
             { test: /\.tsx?$/, loader: "ts-loader" }
         ]
     }
 }
 ```
 
-See [more details on ts-loader here](https://www.npmjs.com/package/ts-loader).
+См. [больше информации о ts-loader](https://www.npmjs.com/package/ts-loader).
 
-Alternatives:
+Альтернативы:
 
 * [awesome-typescript-loader](https://www.npmjs.com/package/awesome-typescript-loader)
 
 # MSBuild
 
-Update project file to include locally installed `Microsoft.TypeScript.Default.props` (at the top) and `Microsoft.TypeScript.targets` (at the bottom) files:
+Обновите файл файл проекта, включив установленные локально файлы `Microsoft.TypeScript.Default.props` (в начале файла) и `Microsoft.TypeScript.targets` (в конце файла).
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!-- Include default props at the bottom -->
+  <!-- Добавить свойства по умолчанию ниже -->
   <Import
       Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props"
       Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
@@ -184,20 +183,20 @@ Update project file to include locally installed `Microsoft.TypeScript.Default.p
     <TypeScriptSourceMap>false</TypeScriptSourceMap>
   </PropertyGroup>
 
-  <!-- Include default targets at the bottom -->
+  <!-- Добавить цели по умолчанию ниже -->
   <Import
       Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets"
       Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
 </Project>
 ```
 
-More details about defining MSBuild compiler options: [Setting Compiler Options in MSBuild projects](./Compiler Options in MSBuild.md)
+Больше информации об указании опций компилятора MSBuild: [Установка опций компилятора в проектах MSBuild](./Compiler Options in MSBuild.md)
 
 # NuGet
 
-* Right-Click -> Manage NuGet Packages
-* Search for `Microsoft.TypeScript.MSBuild`
-* Hit `Install`
-* When install is complete, rebuild!
+* Щелкнуть правой кнопкой -> Управление пакетами NuGet (`Manage NuGet Packages`)
+* Найти `Microsoft.TypeScript.MSBuild`
+* Нажать `Установить` (`Install`)
+* Когда установка закончится, пересобрать проект!
 
-More details can be found at [Package Manager Dialog](http://docs.nuget.org/Consume/Package-Manager-Dialog) and [using nightly builds with NuGet](https://github.com/Microsoft/TypeScript/wiki/Nightly-drops#using-nuget-with-msbuild)
+Больше информации: [Управление пакетами](http://docs.nuget.org/Consume/Package-Manager-Dialog) и [Использование ночных сборок с NuGet](https://github.com/Microsoft/TypeScript/wiki/Nightly-drops#using-nuget-with-msbuild)
