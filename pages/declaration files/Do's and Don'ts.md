@@ -101,7 +101,7 @@ declare function beforeAll(action: (done: DoneFn) => void, timeout?: number): vo
 
 # Перегрузки функций
 
-## Упорядочение
+## Упорядочивание
 
 *Не помещайте* более общие перегрузки перед более специфичными:
 
