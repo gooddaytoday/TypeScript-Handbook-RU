@@ -1,76 +1,69 @@
-# Definition File Theory: A Deep Dive
+# Теоретические основы файлов определений: глубокое погружение
 
-Structuring modules to give the exact API shape you want can be tricky.
-For example, we might want a module that can be invoked with or without `new` to produce different types,
-  has a variety of named types exposed in a hierarchy,
-  and has some properties on the module object as well.
+Описать модуль так, чтобы он имел в точности необходимый API, может оказаться сложной задачей.
+К примеру, может понадобиться модуль, который вызывается с `new` или без, создавая при этом разные типы, имеет различные именованные типы, упорядоченные иерархически, и несколько свойств на самом объекте модуля.
 
-By reading this guide, you'll have the tools to write complex definition files that expose a friendly API surface.
-This guide focuses on module (or UMD) libraries because the options here are more varied.
+Прочитав это руководство, вы получите инструменты для написания сложных файлов определений, предоставляющих удобный API.
+Это руководство уделяет основное внимание модульным (или UMD) библиотекам из-за множества их вариантов и разнообразия.
 
-## Key Concepts
+## Ключевые принципы
 
-You can fully understand how to make any shape of definition
-  by understanding some key concepts of how TypeScript works.
+Для того, чтобы понять, как придать определению любую форму, нужно понять ключевые принципы работы TypeScript.
 
-### Types
+### Типы
 
-If you're reading this guide, you probably already roughly know what a type in TypeScript is.
-To be more explicit, though, a *type* is introduced with:
+Если вы читаете это руководство, то, наверное, уже примерно представляете, что такое тип в TypeScript.
+Но для большей ясности укажем, что тип вводится с помощью:
 
-* A type alias declaration (`type sn = number | string;`)
-* An interface declaration (`interface I { x: number[]; }`)
-* A class declaration (`class C { }`)
-* An enum declaration (`enum E { A, B, C }`)
-* An `import` declaration which refers to a type
+* Объявления псевдонима типа (`type sn = number | string;`)
+* Объявления интерфейса (`interface I { x: number[]; }`)
+* Объявления класса (`class C { }`)
+* Объявления перечисления (`enum E { A, B, C }`)
+* Объявления `import`, которое ссылается на тип
 
-Each of these declaration forms creates a new type name.
+Каждое из таких объявлений создает новое имя типа.
 
-### Values
+### Значения
 
-As with types, you probably already understand what a value is.
-Values are runtime names that we can reference in expressions.
-For example `let x = 5;` creates a value called `x`.
+Как и с типами, вы, скорее всего, понимаете, что такое значения.
+Значения — это имена, на которые можно ссылаться в выражениях во время выполнения кода.
+К примеру, `let x = 5;` создает значение под именем `x`.
 
-Again, being explicit, the following things create values:
+Опять же, для ясности, укажем, что значения создаются следующими конструкциями:
 
-* `let`, `const`, and `var` declarations
-* A `namespace` or `module` declaration which contains a value
-* An `enum` declaration
-* A `class` declaration
-* An `import` declaration which refers to a value
-* A `function` declaration
+* объявлениями `let`, `const` и `var`.
+* объявлениями `namespace` или `module`, внутри которых содержится значение
+* объявлением `enum`
+* объявлением `class`
+* объявлением `import`, которое ссылается на значение
+* объявлением `function`
 
-### Namespaces
+### Пространства имен
 
-Types can exist in *namespaces*.
-For example, if we have the declaration `let x: A.B.C`,
-  we say that the type `C` comes from the `A.B` namespace.
+Типы могут существовать внутри *пространств имен*.
+К примеру, если взять объявление `let x: A.B.C`, то можно сказать, что тип `C` находится в пространстве имен `A.B`.
 
-This distinction is subtle and important -- here, `A.B` is not necessarily a type or a value.
+Здесь есть тонкий и важный момент — `A.B` не обязательно является типом или значением.
 
-## Simple Combinations: One name, multiple meanings
+## Простые сочетания: одно имя, несколько значений
 
-Given a name `A`, we might find up to three different meanings for `A`: a type, a value or a namespace.
-How the name is interpreted depends on the context in which it is used.
-For example, in the declaration `let m: A.A = A;`,
-  `A` is used first as a namespace, then as a type name, then as a value.
-These meanings might end up referring to entirely different declarations!
+Взяв имя `A`, можно прийти к одному из трех вариантов того, что оно означает: тип, значение или пространство имен.
+Как интерпретируется имя, зависит от контекста, в котором оно используется.
+К примеру, в объявлении `let m: A.A = A;` имя `A` в первый раз используется как пространство имен, потом как имя типа, а затем как значение.
+Разные варианты могут приводить к указанию на совершенно разные объявления!
 
-This may seem confusing, but it's actually very convenient as long as we don't excessively overload things.
-Let's look at some useful aspects of this combining behavior.
+Все это может показаться запутанным, но на самом деле очень удобно, если только имена не слишком перегружаются.
+Посмотрим на полезные стороны такого поведения сочетаний.
 
-### Built-in Combinations
+### Встроенные сочетания
 
-Astute readers will notice that, for example, `class` appeared in both the *type* and *value* lists.
-The declaration `class C { }` creates two things:
-  a *type* `C` which refers to the instance shape of the class,
-  and a *value* `C` which refers to the constructor function of the class.
-Enum declarations behave similarly.
+Проницательный читатель мог заметить, что, например, `class` появляется и в списке *типов*, и в списке *значений*.
+Определение `class C { }` создает две вещи: *тип* `C`, который ссылается на форму экземпляра класса, и *значение* `C`, которое ссылается на функцию-конструктор для данного класса.
+Определения перечислений ведут себя так же.
 
-### User Combinations
+### Пользовательские сочетания
 
-Let's say we wrote a module file `foo.d.ts`:
+Допустим, мы написали файл модуля `foo.d.ts`:
 
 ```ts
 export var SomeVar: { a: SomeType };
@@ -79,7 +72,7 @@ export interface SomeType {
 }
 ```
 
-Then consumed it:
+И затем используем его:
 
 ```ts
 import * as foo from './foo';
@@ -87,9 +80,8 @@ let x: foo.SomeType = foo.SomeVar.a;
 console.log(x.count);
 ```
 
-This works well enough, but we might imagine that `SomeType` and `SomeVar` were very closely related
-  such that you'd like them to have the same name.
-We can use combining to present these two different objects (the value and the type) under the same name `Bar`:
+Это отлично работает, но мы могли бы понять, что `SomeType` и `SomeVar` тесно связаны друг с другом, и захотели бы дать им одно и то же имя.
+С помощью сочетания можно представить две различных сущности (значение и тип) под одним именем `Bar`:
 
 ```ts
 export var Bar: { a: Bar };
@@ -98,7 +90,7 @@ export interface Bar {
 }
 ```
 
-This presents a very good opportunity for destructuring in the consuming code:
+Это дает хорошую возможность для деструктуризации в использующем модуль коде:
 
 ```ts
 import { Bar } from './foo';
@@ -106,30 +98,28 @@ let x: Bar = Bar.a;
 console.log(x.count);
 ```
 
-Again, we've used `Bar` as both a type and a value here.
-Note that we didn't have to declare the `Bar` value as being of the `Bar` type -- they're independent.
+Здесь мы использовали `Bar` и как тип, и как значение.
+Отметим, что не обязательно определять значение `Bar` как имеющее тип `Bar` — они независимы.
 
-## Advanced Combinations
+## Сложные сочетания
 
-Some kinds of declarations can be combined across multiple declarations.
-For example, `class C { }` and `interface C { }` can co-exist and both contribute properties to the `C` types.
+Некоторые объявления могут сочетаться между несколькими объявлениями.
+Например, `class C { }` и `interface C { }` могут сосуществовать, и оба добавлять свойства к типам `C`.
 
-This is legal as long as it does not create a conflict.
-A general rule of thumb is that values always conflict with other values of the same name unless they are declared as `namespace`s,
-  types will conflict if they are declared with a type alias declaration (`type s = string`),
-  and namespaces never conflict.
+Это допустимо, пока не создает конфликтов.
+Правило таково, что значения всегда конфликтуют с другими значениями с тем же именем, если только они не объявлены как `namespace`; типы конфликтуют, если объявлены с помощью псевдонима типа (`type s = string`), а пространства имен не конфликтуют никогда.
 
-Let's see how this can be used.
+Посмотрим, как это можно использовать.
 
-### Adding using an `interface`
+### Добавление с помощью `interface`
 
-We can add additional members to an `interface` with another `interface` declaration:
+К интерфейсу можно добавить члены с помощью другого объявления `interface`:
 
 ```ts
 interface Foo {
   x: number;
 }
-// ... elsewhere ...
+// ... где-то в другом месте ...
 interface Foo {
   y: number;
 }
@@ -137,13 +127,13 @@ let a: Foo = ...;
 console.log(a.x + a.y); // OK
 ```
 
-This also works with classes:
+Это работает и с классами:
 
 ```ts
 class Foo {
   x: number;
 }
-// ... elsewhere ...
+// ... где-то в другом месте ...
 interface Foo {
   y: number;
 }
@@ -151,45 +141,44 @@ let a: Foo = ...;
 console.log(a.x + a.y); // OK
 ```
 
-Note that we cannot add to type aliases (`type s = string;`) using an interface.
+Отметим, что с помощью интерфейса нельзя добавить что-либо к псевдониму типа (`type s = string;`).
 
-### Adding using a `namespace`
+### Добавление с помощью `namespace`
 
-A `namespace` declaration can be used to add new types, values, and namespaces in any way which does not create a conflict.
+Объявление `namespace` можно использовать для добавления новых типов, значений и пространств имен, если это не создает конфликтов.
 
-For example, we can add a static member to a class:
+К примеру, можно добавить статический член к классу:
 
 ```ts
 class C {
 }
-// ... elsewhere ...
+// ... где-то в другом месте ...
 namespace C {
   export let x: number;
 }
 let y = C.x; // OK
 ```
 
-Note that in this example, we added a value to the *static* side of `C` (its constructor function).
-This is because we added a *value*, and the container for all values is another value
-  (types are contained by namespaces, and namespaces are contained by other namespaces).
+В данном примере значение было добавлено к *статической* части `C` (функции-конструктору).
+Так произошло потому, что мы добавили *значение*, а контейнером для значения может служить только другое значение (типы содержатся в пространствах имен, а пространства имен — в других пространствах имен).
 
-We could also add a namespaced type to a class:
+Тем же способом к классу можно добавить тип:
 
 ```ts
 class C {
 }
-// ... elsewhere ...
+// ... где-то в другом месте ...
 namespace C {
   export interface D { }
 }
 let y: C.D; // OK
 ```
 
-In this example, there wasn't a namespace `C` until we wrote the `namespace` declaration for it.
-The meaning `C` as a namespace doesn't conflict with the value or type meanings of `C` created by the class.
+В этом примере пространства имен `C` не существовало, пока мы не написали объявление `namespace` для него.
+`C` в смысле пространства имен не конфликтует со значениями или типами под именем `C`, которые создаются объявлением класса.
 
-Finally, we could perform many different merges using `namespace` declarations.
-This isn't a particularly realistic example, but shows all sorts of interesting behavior:
+И наконец, с помощью объявлений `namespace` можно осуществлять различные виды слияний.
+Следующий пример не очень реалистичен, но показывает все разновидности интересного поведения:
 
 ```ts
 namespace X {
@@ -197,7 +186,7 @@ namespace X {
   export class Z { }
 }
 
-// ... elsewhere ...
+// ... где-то в другом месте ...
 namespace X {
   export var Y: number;
   export namespace Z {
@@ -207,25 +196,23 @@ namespace X {
 type X = string;
 ```
 
-In this example, the first block creates the following name meanings:
+В этом примере первый блок создает следующие смыслы для имен:
 
-* A value `X` (because the `namespace` declaration contains a value, `Z`)
-* A namespace `X` (because the `namespace` declaration contains a type, `Y`)
-* A type `Y` in the `X` namespace
-* A type `Z` in the `X` namespace (the instance shape of the class)
-* A value `Z` that is a property of the `X` value (the constructor function of the class)
+* Значение `X` (поскольку объявление пространства имен содержит значение, `Z`)
+* Пространство имен `X` (поскольку объявление пространства имен содержит тип, `Y`)
+* Тип `Y` в пространстве имен `X`
+* Тип `Z` в пространстве имен `X` (часть экземпляра класса)
+* Значение `Z`, которое является свойством значения `X` (функция-конструктор класса)
 
-The second  block creates the following name meanings:
+Второй блок создает следующие смыслы:
 
-* A value `Y` (of type `number`) that is a property of the `X` value
-* A namespace `Z`
-* A value `Z` that is a property of the `X` value
-* A type `C` in the `X.Z` namespace
-* A value `C` that is a property of the `X.Z` value
-* A type `X`
+* Значение `Y` (с типом `number`), которое является свойством значения `X`
+* Пространство имен `Z`
+* Значение `Z`, которое является свойством значения `X`
+* Тип `C` внутри пространства имен `X.Z`
+* Значение `C`, которое является свойством значения `X.Z`
+* Тип `X`
 
-## Using with `export =` or `import`
+## Использование с `export = ` или `import`
 
-An important rule is that `export` and `import` declarations export or import *all meanings* of their targets.
-
-<!-- TODO: Write more on that. -->
+Важно, что объявления `export` и `import` экспортируют или импортируют *все смыслы* того, на что ссылаются.

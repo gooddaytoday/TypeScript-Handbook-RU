@@ -1,49 +1,43 @@
-This guide is designed to teach you how to write a high-quality TypeScript Declaration File.
+Это руководство предназначено для обучения написанию высококачественных файлов объявлений для TypeScript.
 
-In this guide, we'll assume basic familiarity with the TypeScript language.
-If you haven't already, you should read the [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/basic-types.html)
-  to familiarize yourself with basic concepts, especially types and namespaces.
+Предполагается, что читатель на базовом уровне знаком с языком TypeScript.
+Если это не так, то для ознакомления с основными принципами, а особенно с типами и пространствами имен, рекомендуется прочесть [Руководство по TypeScript](https://www.typescriptlang.org/docs/handbook/basic-types.html).
 
-# Sections
+# Разделы
 
-The guide is broken down into the following sections.
+Руководство разбито на следующие разделы.
 
-## Library Structures
+## Структуры библиотек
 
-The [Library Structures](./Library Structures.md) guide helps you understand common library formats and how to write a correct declaration file for each format.
-If you're editing an existing file, you probably don't need to read this section.
-Authors of new declaration files must read this section to properly understand how the format of the library influences the writing of the declaration file.
+Руководство по [структурам библиотек](./Library Structures.md) поможет понять распространенные форматы библиотек и то, как писать правильные файлы объявлений для каждого формата.
+Если вы редактируете уже существующий файл, то скорее всего, данный раздел читать не обязательно.
+Авторы новых файлов объявлений должны прочесть данный раздел, чтобы верно понять, как формат библиотеки влияет на написание файлов объявлений.
 
-## "Do"s and "Don't"s
+## "Как можно" и "Как нельзя"
 
-Many common mistakes in declaration files can be easily avoided.
-The [Do's and Don'ts](./Do's and Don'ts.md) section identifies common errors,
-  desscribes how to detect them,
-  and how to fix them.
-Everyone should read this section to help themselves avoid common mistakes.
+Многих часто встречающихся ошибок в файлах объявлений можно избежать.
+Раздел ["Как можно" и "Как нельзя"](./Do's and Don'ts.md) указывает на распространенные ошибки, описывает, как их находить и исправлять.
+Этот раздел должны прочесть все, чтобы научиться не допускать распространенных ошибок.
 
-## By Example
+## На примере
 
-Many times, we are faced with writing a declaration file when we only have examples of the underlying library to guide us.
-The [By Example](./By Example.md) section shows many common API patterns and how to write declarations for each of them.
-This guide is aimed at the TypeScript novice who may not yet be familiar with every language construct in TypeScript.
+Зачастую требуется создать файл объявлений, когда есть только примеры использования нужной библиотеки.
+Раздел [На примере](./By Example.md) показывает часто встречающиеся шаблоны API и то, как они описываются в файлах объявлений.
+Данный раздел предназначен для новичков в TypeScript, которые, возможно, еще не знакомы со всеми конструкциями языка.
 
-## Deep Dive
+## Глубокое погружение
 
-For seasoned authors interested in the underlying mechanics of how declaration files work,
-  the [Deep Dive](./Deep Dive.md) section explains many advanced concepts in declaration writing,
-  and shows how to leverage these concepts to create cleaner and more intuitive declaration files.
+Раздел для бывалых разработчиков, интересующихся, как работают файлы объявлений "под капотом". [Данный раздел](./Deep Dive.md) объясняет множество сложных принципов написания объявлений, и показывает, как использовать их для создания более ясных и простых файлов объявлений.
 
 ## `/templates`
 
-In the [`templates`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates) directory, you'll find a number of declaration files that serve as a useful starting point
-  when writing a new file.
-Refer to the documentation in [Library Structures](./Library Structures.md) to figure out which template file to use.
+В директории [`templates`](https://github.com/Microsoft/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates) находятся файлы объявлений, которые могут послужить отправной точкой для создания нового файла объявлений.
+См. документацию касательно [структур библиотек](./Library Structures.md), чтобы понять, какой шаблон использовать.
 
-## Publish to npm
+## Публикация в npm
 
-The [Publishing](./Publishing.md) section explains how to publish your declaration files to an npm package, and shows how to manage your dependent packages.
+Раздел [Публикация](./Publishing.md) объясняет, как опубликовать файлы объявлений для npm-пакета и управлять зависимостями.
 
-## Find and Install Declaration Files
+## Поиск и установка файлов объявлений
 
-For JavaScript library users, the [Consumption](./Consumption.md) section offers a few simple steps to locate and install corresponding declaration files.
+Для пользователей JavaScript-библиотек предназначен раздел [Использование](./Consumption.md), который предлагает простые шаги для нахождения и установки необходимых файлов объявлений.

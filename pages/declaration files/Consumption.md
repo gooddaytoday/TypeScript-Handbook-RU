@@ -1,38 +1,37 @@
-In TypeScript 2.0, it has become significantly easier to consume declaration files, in acquiring, using, and finding them.
-This page details exactly how to do all three
+В TypeScript версии 2.0 стало значительно проще находить, получать и использовать файлы объявлений.
+Данный раздел подробно описывает, как все это делается.
 
-# Downloading
+# Скачивание
 
-Getting type declarations in TypeScript 2.0 and above requires no tools apart from npm.
+Получение файлов объявлений в TypeScript 2.0 и выше не требует никаких инструментов, кроме npm.
 
-As an example, getting the declarations for a library like lodash takes nothing more than the following command
+Например, чтобы получить объявления для `lodash`, требуется всего одна команда:
 
 ```cmd
 npm install --save @types/lodash
 ```
 
-# Consuming
+# Использование
 
-From there you’ll be able to use lodash in your TypeScript code with no fuss.
-This works for both modules and global code.
+После этого можно без проблем использовать библиотеку `lodash` в TypeScript-коде.
+Это работает как для модулей, так и для глобального кода.
 
-For example, once you’ve `npm install`-ed your type declarations, you can use imports and write
+К примеру, как только объявления типов были установлены с помощью `npm install`, можно использовать `import` и написать:
 
 ```ts
 import * as _ from "lodash";
-_.padStart("Hello TypeScript!", 20, " ");
+_.padStart("Привет, TypeScript!", 20, " ");
 ```
 
-or if you’re not using modules, you can just use the global variable `_`.
+или, если модули не используются, просто задействовать глобальную переменную `_`.
 
 ```ts
-_.padStart("Hello TypeScript!", 20, " ");
+_.padStart("Привет, TypeScript!", 20, " ");
 ```
 
-# Searching
+# Поиск
 
-For the most part, type declaration packages should always have the same name as the package name on `npm`, but prefixed with `@types/`,
-  but if you need, you can check out [https://aka.ms/types](https://aka.ms/types) to find the package for your favorite library.
+Как правило, в `npm` пакеты с объявлениями типов имеют то же имя, что и сам пакет библиотеки, но с префиксом `@types/` в начале. Однако, если необходимо, можно посетить [https://aka.ms/types](https://aka.ms/types) и найти там пакет для своей любимой библиотеки.
 
-> Note: if the declaration file you are searching for is not present, you can always contribute one back and help out the next developer looking for it.
-> Please see the DefinitelyTyped [contribution guidelines page](http://definitelytyped.org/guides/contributing.html) for details.
+> Замечание: если необходимого файла объявлений нет, то вы всегда можете сделать свой вклад и помочь следующему разработчику, которому понадобится эта библиотека.
+> См. [руководство по принятию участия в DefinitelyTyped](http://definitelytyped.org/guides/contributing.html) для большей информации.

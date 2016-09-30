@@ -1,109 +1,109 @@
-# Overview
+# Обзор
 
-Broadly speaking, the way you *structure* your declaration file depends on how the library is consumed.
-There are many ways of offering a library for consumption in JavaScript, and you'll need to write your declaration file to match it.
-This guide covers how to identify common library patterns, and how to write declaration files which correspond to that pattern.
+Говоря в общем, *структура* файла объявлений зависит от того, как используется библиотека.
+В JavaScript существует много способов предоставить библиотеку для использования, и файл объявлений должен соответствовать выбранному способу.
+Данное руководство описывает, как определить часто используемые шаблоны построения библиотек и создать файлы определений, соответствующие данной практике.
 
-Each type of major library structuring pattern has a corresponding file in the [`templates`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates) directory.
-You can start with these templates to help you get going faster.
+Для каждого распространенного типа библиотек в директории [`templates`](https://github.com/gooddaytoday/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates) есть соответствующий файл.
+Чтобы продвигаться быстрее, можно начать с этих файлов.
 
-# Identifying Kinds of Libraries
+# Определение типов библиотек
 
-First, we'll review the kinds of libraries TypeScript declaration files can represent.
-We'll briefly show how each kind of library is *used*, how it is *written*, and list some example libraries from the real world.
+В первую очередь рассмотрим типы библиотек, которые могут описываться файлами определений.
+Мы кратко покажем, как *используется* каждый из типов, как *пишется код* для них и перечислим примеры таких библиотек.
 
-Identifying the structure of a library is the first step in writing its declaration file.
-We'll give hints on how to identify structure both based on its *usage* and its *code*.
-Depending on the library's documentation and organization, one might be easier than the other.
-We recommend using whichever is more comfortable to you.
+Первый шаг для написания файла объявлений — определение типа библиотеки.
+Мы дадим несколько советов для того, чтобы определить тип библиотеки на основании ее *кода* и того, как она используется.
+Тот или иной способ может оказаться проще в зависимости от документации и организации кода.
+Используйте тот, который покажется более удобным.
 
-## Global Libraries
+## Глобальные библиотеки
 
-A *global* library is one that can be accessed from the global scope (i.e. without using any form of `import`).
-Many libraries simply expose one or more global variables for use.
-For example, if you were using [jQuery](https://jquery.com/), the `$` variable can be used by simply referring to it:
+*Глобальные* библиотеки — те, которые доступны в глобальной области видимости (т. е., без импорта в какой-либо форме).
+Многие библиотеки просто предоставляют для использования одну или несколько глобальных переменных.
+К примеру, с [jQuery](https://jquery.com/) переменную `$` можно использовать, просто обратившись к ней:
 
 ```ts
 $(() => { console.log('hello!'); } );
 ```
 
-You'll usually see guidance in the documentation of a global library of how to use the library in an HTML script tag:
+Как правило, в документации таких библиотек описывается, как использовать ее с тегом `script`:
 
 ```html
 <script src="http://a.great.cdn.for/someLib.js"></script>
 ```
 
-Today, most popular globally-accessible libraries are actually written as UMD libraries (see below).
-UMD library documentation is hard to distinguish from global library documentation.
-Before writing a global declaration file, make sure the library isn't actually UMD.
+На сегодняшний день большинство глобальных библиотек на самом деле являются UMD-библиотеками (см. ниже).
+Документацию UMD-библиотеки сложно отличить от документации глобальной библиотеки.
+Перед написанием файла объявлений для глобальной библиотеки убедитесь, что она на самом деле не является UMD-библиотекой.
 
-### Identifying a Global Library from Code
+### Определение глобальной библиотеки по коду
 
-Global library code is usually extremely simple.
-A global "Hello, world" library might look like this:
+Ее код, как правило, крайне прост.
+Глобальная библиотека, выводящая приветствие, может выглядеть так:
 
 ```js
 function createGreeting(s) {
-    return "Hello, " + s;
+    return "Привет, " + s;
 }
 ```
 
-or like this:
+Или так:
 
 ```js
 window.createGreeting = function(s) {
-    return "Hello, " + s;
+    return "Привет, " + s;
 }
 ```
 
-When looking at the code of a global library, you'll usually see:
+Взглянув на код глобальной библиотеки, обычно можно увидеть:
 
-* Top-level `var` statements or `function` declarations
-* One or more assignments to `window.someName`
-* Assumptions that DOM primitives like `document` or `window` exist
+* Конструкции `var` или `function` на верхнем уровне
+* Одно или более присваиваний к `window.какоеТоИмя`
+* Предположения, что существуют объекты `document` или `window`
 
-You *won't* see:
+И *нельзя* увидеть:
 
-* Checks for, or usage of, module loaders like `require` or `define`
-* CommonJS/Node.js-style imports of the form `var fs = require("fs");`
-* Calls to `define(...)`
-* Documentation describing how to `require` or import the library
+* Проверки существования или использование загрузчиков модулей (`require` или `define`)
+* Импортирование в стиле CommonJS/Node.js (`var fs = require("fs");`)
+* Вызовы `define(...)`
+* Документацию, описывающую, как использовать библиотеку с `require` или импортировать ее
 
-### Examples of Global Libraries
+### Примеры глобальных библиотек
 
-Because it's usually easy to turn a global library into a UMD library, very few popular libraries are still written in the global style.
-However, libraries that are small and require the DOM (or have *no* dependencies) may still be global.
+Поскольку, как правило, из глобальной библиотеки легко сделать UMD-библиотеку, популярных библиотек, написанных в такой форме, крайне мало.
+Однако небольшие и требующие DOM (или не имеющие зависимостей) библиотеки все еще могут оказаться глобальными.
 
-### Global Library Template
+### Шаблон глобальной библиотеки
 
-The template file [`global.d.ts`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates/global.d.ts) defines an example library `myLib`.
-Be sure to read the ["Preventing Name Conflicts" footnote](#preventing-name-conflicts).
+Шаблон [`global.d.ts`](https://github.com/gooddaytoday/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates/global.d.ts) описывает библиотеку `myLib`.
+Обязательно прочтите [замечание о предотвращении конфликтов имен](#Предотвращение-конфликтов-имен).
 
-## Modular Libraries
+## Модульные библиотеки
 
-Some libraries only work in a module loader environment.
-For example, because `express` only works in Node.js and must be loaded using the CommonJS `require` function.
+Некоторые библиотеки работают только в окружении с загрузчиком модулей.
+Например, `express` работает только в Node.js и загружается с помощью функции `require` из CommonJS.
 
-ECMAScript 2015 (also known as ES2015, ECMAScript 6, and ES6), CommonJS, and RequireJS have similar notions of *importing* a *module*.
-In JavaScript CommonJS (Node.js), for example, you would write
+В ECMAScript 2015 (также называемом ES2015, ECMAScript 6 или ES6), CommonJS и RequireJS существуют схожие между собой понятия *импортирования модулей*.
+Используя CommonJS (Node.JS), можно написать, например:
 
 ```ts
 var fs = require("fs");
 ```
 
-In TypeScript or ES6, the `import` keyword serves the same purpose:
+В TypeScript или ES6 для тех же целей служит `import`:
 
 ```ts
 import fs = require("fs");
 ```
 
-You'll typically see modular libraries include one of these lines in their documentation:
+Как правило, документация к модульной библиотеке включает одну из следующих строк:
 
 ```js
 var someLib = require('someLib');
 ```
 
-or
+или
 
 ```ts
 define(..., ['someLib'], function(someLib) {
@@ -111,45 +111,45 @@ define(..., ['someLib'], function(someLib) {
 });
 ```
 
-As with global modules, you might see these examples in the documentation of a UMD module, so be sure to check the code or documentation.
+Как и в случае с глобальными модулями, такие примеры можно увидеть и в документации к UMD-модулям, поэтому хорошо проверьте код или документацию.
 
-### Identifying a Module Library from Code
+### Определение модульной библиотеки по коду
 
-Modular libraries will typically have at least some of the following:
+В модульных библиотеках можно встретить по крайней мере что-то одно из следующего:
 
-* Unconditional calls to `require` or `define`
-* Declarations like `import * as a from 'b';` or `export c;`
-* Assignments to `exports` or `module.exports`
+* Безусловные вызовы `require` или `define`
+* Объявления наподобие `import * as a from 'b';` или `export c;`
+* Присваивания к `exports` или `module.exports`
 
-They will rarely have:
+В них редко можно увидеть:
 
-* Assignments to properties of `window` or `global`
+* Присваивания к свойствам `window` или `global`
 
-### Examples of Modular Libraries
+### Примеры модульных библиотек
 
-Many popular Node.js libraries are in the module family, such as [`express`](http://expressjs.com/), [`gulp`](http://gulpjs.com/), and [`request`](https://github.com/request/request).
+Многие популярные библиотеки Node.js — модульные, например [`express`](http://expressjs.com/), [`gulp`](http://gulpjs.com/), и [`request`](https://github.com/request/request).
 
 ## *UMD*
 
-A *UMD* module is one that can *either* be used as module (through an import), or as a global (when run in an environment without a module loader).
-Many popular libraries, such as [Moment.js](http://momentjs.com/), are written this way.
-For example, in Node.js or using RequireJS, you would write:
+*UMD* модуль может использоваться либо как модуль (с помощью импортирования) либо как глобальная библиотека (если запускается в окружении без загрузчика модулей).
+Многие популярные библиотеки, к примеру, [Moment.js](http://momentjs.com/), написаны именно так.
+Например, в Node.js или используя RequireJS можно написать:
 
 ```ts
 import moment = require("moment");
 console.log(moment.format());
 ```
 
-whereas in a vanilla browser environment you would write:
+в то время как в стандартном браузерном окружении делается так:
 
 ```ts
 console.log(moment.format());
 ```
 
-### Identifying a UMD library
+### Определение UMD библиотеки
 
-[UMD modules](https://github.com/umdjs/umd) check for the existence of a module loader environment.
-This is an easy-to-spot pattern that looks something like this:
+[UMD-модули](https://github.com/umdjs/umd) проверяют наличие окружения с загрузчиком модулей.
+Это легко заметить, увидев нечто подобное:
 
 ```js
 (function (root, factory) {
@@ -160,124 +160,122 @@ This is an easy-to-spot pattern that looks something like this:
     } else {
         root.returnExports = factory(root.libName);
     }
-}(this, function (b) {
+}(this, function (b) { }))
 ```
 
-If you see tests for `typeof define`, `typeof window`, or `typeof module` in the code of a library, especially at the top of the file, it's almost always a UMD library.
+Если в коде библиотеки есть проверки `typeof define`, `typeof window` или `typeof module`, особенно в начале файла, то, скорее всего, это UMD-библиотека.
 
-Documentation for UMD libraries will also often demonstrate a "Using in Node.js" example showing `require`,
-  and a "Using in the browser" example showing using a `<script>` tag to load the script.
+Документация таких библиотек часто приводит пример использования в Node.js, где есть `require`, и пример использования в браузере, где для загрузки кода используется тег `<script>`.
 
-### Examples of UMD libraries
+### Примеры UMD-библиотек
 
-Most popular libraries are now available as UMD packages.
-Examples include [jQuery](https://jquery.com/), [Moment.js](http://momentjs.com/), [lodash](https://lodash.com/), and many more.
+Большинство популярных библиотек доступны в виде UMD-пакетов.
+Можно упомянуть [jQuery](https://jquery.com/), [Moment.js](http://momentjs.com/), [lodash](https://lodash.com/) и многие другие.
 
-### Template
+### Шаблон
 
-There are three templates available for modules,
-  [`module.d.ts`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates/module.d.ts), [`module-class.d.ts`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates/module-class.d.ts) and [`module-function.d.ts`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates/module-function.d.ts).
+Для данного типа модулей доступно три шаблона,
+  [`module.d.ts`](https://github.com/gooddaytoday/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates/module.d.ts), [`module-class.d.ts`](https://github.com/gooddaytoday/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates/module-class.d.ts) и [`module-function.d.ts`](https://github.com/gooddaytoday/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates/module-function.d.ts).
 
-Use [`module-function.d.ts`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates/module-function.d.ts) if your module can be *called* like a function:
+Используйте [`module-function.d.ts`](https://github.com/gooddaytoday/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates/module-function.d.ts), если модуль может *вызываться*, подобно функции:
 
 ```ts
 var x = require("foo");
-// Note: calling 'x' as a function
+// Внимание: вызываем 'x' как функцию
 var y = x(42);
 ```
 
-Be sure to read the [footnote "The Impact of ES6 on Module Call Signatures"](#the-impact-of-es6-on-module-plugins)
+Обязательно прочтите [замечание о влиянии ES6 на сигнатуры вызова модулей](#Влияние-es6-на-сигнатуры-вызова-модулей).
 
-Use [`module-class.d.ts`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates/module-class.d.ts) if your module can be *constructed* using `new`:
+Используйте [`module-class.d.ts`](https://github.com/gooddaytoday/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates/module-class.d.ts), если модуль может быть *сконструирован*, используя `new`:
 
 ```ts
 var x = require("bar");
-// Note: using 'new' operator on the imported variable
+// Внимание: используем оператор `new` с импортированной переменной
 var y = new x("hello");
 ```
 
-The same [footnote](#the-impact-of-es6-on-module-plugins) applies to these modules.
+То же самое [замечание](#Влияние-es6-на-сигнатуры-вызова-модулей) относится и к таким модулям.
 
-If your module is not callable or constructable, use the [`module.d.ts`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates/module.d.ts) file.
+Если модуль не может быть вызван или сконструирован, используйте файл [`module.d.ts`](https://github.com/gooddaytoday/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates/module.d.ts).
 
-## *Module Plugin* or *UMD Plugin*
+## *Плагин модуля* или *UMD-плагин*
 
-A *module plugin* changes the shape of another module (either UMD or module).
-For example, in Moment.js, `moment-range` adds a new `range` method to the `moment` object.
+*Плагин модуля* изменяет форму другого модуля (простого модуля или UMD).
+Например, в Moment.js `moment-range` добавляет новый метод `range` в объекту `moment`.
 
-For the purposes of writing a declaration file, you'll write the same code whether the module being changed is a plain module or UMD module.
+Код файла объявлений остается тем же вне зависимости от того, является ли изменяемый модуль простым модулем либо UMD.
 
-### Template
+### Шаблон
 
-Use the [`module-plugin.d.ts`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates/module-plugin.d.ts) template.
+Используйте [`module-plugin.d.ts`](https://github.com/gooddaytoday/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates/module-plugin.d.ts).
 
-## *Global Plugin*
+## *Глобальный плагин*
 
-A *global plugin* is global code that changes the shape of some global.
-As with *global-modifying modules*, these raise the possibility of runtime conflict.
+*Глобальный плагин* — это глобальный код, изменяющий форму глобальных объектов.
+Так же, как и в случае с *модулями, изменяющими глобальные объекты*, в этом случае появляется вероятность конфликта имен во время выполнения.
 
-For example, some libraries add new functions to `Array.prototype` or `String.prototype`.
+Например, некоторые библиотеки добавляют новые функции к `Array.prototype` или `String.prototype`.
 
-### Identifying global plugins
+### Определение глобальных плагинов
 
-Global plugins are generally easy to identify from their documentation.
+Глобальные плагины, как правило, легко узнать по документации.
 
-You'll see examples that look like this:
+Там можно увидеть подобные примеры:
 
 ```ts
 var x = "hello, world";
-// Creates new methods on built-in types
+// Создает новые методы на встроенных типах
 console.log(x.startsWithHello());
 
 var y = [1, 2, 3];
-// Creates new methods on built-in types
+// Создает новые методы на встроенных типах
 console.log(y.reverseAndSort());
 ```
 
-### Template
+### Шаблон
 
-Use the [`global-plugin.d.ts`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates/global-plugin.d.ts) template.
+Используйте шаблон [`global-plugin.d.ts`](https://github.com/gooddaytoday/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates/global-plugin.d.ts).
 
-## *Global-modifying Modules*
+## *Модули, изменяющие глобальные объекты*
 
-A *global-modifying module* alters existing values in the global scope when they are imported.
-For example, there might exist a library which adds new members to `String.prototype` when imported.
-This pattern is somewhat dangerous due to the possibility of runtime conflicts,
-  but we can still write a declaration file for it.
+Модули, изменяющие глобальные объекты, при их импортировании изменяют значения в глобальной области видимости.
+К примеру, может существовать библиотека, которая при импортировании добавляет новые члены к `String.prototype`.
+Такая техника несколько опасна из-за возможности конфликтов во время выполнения, но написать файл объявлений для такой библиотеки все же можно.
 
-### Identifying global-modifying modules
+### Определение модулей, изменяющих глобальные объекты
 
-Global-modifying modules are generally easy to identify from their documentation.
-In general, they're similar to global plugins, but need a `require` call to activate their effects.
+Такие модули легко узнать по документации.
+Как правило, они похожи на глобальные плагины, но для внесения изменений нужен вызов `require`.
 
-You might see documentation like this:
+В документации можно увидеть следующее:
 
 ```ts
-// 'require' call that doesn't use its return value
+// вызов 'require', чье возвращаемое значение не используется
 var unused = require("magic-string-time");
-/* or */
+/* или */
 require("magic-string-time");
 
-var x = "hello, world";
-// Creates new methods on built-in types
+var x = "привет, мир";
+// Создает новые методы для встроенных типов
 console.log(x.startsWithHello());
 
 var y = [1, 2, 3];
-// Creates new methods on built-in types
+// Создает новые методы для встроенных типов
 console.log(y.reverseAndSort());
 ```
 
-### Template
+### Шаблон
 
-Use the [`global-modifying-module.d.ts`](https://github.com/Microsoft/TypeScript-Handbook/tree/master/pages/declaration%20files/templates/global-modifying-module.d.ts) template.
+Используйте шаблон [`global-modifying-module.d.ts`](https://github.com/gooddaytoday/TypeScript-Handbook-RU/tree/master/pages/declaration%20files/templates/global-modifying-module.d.ts).
 
-# Consuming Dependencies
+# Использование зависимостей
 
-There are several kinds of dependencies you might have.
+Встречаются несколько видов зависимостей.
 
-## Dependencies on Global Libraries
+## Зависимости от глобальных библиотек
 
-If your library depends on a global library, use a `/// <reference types="..." />` directive:
+Если библиотека зависит от глобальной библиотеки, используйте директиву `/// <reference types="..." />`:
 
 ```ts
 /// <reference types="someLib" />
@@ -285,9 +283,9 @@ If your library depends on a global library, use a `/// <reference types="..." /
 function getThing(): someLib.thing;
 ```
 
-## Dependencies on Modules
+## Зависимости от модулей
 
-If your library depends on a module, use an `import` statement:
+Если библиотека зависит от модуля, используйте `import`:
 
 ```ts
 import * as moment from "moment";
@@ -295,11 +293,11 @@ import * as moment from "moment";
 function getThing(): moment;
 ```
 
-## Dependencies on UMD libraries
+## Зависимости от UMD-библиотек
 
-### From a Global Library
+### Из глобальной библиотеки
 
-If your global library depends on a UMD module, use a `/// <reference types` directive:
+Если глобальная библиотека зависит от UMD-модуля, используйте директиву `/// <reference types`:
 
 ```ts
 /// <reference types="moment" />
@@ -307,25 +305,25 @@ If your global library depends on a UMD module, use a `/// <reference types` dir
 function getThing(): moment;
 ```
 
-### From a Module or UMD Library
+### Из модуля или UMD-библиотеки
 
-If your module or UMD library depends on a UMD library, use an `import` statement:
+Если модуль или UMD-библиотека зависит от UMD-библиотеки, используйте `import`:
 
 ```ts
 import * as someLib from 'someLib';
 ```
 
-Do *not* use a `/// <reference` directive to declare a dependency to a UMD library!
+Не используйте `/// <reference` для объявления зависимости от UMD-библиотеки!
 
-# Footnotes
+# Примечания
 
-## Preventing Name Conflicts
+## Предотвращение конфликтов имен
 
-Note that it's possible to define many types in the global scope when writing a global declaration file.
-We strongly discourage this as it leads to possible unresolvable name conflicts when many declaration files are in a project.
+Обратите внимание, что при написании глобального файла объявлений есть возможность описать в глобальной области видимости сразу множество типов.
+Мы крайне рекомендуем воздерживаться от подобного, посколько это может привести к неразрешимым конфликтам имен при использовании в проекте нескольких файлов объявлений.
 
-A simple rule to follow is to only declare types *namespaced* by whatever global variable the library defines.
-For example, if the library defines the global value 'cats', you should write
+Простое правило, которому рекомендуется следовать: объявлять типы только в пространстве имен, соответствующем глобальной переменной библиотеки.
+Например, если библиотека определяет глобальное значение `cats`, то следует написать:
 
 ```ts
 declare namespace cats {
@@ -333,32 +331,31 @@ declare namespace cats {
 }
 ```
 
-But *not*
+Но *не*
 
 ```ts
-// at top-level
+// на верхнем уровне
 interface CatsKittySettings { }
 ```
 
-This guidance also ensures that the library can be transitioned to UMD without breaking declaration file users.
+Соблюдение данного правила также гарантирует, что библиотека может быть перенесена на UMD без изменений, критичных для пользователей файла объявлений.
 
-## The Impact of ES6 on Module Plugins
+## Влияние ES6 на плагины модулей
 
-Some plugins add or modify top-level exports on existing modules.
-While this is legal in CommonJS and other loaders, ES6 modules are considered immutable and this pattern will not be possible.
-Because TypeScript is loader-agnostic, there is no compile-time enforcement of this policy, but developers intending to transition to an ES6 module loader should be aware of this.
+Некоторые плагины добавляют или изменяют экспорты вернего уровня у существующих модулей.
+CommonJS и другие загрузчики это допускают, однако в ES6 модули считаются неизменяемыми, и такое поведение невозможно.
+TypeScript не зависит от конкретных загрузчиков, поэтому это не проверяется во время компиляции, но разработчики, намеревающиеся переходить на использование ES6-загрузчика, должны это знать.
 
-## The Impact of ES6 on Module Call Signatures
+## Влияние ES6 на сигнатуры вызова модулей
 
-Many popular libraries, such as Express, expose themselves as a callable function when imported.
-For example, the typical Express usage looks like this:
+Многие популярные библиотеки, например, Express, при импортировании предоставляют себя в качестве доступной для вызова функции.
+К примеру, Express обычно используется так:
 
 ```ts
 import exp = require("express");
 var app = exp();
 ```
 
-In ES6 module loaders, the top-level object (here imported as `exp`) can only have properties;
-  the top-level module object is *never* callable.
-The most common solution here is to define a `default` export for a callable/constructable object;
-  some module loader shims will automatically detect this situation and replace the top-level object with the `default` export.
+При использовании загрузчика ES6 объект верхнего уровня (который в данном случае экспортируется как `exp`) может иметь только свойства; вызываемым он ни в коем случае быть не может.
+Самое распространенное решение этой проблемы — объявить экспортируемый по умолчанию объект, который может быть вызываемым или конструируемым.
+Некоторые эмуляторы загрузчиков модулей сами обнаруживают подобные ситуации и заменяют объект верхнего уровня объектом, экспортируемым по умолчанию.

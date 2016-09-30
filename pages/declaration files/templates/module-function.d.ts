@@ -1,40 +1,39 @@
-// Type definitions for [~THE LIBRARY NAME~] [~OPTIONAL VERSION NUMBER~]
-// Project: [~THE PROJECT NAME~]
-// Definitions by: [~YOUR NAME~] <[~A URL FOR YOU~]>
+// Type definitions for [~НАЗВАНИЕ БИБЛИОТЕКИ~] [~НЕОБЯЗАТЕЛЬНЫЙ НОМЕР ВЕРСИИ~]
+// Project: [~НАЗВАНИЕ ПРОЕКТА~]
+// Definitions by: [~ВАШЕ ИМЯ~] <[~ВАШ АДРЕС В ИНТЕРНЕТЕ~]>
 
-/*~ This is the module template file for function modules.
- *~ You should rename it to index.d.ts and place it in a folder with the same name as the module.
- *~ For example, if you were writing a file for "super-greeter", this
- *~ file should be 'super-greeter/index.d.ts'
+/*~ Это шаблон модуля, который является функцией. Его нужно переименовать в index.d.ts
+ *~ и поместить в папку с тем же именем, что и имя модуля.
+ *~ Например, если вы создаете файл для "super-greeter", то этот файл
+ *~ должен называться "super-greeter/index.d.ts"
  */
 
-/*~ Note that ES6 modules cannot directly export callable functions.
- *~ This file should be imported using the CommonJS-style:
+/*~ Обратите внимание, что ES6-модули не могут напрямую экспортировать вызываемые функции.
+ *~ Этот файл следует импортировать, используя CommonJS:
  *~   import x = require('someLibrary');
  *~
- *~ Refer to the documentation to understand common
- *~ workarounds for this limitation of ES6 modules.
+ *~ Обратитесь к документации, чтобы узнать о распространенных способах
+ *~ обхода данного ограничения для ES6-модулей.
  */
 
-/*~ If this module is a UMD module that exposes a global variable 'myFuncLib' when
- *~ loaded outside a module loader environment, declare that global here.
- *~ Otherwise, delete this declaration.
+/*~ Если это UMD-модуль, который предоставляет глобальную переменную 'myClassLib'
+ *~ при загрузке в окружении без загрузчика модулей, объявите эту переменную здесь.
+ *~ В противном случае удалите это объявление.
  */
 export as namespace myFuncLib;
 
-/*~ This declaration specifies that the function
- *~ is the exported object from the file
+/*~ Это объявление указывает, что эта функция экспортируется
+ *~ из данного файла
  */
 export = MyFunction;
 
-/*~ This example shows how to have multiple overloads for your function */
+/*~ Этот пример показывает, как добавить перегрузки к экспортируемой функции */
 declare function MyFunction(name: string): MyFunction.NamedReturnType;
 declare function MyFunction(length: number): MyFunction.LengthReturnType;
 
-/*~ If you want to expose types from your module as well, you can
- *~ place them in this block. Often you will want to describe the
- *~ shape of the return type of the function; that type should
- *~ be declared in here, as this example shows.
+/*~ Если этот модуль должен предоставлять типы, то их можно поместить
+ *~ в этот блок. Зачастую требуется описать форму типа значения, возвращаемого
+ *~ функцией; тип для этого должен быть объявлен здесь, как показано в примере.
  */
 declare namespace MyFunction {
 	export interface LengthReturnType {
@@ -46,8 +45,8 @@ declare namespace MyFunction {
 		lastName: string;
 	}
 
-	/*~ If the module also has properties, declare them here. For example,
-	 *~ this declaration says that this code is legal:
+	/*~ Если у модуля также есть свойства, объявите их здесь. Например, данное
+	 *~ объявление указывает, что следующий код допустим:
 	 *~   import f = require('myFuncLibrary');
 	 *~   console.log(f.defaultName);
 	 */

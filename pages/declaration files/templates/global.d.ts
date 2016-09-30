@@ -1,20 +1,20 @@
-// Type definitions for [~THE LIBRARY NAME~] [~OPTIONAL VERSION NUMBER~]
-// Project: [~THE PROJECT NAME~]
-// Definitions by: [~YOUR NAME~] <[~A URL FOR YOU~]>
+// Type definitions for [~НАЗВАНИЕ БИБЛИОТЕКИ~] [~НЕОБЯЗАТЕЛЬНЫЙ НОМЕР ВЕРСИИ~]
+// Project: [~НАЗВАНИЕ ПРОЕКТА~]
+// Definitions by: [~ВАШЕ ИМЯ~] <[~ВАШ АДРЕС В ИНТЕРНЕТЕ~]>
 
-/*~ If this library is callable (e.g. can be invoked as myLib(3)),
- *~ include those call signatures here.
- *~ Otherwise, delete this section.
+/*~ Если библиотека может быть вызвана (например, как myLib(3)),
+ *~ добавьте здесь сигнатуры вызова.
+ *~ В противном случае удалите эту секцию.
  */
 declare function myLib(a: string): string;
 declare function myLib(a: number): number;
 
-/*~ If you want the name of this library to be a valid type name,
- *~ you can do so here.
+/*~ Если нужно, чтобы имя этой библиотеки было корректным именем типа,
+ *~ это можно сделать здесь.
  *~
- *~ For example, this allows us to write 'var x: myLib';
- *~ Be sure this actually makes sense! If it doesn't, just
- *~ delete this declaration and add types inside the namespace below.
+ *~ Например, это позволяет написать 'var x: myLib';
+ *~ Убедитесь, что это имеет смысл! Если нет, просто
+ *~ удалите это объявление и добавляйте типы в пространство имен ниже
  */
 interface myLib {
 	name: string;
@@ -22,30 +22,31 @@ interface myLib {
 	extras?: string[];
 }
 
-/*~ If your library has properties exposed on a global variable,
- *~ place them here.
- *~ You should also place types (interfaces and type alias) here.
+/*~ Если библиотека имеет свойства, доступные через глобальную переменную
+ *~ поместите их здесь.
+ *~ Также здесь можно поместить типы (интерфейсы и псевдонимы типов).
  */
 declare namespace myLib {
-	//~ We can write 'myLib.timeout = 50;'
+	//~ Можно написать 'myLib.timeout = 50;'
 	let timeout: number;
 
-	//~ We can access 'myLib.version', but not change it
+	//~ Можно получить доступ к 'myLib.version', но не изменить
 	const version: string;
 
-	//~ There's some class we can create via 'let c = new myLib.Cat(42)'
-	//~ Or reference e.g. 'function f(c: myLib.Cat) { ... }
+	//~ Здесь какой-нибудь класс, объекты которого можно
+	//~ создать как 'let c = new myLib.Cat(42)'
+	//~ или ссылаться на него, например 'function f(c: myLib.Cat) { ... }
 	class Cat {
 		constructor(n: number);
 
-		//~ We can read 'c.age' from a 'Cat' instance
+		//~ Можно читать значение 'c.age' экземпляра 'Cat'
 		readonly age: number;
 
-		//~ We can invoke 'c.purr()' from a 'Cat' instance
+		//~ Можно вызвать 'c.purr()' на экземпляре 'Cat'
 		purr(): void;
 	}
 
-	//~ We can declare a variable as
+	//~ Можно объявить переменную как
 	//~   'var s: myLib.CatSettings = { weight: 5, name: "Maru" };'
 	interface CatSettings {
 		weight: number;
@@ -53,10 +54,10 @@ declare namespace myLib {
 		tailLength?: number;
 	}
 
-	//~ We can write 'const v: myLib.VetID = 42;'
-	//~  or 'const v: myLib.VetID = "bob";'
+	//~ Можно написать 'const v: myLib.VetID = 42;'
+	//~  или 'const v: myLib.VetID = "bob";'
 	type VetID = string | number;
 
-	//~ We can invoke 'myLib.checkCat(c)' or 'myLib.checkCat(c, v);'
+	//~ Можно вызвать как 'myLib.checkCat(c)' или 'myLib.checkCat(c, v);'
 	function checkCat(c: Cat, s?: VetID);
 }

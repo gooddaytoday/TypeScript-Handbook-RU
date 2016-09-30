@@ -1,33 +1,33 @@
-// Type definitions for [~THE LIBRARY NAME~] [~OPTIONAL VERSION NUMBER~]
-// Project: [~THE PROJECT NAME~]
-// Definitions by: [~YOUR NAME~] <[~A URL FOR YOU~]>
+// Type definitions for [~НАЗВАНИЕ БИБЛИОТЕКИ~] [~НЕОБЯЗАТЕЛЬНЫЙ НОМЕР ВЕРСИИ~]
+// Project: [~НАЗВАНИЕ ПРОЕКТА~]
+// Definitions by: [~ВАШЕ ИМЯ~] <[~ВАШ АДРЕС В ИНТЕРНЕТЕ~]>
 
-/*~ This is the module template file for class modules.
- *~ You should rename it to index.d.ts and place it in a folder with the same name as the module.
- *~ For example, if you were writing a file for "super-greeter", this
- *~ file should be 'super-greeter/index.d.ts'
+/*~ Это шаблон модуля, который является классом. Его нужно переименовать в index.d.ts
+ *~ и поместить в папку с тем же именем, что и имя модуля.
+ *~ Например, если вы создаете файл для "super-greeter", то этот файл
+ *~ должен называться "super-greeter/index.d.ts"
  */
 
-/*~ Note that ES6 modules cannot directly export class objects.
- *~ This file should be imported using the CommonJS-style:
+/*~ Обратите внимание, что ES6-модули не могут напрямую экспортировать объекты.
+ *~ Этот файл следует импортировать, используя CommonJS:
  *~   import x = require('someLibrary');
  *~
- *~ Refer to the documentation to understand common
- *~ workarounds for this limitation of ES6 modules.
+ *~ Обратитесь к документации, чтобы узнать о распространенных способах
+ *~ обхода данного ограничения для ES6-модулей.
  */
 
-/*~ If this module is a UMD module that exposes a global variable 'myClassLib' when
- *~ loaded outside a module loader environment, declare that global here.
- *~ Otherwise, delete this declaration.
+/*~ Если это UMD-модуль, который предоставляет глобальную переменную 'myClassLib'
+ *~ при загрузке в окружении без загрузчика модулей, объявите эту переменную здесь.
+ *~ В противном случае удалите это объявление.
  */
 export as namespace myClassLib;
 
-/*~ This declaration specifies that the class constructor function
- *~ is the exported object from the file
+/*~ Это объявление указывает, что функция-конструктор класса экспортируется
+ *~ из данного файла
  */
 export = MyClass;
 
-/*~ Write your module's methods and properties in this class */
+/*~ Добавьте в этот класс методы и свойства данного модуля */
 declare class MyClass {
 	constructor(someParam?: string);
 
@@ -36,8 +36,8 @@ declare class MyClass {
 	myMethod(opts: MyClass.MyClassMethodOptions): number;
 }
 
-/*~ If you want to expose types from your module as well, you can
- *~ place them in this block.
+/*~ Если этот модуль должен предоставлять типы, то их можно поместить
+ *~ в этот блок
  */
 declare namespace MyClass {
 	export interface MyClassMethodOptions {

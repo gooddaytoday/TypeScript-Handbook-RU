@@ -1,33 +1,36 @@
-// Type definitions for [~THE LIBRARY NAME~] [~OPTIONAL VERSION NUMBER~]
-// Project: [~THE PROJECT NAME~]
-// Definitions by: [~YOUR NAME~] <[~A URL FOR YOU~]>
+// Type definitions for [~НАЗВАНИЕ БИБЛИОТЕКИ~] [~НЕОБЯЗАТЕЛЬНЫЙ НОМЕР ВЕРСИИ~]
+// Project: [~НАЗВАНИЕ ПРОЕКТА~]
+// Definitions by: [~ВАШЕ ИМЯ~] <[~ВАШ АДРЕС В ИНТЕРНЕТЕ~]>
 
-/*~ This is the global-modifying module template file. You should rename it to index.d.ts
- *~ and place it in a folder with the same name as the module.
- *~ For example, if you were writing a file for "super-greeter", this
- *~ file should be 'super-greeter/index.d.ts'
+/*~ Это шаблон модуля, изменяющего глобальные переменные. Его нужно переименовать в index.d.ts
+ *~ и поместить в папку с тем же именем, что и имя модуля.
+ *~ Например, если вы создаете файл для "super-greeter", то этот файл
+ *~ должен называться "super-greeter/index.d.ts"
  */
 
-/*~ Note: If your global-modifying module is callable or constructable, you'll
- *~ need to combine the patterns here with those in the module-class or module-function
- *~ template files
+/*~ Замечание: если данный модуль может вызываться как функция или конструироваться,
+ *~ то вам нужно объединить написанное здесь с тем, что находится в шаблонах
+ *~ module-class или module-function
  */
+
 declare global {
-	/*~ Here, declare things that go in the global namespace, or augment
-	 *~ existing declarations in the global namespace
-	 */
+  /*~ Здесь объявите то, что будет находиться в глобальном пространстве имен,
+   *~ или дополнять существующие в глобальном пространстве имен объявления
+   */
 	interface String {
 		fancyFormat(opts: StringFormatOptions): string;
 	}
 }
 
-/*~ If your module exports types or values, write them as usual */
+/*~ Если модуль экспортирует типы или значения, запишите их как обычно */
 export interface StringFormatOptions {
 	fancinessLevel: number;
 }
 
-/*~ For example, declaring a method on the module (in addition to its global side effects) */
+/*~ Для примера: объявление метода модуля (вдобавок к его воздействию на
+ *~ глобальную область видимости)
+ */
 export function doSomething(): void;
 
-/*~ If your module exports nothing, you'll need this line. Otherwise, delete it */
+/*~ Если модуль ничего не экспортирует, то понадобится эта строка. Иначе удалите ее */
 export {};
