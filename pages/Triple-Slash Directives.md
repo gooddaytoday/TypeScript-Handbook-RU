@@ -1,58 +1,58 @@
-Triple-slash directives are single-line comments containing a single XML tag.
-The contents of the comment are used as compiler directives.
+﻿Директивы с тремя наклонными чертами (triple-slash directives) являются однострочными комментариями, включающими в себя единственный тэг XML.
+Содержимое комментария используется в качестве директив компилятору.
 
-Triple-slash directives are **only** valid at the top of their containing file.
-A triple-slash directive can only be preceded by single or multi-line comments, including other triple-slash directives.
-If they are encountered following a statement or a declaration they are treated as regular single-line comments, and hold no special meaning.
+Директивы с тремя наклонными чертами имеют силу, находясь **только** в начале содержащего их файла.
+Перед директивой с тремя наклонными чертами могут идти только однострочные или многострочные комментарии, а также другие директивы с тремя наклонными чертами.
+Если такая директива встретится после команды или объявления, она будет считаться однострочным комментарием, не имеющим специального значения.
 
 ## `/// <reference path="..." />`
 
-The `/// <reference path="..." />` directive is the most common of this group.
-It serves as a declaration of *dependency* between files.
+Директива `/// <reference path="..." />` используется наиболее часто.
+Она служит в качестве объявления *зависимости* между файлами.
 
-Triple-slash references instruct the compiler to include additional files in the compilation process.
+Ссылки с тремя наклонными чертами говорят компилятору о необходимости включения дополнительных файлов в процесс компиляции.
 
-They also serve as a method to order the output when using `--out` or `--outFile`.
-Files are emitted to the output file location in the same order as the input after preprocessing pass.
+Они также служат для упорядочивания вывода при использовании `--out` или `--outFile`.
+Файлы создаются в выходном каталоге в том же порядке, в каком были поданы на вход после прохода предварительный обработки.
 
-### Preprocessing input files
+### Предварительная обработка входных файлов
 
-The compiler performs a preprocessing pass on input files to resolve all triple-slash reference directives.
-During this process, additional files are added to the compilation.
+Чтобы разрешить директивы с тремя наклонными чертами, компилятор выполняет проход для предварительной обработки входных файлов. 
+Во время этой процедуры в компиляцию добавляются дополнительные файлы.
 
-The process starts with a set of *root files*;
-these are the file names specified on the command-line or in the `"files"` list in the `tsconfig.json` file.
-These root files are preprocessed in the same order they are specified.
-Before a file is added to the list, all triple-slash references in it are processed, and their targets included.
-Triple-slash references are resolved in a depth first manner, in the order they have been seen in the file.
+Процесс начинается с  набора *корневых файлов* (root files) - 
+это имена файлов, указанные в командной строке или в списке `"files"` файла `tsconfig.json`.
+Эти корневые файлы обрабатываются в том же порядке, в каком они были указаны.
+До того, как файл добавляется в список, обрабатываются все находящиеся в этом файле ссылки с тремя наклонными чертами.
+Ссылки с тремя наклонными чертами разрешаются способом поиска в глубину (depth first manner), в порядке, в каком они были представлены в файле.
 
-A triple-slash reference path is resolved relative to the containing file, if unrooted.
+Если в ссылке с тремя наклонными чертами не указан полный путь, она разрешается  относительно содержащего её файла.
 
-### Errors
+### Ошибки
 
-It is an error to reference a file that does not exist.
-It is an error for a file to have a triple-slash reference to itself.
+Ссылка не несуществующий файл является ошибкой.
+Если в файле есть ссылка с тремя наклонными чертами на самого себя, это также будет ошибкой.
 
-### Using `--noResolve`
+### Использование `--noResolve`
 
-If the compiler flag `--noResolve` is specified, triple-slash references are ignored; they neither result in adding new files, nor change the order of the files provided.
+Если указан флаг компилятора `--noResolve`, то ссылки с тремя наклонными чертами игнорируются: не будут добавлены какие-либо новые файлы и не будет изменен порядок предоставленных файлов.
 
 ## `/// <reference no-default-lib="true"/>`
 
-This directive marks a file as a *default library*.
-You will see this comment at the top of `lib.d.ts` and its different variants.
+Такая директива помечает файл в качестве *библиотеки по умолчанию*.
+Подобный комментарий можно найти в начале файла `lib.d.ts`, а также в его различных вариантах.
 
-This directive instructs the compiler to *not* include the default library (i.e. `lib.d.ts`) in the compilation.
-The impact here is similar to passing `--noLib` on the command line.
+Эта директива говорит компилятору *не* включать в сборку библиотеку по умолчанию (например `lib.d.ts`).
+В данном случае результат аналогичен указанию в командной строке ключа `--noLib`.
 
-Also note that when passing `--skipDefaultLibCheck`, the compiler will only skip checking files with `/// <reference no-default-lib="true"/>`.
+Также стоит отметить, что при указании ключа `--skipDefaultLibCheck` компилятор пропустит лишь файлы с `/// <reference no-default-lib="true"/>`.
 
 ## `/// <amd-module />`
 
-By default AMD modules are generated anonymous.
-This can lead to problems when other tools are used to process the resulting modules, such as bundlers (e.g. `r.js`).
+Модули AMD по умолчанию генерируются безымянными.
+Это может привести к проблемам в случаях, когда для обработки получившихся модулей используются сторонние инструменты создания пакетов (bundlers) (например `r.js`).
 
-The `amd-module` directive allows passing an optional module name to the compiler:
+Директива `amd-module` позволяет передать компилятору необязательное имя модуля:
 
 ##### amdModule.ts
 
@@ -62,7 +62,7 @@ export class C {
 }
 ```
 
-Will result in assigning the name `NamedModule` to the module as part of calling the AMD `define`:
+Приведет к присвоению модулю имени `NamedModule` в составе вызова AMD `define`:
 
 ##### amdModule.js
 
@@ -79,11 +79,11 @@ define("NamedModule", ["require", "exports"], function (require, exports) {
 
 ## `/// <amd-dependency />`
 
-> **Note**: this directive has been deprecated. Use `import "moduleName";` statements instead.
+> **Замечание**: данная директива объявлена устаревшей. Вместо нее используйте команду `import "moduleName";`.
 
-`/// <amd-dependency path="x" />` informs the compiler about a non-TS module dependency that needs to be injected in the resulting module's require call.
+`/// <amd-dependency path="x" />` сообщает компилятору о зависимости от стороннего модуля, ссылка на который должна быть вставлена в команду require уже после обработки.
 
-The `amd-dependency` directive can also have an optional `name` property; this allows passing an optional name for an amd-dependency:
+Директива `amd-dependency` также может содержать необязательное свойство `name`, позволяющее передать имя для amd-зависимости:
 
 ```ts
 /// <amd-dependency path="legacy/moduleA" name="moduleA"/>
@@ -91,7 +91,7 @@ declare var moduleA:MyType
 moduleA.callStuff()
 ```
 
-Generated JS code:
+Сгенерированный JS-код:
 
 ```js
 define(["require", "exports", "legacy/moduleA"], function (require, exports, moduleA) {
