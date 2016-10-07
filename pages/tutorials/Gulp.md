@@ -1,18 +1,18 @@
-This quick start guide will teach you how to build TypeScript with [gulp](http://gulpjs.com) and then add [Browserify](http://browserify.org), [uglify](http://lisperator.net/uglifyjs/), or [Watchify](https://github.com/substack/watchify) to the gulp pipeline.
+Это руководство научит собирать проекты TypeScript с помощью [gulp](http://gulpjs.com), и использовать [Browserify](http://browserify.org), [uglify](http://lisperator.net/uglifyjs/) или [Watchify](https://github.com/substack/watchify) в связке с gulp.
 
-We assume that you're already using [Node.js](https://nodejs.org/) with [npm](https://www.npmjs.com/).
+Предполагается, что вы уже используете [Node.js](https://nodejs.org/) и [npm](https://www.npmjs.com/).
 
-# Minimal project
+# Минимальный проект
 
-Let's start out with a new directory.
-We'll name it `proj` for now, but you can change it to whatever you want.
+Начнем с создания новой папки.
+Мы назовем ее `proj`, однако ей можно дать любое необходимое имя.
 
 ```shell
 mkdir proj
 cd proj
 ```
 
-To start, we're going to structure our project in the following way:
+Структура проекта будет следующей:
 
 ```text
 proj/
@@ -20,58 +20,58 @@ proj/
     +- dist/
 ```
 
-TypeScript files will start out in your `src` folder, run through the TypeScript compiler and end up in `dist`.
+Файлы TypeScript будут находиться в папке `src`, компилироваться с помощью TypeScript, а результат выводиться в `dist`.
 
-Let's scaffold this out:
+Давайте создадим эту структуру:
 
 ```shell
 mkdir src
 mkdir dist
 ```
 
-## Initialize the project
+## Инициализация проекта
 
-Now we'll turn this folder into an npm package.
+Превратим эту папку в npm-пакет.
 
 ```shell
 npm init
 ```
 
-You'll be given a series of prompts.
-You can use the defaults except for your entry point.
-For your entry point, use `./dist/main.js`.
-You can always go back and change these in the `package.json` file that's been generated for you.
+Вам зададут несколько вопросов.
+Для всех можно использовать вариант ответа по умолчанию, кроме вопроса о точке входа (`entry point:`).
+В качестве точки входа введите `./dist/main.js`.
+Вы всегда можете вернуться и изменить все, что указали, в сгенерированном файле `package.json`.
 
-## Install our dependencies
+## Установка зависимостей
 
-Now we can use `npm install` to install packages.
-First install TypeScript and gulp globally.
-(You might need to start `npm install` commands in this guide with `sudo` if you're on a Unix system.)
+Теперь используем `npm install`, чтобы установить пакеты.
+В первую очередь глобально установите TypeScript и gulp.
+(Если вы пользуетесь Unix-системой, то, возможно, команды `npm install` придется запускать через `sudo`).
 
 ```shell
 npm install -g typescript gulp-cli
 ```
 
-Then install `gulp` and `gulp-typescript` in your project's dev dependencies.
-[Gulp-typescript](https://www.npmjs.com/package/gulp-typescript) is a gulp plugin for Typescript.
+Затем установите `gulp` и `gulp-typescript` в качестве зависимостей времени разработки.
+[Gulp-typescript](https://www.npmjs.com/package/gulp-typescript) — это плагин к gulp для поддержки TypeScript.
 
 ```shell
 npm install --save-dev gulp gulp-typescript
 ```
 
-## Write a simple example
+## Создание простого примера
 
-Let's write a Hello World program.
-In `src`, create the file `main.ts`:
+Давайте напишем несложную программу.
+Создайте файл `main.ts` в папке `src`:
 
 ```ts
 function hello(compiler: string) {
-    console.log(`Hello from ${compiler}`);
+    console.log(`Привет от ${compiler}`);
 }
 hello("TypeScript");
 ```
 
-In the project root, `proj`, create the file `tsconfig.json`:
+Создайте файл `tsconfig.json` в корне проекта `proj`:
 
 ```json
 {
@@ -85,9 +85,9 @@ In the project root, `proj`, create the file `tsconfig.json`:
 }
 ```
 
-## Create a `gulpfile.js`
+## Создание `gulpfile.js`
 
-In the project root, create the file `gulpfile.js`:
+Создайте файл `gulpfile.js` в корне проекта:
 
 ```js
 var gulp = require("gulp");
@@ -101,29 +101,29 @@ gulp.task("default", function () {
 });
 ```
 
-## Test the resulting app
+## Тестирование полученного приложения
 
 ```shell
 gulp
 node dist/main.js
 ```
 
-The program should print "Hello from TypeScript!".
+Приложение должно вывести в консоль "Привет от TypeScript!".
 
-# Add modules to the code
+# Добавление модулей
 
-Before we get to Browserify, let's build our code out and add modules to the mix.
-This is the structure you're more likely to use for a real app.
+Прежде чем добраться до Browserify, соберем код и добавим к нему модули.
+Следующую структуру вы, скорее всего, будете использовать и для настоящих приложений.
 
-Create a file called `src/greet.ts`:
+Создайте файл `src/greet.ts`:
 
 ```ts
 export function sayHello(name: string) {
-    return `Hello from ${name}`;
+    return `Привет от ${name}`;
 }
 ```
 
-Now change the code in `src/main.ts` to import `sayHello` from `greet.ts`:
+Теперь измените код в `src/main.ts` так, чтобы `sayHello` импортировалась из `greet.ts`:
 
 ```ts
 import { sayHello } from "./greet";
@@ -131,7 +131,7 @@ import { sayHello } from "./greet";
 console.log(sayHello("TypeScript"));
 ```
 
-Finally, add `src/greet.ts` to `tsconfig.json`:
+И, наконец, добавьте `src/greet.ts` в `tsconfig.json`:
 
 ```json
 {
@@ -146,51 +146,51 @@ Finally, add `src/greet.ts` to `tsconfig.json`:
 }
 ```
 
-Make sure that the modules work by running `gulp` and then testing in Node:
+Убедитесь, что модули работают, запустив `gulp` и проверив работу кода в Node:
 
 ```shell
 gulp
 node dist/main.js
 ```
 
-Notice that even though we used ES2015 module syntax, TypeScript emitted CommonJS modules that Node uses.
-We'll stick with CommonJS for this tutorial, but you could set `module` in the options object to change this.
+Обратите внимание, что хотя мы применили синтаксис модулей из ES2015, TypeScript создал модули CommonJS, которые используются в Node.
+Для целей этого руководства формат CommonJS вполне подходит, но вы можете установить параметр `module` на объекте настроек, чтобы выбрать формат модулей.
 
 # Browserify
 
-Now let's move this project from Node to the browser.
-To do this, we'd  like to bundle all our modules into one JavaScript file.
-Fortunately, that's exactly what Browserify does.
-Even better, it lets us use the CommonJS module system used by Node, which is the default TypeScript emit.
-That means our TypeScript and Node setup will transfer to the browser basically unchanged.
+Теперь перенесем проект с Node в браузер.
+Для этого пришлось бы упаковать все модули в один JavaScript-файл.
+К счастью, именно это и делает Browserify.
+Больше того, Browserify позволяет использовать модульную систему CommonJS, которая применяется в Node, и модули для которой по умолчанию создает TypeScript.
+Это значит, что вносить много изменений в уже настроенную связку TypeScript и Node не потребуется.
 
-First, install browserify, [tsify](https://www.npmjs.com/package/tsify), and vinyl-source-stream.
-tsify is a Browserify plugin that, like gulp-typescript, gives access to the TypeScript compiler.
-vinyl-source-stream lets us adapt the file output of Browserify back into a format that gulp understands called [vinyl](https://github.com/gulpjs/vinyl).
+Сначала установите browserify, [tsify](https://www.npmjs.com/package/tsify), и vinyl-source-stream.
+tsify это плагин для Browserify, который, подобно gulp-typescript, предоставляет доступ к компилятору TypeScript.
+vinyl-source-stream позволяет согласовать файловый вывод Browserify и формат под названием [vinyl](https://github.com/gulpjs/vinyl), который понимает gulp.
 
 ```shell
 npm install --save-dev browserify tsify vinyl-source-stream
 ```
 
-## Create a page
+## Создание страницы
 
-Create a file in `src` named `index.html`:
+Создайте файл `index.html` в `src`:
 
 ```html
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>Hello World!</title>
+        <title>Привет, мир!</title>
     </head>
     <body>
-        <p id="greeting">Loading ...</p>
+        <p id="greeting">Загрузка ...</p>
         <script src="bundle.js"></script>
     </body>
 </html>
 ```
 
-Now change `main.ts` to update the page:
+Теперь измените `main.ts`, чтобы обновить страницу:
 
 ```ts
 import { sayHello } from "./greet";
@@ -203,8 +203,8 @@ function showHello(divName: string, name: string) {
 showHello("greeting", "TypeScript");
 ```
 
-Calling `showHello` calls `sayHello` to change the paragraph's text.
-Now change your gulpfile to the following:
+При вызове `showHello` вызывается `sayHello`, которая изменяет текст параграфа.
+Теперь замените код в `gulpfile.js` на следующий:
 
 ```js
 var gulp = require("gulp");
@@ -235,43 +235,43 @@ gulp.task("default", ["copy-html"], function () {
 });
 ```
 
-This adds the `copy-html` task and adds it as a dependency of `default`.
-That means any time `default` is run, `copy-html` has to run first.
-We've also changed `default` to call Browserify with the tsify plugin instead of gulp-typescript.
-Conveniently, they both allow us to pass the same options object to the TypeScript compiler.
+Здесь создается задача `copy-html`, которая затем добавляется как зависимость для `default`.
+Это значит, что при каждом запуске `default` сначала будет вызываться `copy-html`.
+Кроме того, задача `default` была изменена так, что вместо gulp-typescript теперь вызывается Browserify с плагином tsify.
+К счастью, оба эти вызова позволяют передать один и тот же объект параметров для компилятора TypeScript.
 
-After calling `bundle` we use `source` (our alias for vinyl-source-stream) to name our output bundle `bundle.js`.
+После вызова `bundle` мы используем `source` (наш псевдоним для vinyl-source-stream), чтобы дать получаемой сборке имя `bundle.js`.
 
-Test the page by running gulp and then opening `dist/index.html` in a browser.
-You should see "Hello from TypeScript" on the page.
+Протестируйте страницу, запустив `gulp` и открыв в браузере страницу `dist/index.html`.
+На ней должен быть текст "Привет от TypeScript".
 
-Notice that we specified `debug: true` to Browserify.
-This causes tsify to emit source maps inside the bundled JavaScript file.
-Source maps let you debug your original TypeScript code in the browser instead of the bundled JavaScript.
-You can test that source maps are working by opening the debugger for your browser and putting a breakpoint inside `main.ts`.
-When you refresh the page the breakpoint should pause the page and let you debug `greet.ts`.
+Обратите внимание, что мы указали `debug: true` для Browserify.
+Это заставляет tsify генерировать карты кода внутри создаваемого файла сборки.
+Карты кода позволяют отлаживать в браузере не упакованный JavaScript-код, а исходный TypeScript.
+Можно проверить, работают ли карты кода, открыв в браузере отладчик и установив точку останова в `main.ts`.
+При обновлении страницы эта точка останова должна спровоцировать паузу, и браузер позволит отлаживать `greet.ts`.
 
-# Watchify, Babel, and Uglify
+# Watchify, Babel, и Uglify
 
-Now that we are bundling our code with Browserify and tsify, we can add various features to our build with browserify plugins.
+Теперь, когда мы собираем код с Browserify и tsify, можно добавить к сборке различные возможности с помощью плагинов для Browserify.
 
-* Watchify starts gulp and keeps it running, incrementally compiling whenever you save a file.
-  This lets you keep an edit-save-refresh cycle going in the browser.
+* Watchify запускает gulp и держит его запущенным, выполняя инкрементальную компиляцию при сохранении какого-либо файла.
+  Это позволяет автоматизировать в браузере цикл "редактирование" - "сохранение" - "обновление".
 
-* Babel is a hugely flexible compiler that converts ES2015 and beyond into ES5 and ES3.
-  This lets you add extensive and customized transformations that TypeScript doesn't support.
+* Babel представляет собой очень гибкий компилятор, превращающий ES2015 и выше в ES5 и ES3.
+  Это позволяет применять к коду обширные и настраиваемые трансформации, которые не поддерживаются TypeScript.
 
-* Uglify compacts your code so that it takes less time to download.
+* Uglify минимизирует код, чтобы он загружался быстрее.
 
 ## Watchify
 
-We'll start with Watchify to provide background compilation:
+Начнем с Watchify и реализуем фоновую компиляцию:
 
 ```shell
 npm install --save-dev watchify gulp-util
 ```
 
-Now change your gulpfile to the following:
+Теперь измените `gulpfile.js` следующим образом:
 
 ```js
 var gulp = require("gulp");
@@ -309,19 +309,19 @@ watchedBrowserify.on("update", bundle);
 watchedBrowserify.on("log", gutil.log);
 ```
 
-There are basically three changes here, but they require you to refactor your code a bit.
+Здесь, фактически, три изменения, но они требуют небольшой переработки кода.
 
-1. We wrapped our `browserify` instance in a call to `watchify`, and then held on to the result.
-2. We called `watchedBrowserify.on("update", bundle);` so that Browserify will run the `bundle` function every time one of your TypeScript files changes.
-3. We called `watchedBrowserify.on("log", gutil.log);` to log to the console.
+1. Мы "завернули" экземпляр `browserify` в вызов `watchify`, и сохранили результат в переменной.
+2. Вызвали `watchedBrowserify.on("update", bundle);`, так что Browserify будет запускать функцию `bundle` при каждом изменении TypeScript-файлов.
+3. Вызвали `watchedBrowserify.on("log", gutil.log);` для вывода сообщений на консоль.
 
-Together (1) and (2) mean that we have to move our call to `browserify` out of the `default` task.
-And we have to give the function for `default` a name since both Watchify and Gulp need to call it.
-Adding logging with (3) is optional but very useful for debugging your setup.
+Из-за (1) и (2) вызов `browserify` пришлось вынести из задачи `default`.
+Кроме того, функции для задачи `default` пришлось дать имя, так ее будут вызывать и Watchify, и Gulp.
+Добавление вывода на консоль необязательно, но полезно для отладки.
 
-Now when you run Gulp, it should start and stay running.
-Try changing the code for `showHello` in `main.ts` and saving it.
-You should see output that looks like this:
+Теперь при старте Gulp он запустится и останется в запущенном состоянии.
+Попробуйте изменить код `showHello` в файле `main.ts`, и сохранить его.
+Вы должны будете увидеть похожий вывод:
 
 ```shell
 proj$ gulp
@@ -337,14 +337,14 @@ proj$ gulp
 
 ## Uglify
 
-First install Uglify.
-Since the point of Uglify is to mangle your code, we also need to install vinyl-buffer and gulp-sourcemaps to keep sourcemaps working.
+Сначала установите Uglify.
+Поскольку задача Ugligy заключается в обфускации кода, также придется установить vinyl-buffer и gulp-sourcemaps, чтобы карты кода продолжали работать.
 
 ```shell
 npm install --save-dev gulp-uglify vinyl-buffer gulp-sourcemaps
 ```
 
-Now change your gulpfile to the following:
+Теперь измените `gulpfile.js` следующим образом:
 
 ```js
 var gulp = require("gulp");
@@ -382,9 +382,9 @@ gulp.task("default", ["copy-html"], function () {
 });
 ```
 
-Notice that `uglify` itself has just one call &mdash; the calls to `buffer` and `sourcemaps` exist to make sure sourcemaps keep working.
-These calls give us a separate sourcemap file instead of using inline sourcemaps like before.
-Now you can run Gulp and check that `bundle.js` does get minified into an unreadable mess:
+Обратите внимание, что для `uglify` понадобился всего один вызов; вызовы `buffer` и `sourcemaps` нужны только для того, чтобы карты кода продолжали работать.
+Эти вызовы создают отдельный файл с картами кода вместо внедренных в файл, которые были раньше.
+Теперь можно запустить Gulp и проверить, что из кода в `bundle.js` получилось нечто нечитаемое:
 
 ```shell
 gulp
@@ -393,14 +393,14 @@ cat dist/bundle.js
 
 ## Babel
 
-First install Babelify.
-Like Uglify, Babelify mangles code, so we'll need vinyl-buffer and gulp-sourcemaps.
+Для начала установите Babelify.
+Как и Uglify, Babelify обфусцирует код, поэтому понадобится vinyl-buffer и gulp-sourcemaps.
 
 ```shell
 npm install --save-dev babelify vinyl-buffer gulp-sourcemaps
 ```
 
-Now change your gulpfile to the following:
+Теперь измените `gulpfile.js` следующим образом:
 
 ```js
 var gulp = require('gulp');
@@ -437,9 +437,9 @@ gulp.task('default', ['copyHtml'], function () {
 });
 ```
 
-We also need to have TypeScript target ES2015.
-Babel will then produce ES5 from the ES2015 code that TypeScript emits.
-Let's modify `tsconfig.json`:
+Также необходимо, чтобы TypeScript генерировал ES2015-код.
+Тогда Babel превратит созданный TypeScript ES2015-код в ES5.
+Измените `tsconfig.json`:
 
 ```json
 {
@@ -453,4 +453,4 @@ Let's modify `tsconfig.json`:
 }
 ```
 
-Babel's ES5 output should be very similar to TypeScript's output for such a simple script.
+Для столь простого скрипта созданный Babel ES5-код должен быть очень похож на код, созданный TypeScript.

@@ -1,37 +1,37 @@
-# Setup
+# Настройка
 
-## Install ASP.NET Core and TypeScript
+## Установка ASP.NET Core и TypeScript
 
-First, [install ASP.NET Core](https://get.asp.net) if you need it.
-This quick-start guide uses Visual Studio, which means that you'll need Visual Studio 2015 in order to use ASP.NET Core.
+Сначала [установите ASP.NET Core](https://get.asp.net), если это необходимо.
+В данном руководстве используется Visual Studio, что означает, что для использования ASP.NET Core вам понадобится Visual Studio 2015.
 
-Next, if your version of Visual Studio does not already have TypeScript, you can install it for [Visual Studio 2015](http://www.microsoft.com/en-us/download/details.aspx?id=48593).
+Если в вашей версии Visual Studio еще нет TypeScript, [установите его для Visual Studio 2015](http://www.microsoft.com/en-us/download/details.aspx?id=48593).
 
-## Create a new project
+## Создание нового проекта
 
-1. Choose **File**
-2. Choose **New Project** (Ctrl + Shift + N)
-3. Choose **Visual C#**
-4. Choose **ASP.NET Web Application**
+1. Выберите **Файл** (**File**)
+2. Выберите **Создать проект** (**New Project**) (Ctrl + Shift + N)
+3. Выберите **Visual C#**
+4. Выберите **ASP.NET Web Application**
 
-   ![Create new ASP.NET project](../../assets/images/tutorials/aspnet/new-asp-project.png)
+   ![Создание нового проекта ASP.NET](../../assets/images/tutorials/aspnet/new-asp-project.png)
 
-5. Choose **ASP.NET 5 Empty**
+5. Выберите **ASP.NET 5 Empty**
 
-   Let's uncheck "Host in the cloud" since we're going to run this locally.
-   ![Use empty template](../../assets/images/tutorials/aspnet/new-asp-project-empty.png)
+   Флажок "Разместить в облаке" ("Host in the cloud") здесь снят, так как это пример локального проекта.
+   ![Используйте шаблон MVC](../../assets/images/tutorials/aspnet/new-asp-project-empty.png)
 
-Run the application and make sure that it works.
+Запустите приложение, и убедитесь, что оно работает.
 
-## Set up the server
+## Настройка сервера
 
-In `project.json` add another entry in `"dependencies"`:
+В файле `project.json` добавьте к `"dependencies"` следующий элемент:
 
 ```json
 "Microsoft.AspNet.StaticFiles": "1.0.0-rc1-final"
 ```
 
-The resulting dependencies should look like this:
+В результате должен получиться подобный список зависимостей:
 
 ```json
   "dependencies": {
@@ -41,7 +41,7 @@ The resulting dependencies should look like this:
   },
 ```
 
-Replace the body of `Configure` in `Startup.cs` with
+В файле `Startup.cs` замените тело `Configure` на следующее:
 
 ```cs
 public void Configure(IApplicationBuilder app)
@@ -52,46 +52,46 @@ public void Configure(IApplicationBuilder app)
 }
 ```
 
-# Add TypeScript
+# Добавление TypeScript
 
-The next step is to add a folder for TypeScript.
+Следующий шаг — добавить папку для TypeScript.
 
-![Create new folder](../../assets/images/tutorials/aspnet/new-folder.png)
+![Создание новой папки](../../assets/images/tutorials/aspnet/new-folder.png)
 
-We'll just call it `scripts`.
+Назовем ее `scripts`.
 
 ![scripts folder](../../assets/images/tutorials/aspnet/scripts-folder.png)
 
-## Add TypeScript code
+## Добавление кода TypeScript
 
-Right click on `scripts` and click **New Item**.
-Then choose **TypeScript File** (it may be in the .NET Core section) and name the file `app.ts`.
+Щелкните правой кнопкой на `scripts` и выберите **Создать элемент** (**New Item**).
+Затем выберите **Файл TypeScript** (**TypeScript File**) (этот пункт может находиться в разделе .NET Core), и назовите файл `app.ts`.
 
-![New item](../../assets/images/tutorials/aspnet/new-item.png)
+![Создание элемента](../../assets/images/tutorials/aspnet/new-item.png)
 
-## Add example code
+## Добавление кода примера
 
-Type the following code into app.ts.
+Введите следующий код в `app.ts`.
 
 ```ts
 function sayHello() {
     const compiler = (document.getElementById("compiler") as HTMLInputElement).value;
     const framework = (document.getElementById("framework") as HTMLInputElement).value;
-    return `Hello from ${compiler} and ${framework}!`;
+    return `Привет от ${compiler} и ${framework}!`;
 }
 ```
 
-## Set up the build
+## Настройка сборки
 
-### Configure the TypeScript compiler
+### Настройка компилятора TypeScript
 
-First we need to tell TypeScript how to build.
-Right click on the scripts folder and click **New Item**.
-Then choose **TypeScript Configuration File** and use the default name `tsconfig.json`.
+Для начала нужно объяснить компилятору TypeScript, как собирать проект.
+Щелкните правой кнопкой мыши на папке `scripts` и выберите **Создать элемент** (**New Item**).
+Затем выберите **Файл конфигурации TypeScript** (**TypeScript Configuration File**), и используйте имя по умолчанию `tsconfig.json`.
 
-![Create tsconfig.json](../../assets/images/tutorials/aspnet/new-tsconfig.png)
+![Создание tsconfig.json](../../assets/images/tutorials/aspnet/new-tsconfig.png)
 
-Replace the default `tsconfig.json` with the following:
+Замените содержимое файла `tsconfig.json`, которое было по умолчанию, на следующее:
 
 ```json
 {
@@ -108,21 +108,21 @@ Replace the default `tsconfig.json` with the following:
 }
 ```
 
-This is similar to the default, with the following differences:
+Это похоже на то, что было по умолчанию, но отличается следующим:
 
-1. It sets `"noImplicitAny": true`.
-2. It explicitly lists `"files"` instead of relying on `"excludes"`.
-3. It sets `"compileOnSave": true`.
+1. Устанавливается `"noImplicitAny": true`.
+2. Явно перечисляются входные файлы в `"files"`, не полагаясь на `"excludes"`.
+4. Устанавливается `"compileOnSave": true`.
 
-`"noImplicitAny"` is good idea whenever you're writing new code &mdash; you can make sure that you don't write any untyped code by mistake.
-`"compileOnSave"` makes it easy to update your code in a running web app.
+Указывать `"noImplicitAny"` — неплохая идея, если вы пишете новый код; это поможет удостовериться, что вы по ошибке не напишете нетипизированный код.
+`"compileOnSave"` упрощает обновление кода в запущенном веб-приложении.
 
-### Set up NPM
+### Настройка NPM
 
-Now we need to set up NPM so we can download JavaScript packages.
-Right click on the project and click **New Item**.
-Then choose **NPM Configuration File** and use the default name `package.json`.
-Inside `"devDependencies"` add "gulp" and "del":
+Теперь нужно настроить NPM, чтобы загружать JavaScript-пакеты.
+Щелкните правой кнопкой мыши на проекте и выберите **Создать элемент** (**New Item**).
+Затем выберите **Файл конфигурации NPM** (**NPM Configuration File**) и используйте имя по умолчанию `package.json`.
+Добавьте "gulp" и "del" в `"devDependencies"`:
 
 ```json
 "devDependencies": {
@@ -131,19 +131,20 @@ Inside `"devDependencies"` add "gulp" and "del":
 }
 ```
 
-Visual Studio should start installing gulp and del as soon as you save the file.
-If not, right-click package.json and then **Restore Packages**.
+Visual Studio начнет устанавливать gulp и del, как только вы сохраните файл.
+Если этого не происходит, щелкните правой кнопкой мыши по `package.json` и выберите **Восстановить пакеты** (**Restore Packages**).
 
-### Set up gulp
+### Настройка gulp
 
-Finally, add a new JavaScript file named `gulpfile.js`.
-Put the following code inside:
+Теперь добавьте новый файл JavaScript под именем `gulpfile.js`.
+Вставьте в него следующий код:
 
 ```js
 /// <binding AfterBuild='default' Clean='clean' />
 /*
-This file is the main entry point for defining Gulp tasks and using Gulp plugins.
-Click here to learn more. http://go.microsoft.com/fwlink/?LinkId=518007
+Данный файл является главной точкой входа для объявления задач Gulp и
+использования плагинов. Щелкните здесь, чтобы узнать больше.
+http://go.microsoft.com/fwlink/?LinkId=518007
 */
 
 var gulp = require('gulp');
@@ -162,18 +163,18 @@ gulp.task('default', function () {
 });
 ```
 
-The first line tells Visual Studio to run the task 'default' after the build finishes.
-It will also run the 'clean' task when you ask Visual Studio to clean the build.
+Первая строка приказывает Visual Studio запустить задачу `default` после завершения сборки.
+Кроме этого, при очистке проекта будет запускаться задача `clean`.
 
-Now right-click on `gulpfile.js` and click **Task Runner Explorer**.
-If 'default' and 'clean' tasks don't show up, refresh the explorer:
+Теперь щелкните правой кнопкой мыши по файлу `gulpfile.js` и выберите **Диспетчер выполнения задач** (**Task Running Explorer**).
+Если задачи под названиями 'default' и 'clean' не появляются, обновите диспетчер:
 
-![Refresh Task Runner Explorer](../../assets/images/tutorials/aspnet/task-runner-explorer.png)
+![Обновление диспетчера выполнения задач](../../assets/images/tutorials/aspnet/task-runner-explorer.png)
 
-## Write an HTML page
+## Написание HTML страницы
 
-Add a New Item named `index.html` inside `wwwroot`.
-Use the following code for `index.html`:
+Добавьте новый элемент под именем `index.html` в папку `wwwroot`.
+В качестве кода для него используйте:
 
 ```html
 <!DOCTYPE html>
@@ -186,37 +187,37 @@ Use the following code for `index.html`:
 <body>
     <div id="message"></div>
     <div>
-        Compiler: <input id="compiler" value="TypeScript" onkeyup="document.getElementById('message').innerText = sayHello()" /><br />
-        Framework: <input id="framework" value="ASP.NET" onkeyup="document.getElementById('message').innerText = sayHello()" />
+        Компилятор: <input id="compiler" value="TypeScript" onkeyup="document.getElementById('message').innerText = sayHello()" /><br />
+        Фреймворк: <input id="framework" value="ASP.NET" onkeyup="document.getElementById('message').innerText = sayHello()" />
     </div>
 </body>
 </html>
 ```
 
-## Test
+## Тестирование
 
-1. Run the project.
-2. You should see a message when you type in the input boxes:
+1. Запустите проект.
+2. При изменении полей ввода вы должны увидеть сообщение:
 
-![Picture of running demo](../../assets/images/tutorials/aspnet/running-demo.png)
+![Запущенное приложение](../../assets/images/tutorials/aspnet/running-demo.png)
 
-## Debug
+## Отладка
 
-1. In Edge, press F12 and click the **Debugger** tab.
-2. Look in the first localhost folder, then src/app.ts
-3. Put a breakpoint on the line with `return`.
-4. Type in the boxes and confirm that the breakpoint hits in TypeScript code and that inspection works correctly.
+1. Нажмите F12 в браузере Edge и выберите вкладку **Отладчик** (**Debugger**).
+2. Откройте первую папку `localhost`, затем `src/app.ts`.
+3. Поставьте точку останова на строку с `return`.
+4. Заполните поля ввода и убедитесь, что точка останова срабатывает на TypeScript-коде, и все работает правильно.
 
-![Demo paused on breakpoint](../../assets/images/tutorials/aspnet/paused-demo.png)
+![Приложение, остановленное но точке останова](../../assets/images/tutorials/aspnet/paused-demo.png)
 
-That's all you need to know to include basic TypeScript in your ASP.NET project.
-Next we'll include Angular and write a simple Angular app.
+Это все, что нужно знать, чтобы применить TypeScript в проекте ASP.NET.
+Дальше мы задействуем Angular и напишем простое приложение для этого фреймворка.
 
-# Add Angular 2
+# Добавление Angular 2
 
-## Add NPM dependencies
+## Загрузка зависимостей из NPM
 
-Add the following `"dependencies"` to `package.json` to install Angular 2 and SystemJS:
+Чтобы установить Angular 2 и SystemJS, добавьте следующие элементы к `"dependencies"` в файле `package.json`:
 
 ```json
   "dependencies": {
@@ -225,24 +226,24 @@ Add the following `"dependencies"` to `package.json` to install Angular 2 and Sy
   },
 ```
 
-## Install typings for dependencies
+## Установка файлов объявлений для зависимостей
 
-Angular 2 includes es6-shim for Promise support, but TypeScript still needs the types.
-Open a command prompt, then change directory to the app source:
+Библиотека es6-shim включена в Angular для поддержки обещаний, но TypeScript все же нужны файлы объявлений для нее.
+Откройте командную строку, затем измените текущую директорию на директорию с исходными файлами:
 
 ```shell
-cd C:\Users\<you>\Documents\Visual Studio 2015\Projects\<app>\src\<app>
+cd C:\Users\<имя_пользователя>\Documents\Visual Studio 2015\Projects\<app>\src\<app>
 npm install -g typings
 typings install --global dt~es6-shim
 ```
 
-## Update tsconfig.json
+## Обновление tsconfig.json
 
-Now that Angular 2 and its dependencies are installed, we need to enable TypeScript's experimental support for decorators and include the es6-shim typings.
-In the future decorators and ES6 will be the default and these settings will not be needed.
-Add `"experimentalDecorators": true, "emitDecoratorMetadata": true` to the `"compilerOptions"` section, and add `"../typings/index.d.ts"` to the `"files"` section.
-Finally, we need to add a new entry in `"files"` for another file, `"./model.ts"`, that we will create.
-The tsconfig should now look like this:
+Теперь, когда Angular 2 и его зависимости установлены, нужно включить в TypeScript экспериментальную поддержку декораторов, а также включить в код объявления типов для es6-shim.
+В будущем декораторы и ES6 будут включены по умолчанию и данные настройки станут не нужны.
+Добавьте `"experimentalDecorators": true, "emitDecoratorMetadata": true` в `"compilerOptions"`, и `"./typings/index.d.ts"` в `"files"`.
+В последнюю очередь нужно добавить в `"files"` новый элемент для файла `"./src/model.ts"`, который мы создадим.
+Файл `tsconfig.json` теперь должен быть таким:
 
 ```json
 {
@@ -264,22 +265,23 @@ The tsconfig should now look like this:
 }
 ```
 
-## Add Angular to the gulp build
+## Добавление Angular к сборке с gulp
 
-Finally, we need to make sure that the Angular files are copied as part of the build.
-We need to add:
+Теперь нужно убедиться, что файлы Angular будут копироваться во время сборки.
+Нужно добавить:
 
-1. The paths to the library files.
-2. Add a `lib` task to pipe the files to `wwwroot`.
-3. Add a dependendency on `lib` to the `default` task.
+1. Пути к библиотечным файлам.
+2. Задачу `lib`, чтобы направить файлы в `wwwroot`.
+3. Зависимость от `lib` к задаче `default`.
 
-The updated `gulpfile.js` should look like this:
+Измененный файл `gulpfile.js` должен выглядеть так:
 
 ```xml
 /// <binding AfterBuild='default' Clean='clean' />
 /*
-This file is the main entry point for defining Gulp tasks and using Gulp plugins.
-Click here to learn more. http://go.microsoft.com/fwlink/?LinkId=518007
+Данный файл является главной точкой входа для объявления задач Gulp и
+использования плагинов. Щелкните здесь, чтобы узнать больше.
+http://go.microsoft.com/fwlink/?LinkId=518007
 */
 
 var gulp = require('gulp');
@@ -306,11 +308,11 @@ gulp.task('default', ['lib'], function () {
 });
 ```
 
-Again, make sure that Task Runner Explorer sees the new `lib` task after you save the gulpfile.
+Как и в прошлый раз, убедитесь, что после сохранения `gulpfile.js` Диспетчер выполнения задач увидел новую задачу `lib`.
 
-## Write a simple Angular app in TypeScript
+## Написание простого Angular-приложения на TypeScript
 
-First, change the code in `app.ts` to:
+Для начала измените код в `app.ts` на следующий:
 
 ```ts
 import {Component} from "angular2/core"
@@ -318,7 +320,7 @@ import {MyModel} from "./model"
 
 @Component({
     selector: `my-app`,
-    template: `<div>Hello from {{getCompiler()}}</div>`
+    template: `<div>Привет от {{getCompiler()}}</div>`
 })
 class MyApp {
     model = new MyModel();
@@ -328,7 +330,7 @@ class MyApp {
 }
 ```
 
-Then add another TypeScript file in `src` named `model.ts`:
+Затем добавьте еще один файл TypeScript под именем `model.ts` в папку `src`.
 
 ```ts
 export class MyModel {
@@ -336,7 +338,7 @@ export class MyModel {
 }
 ```
 
-And then another TypeScript file in `src` named `main.ts`:
+И файл `main.ts` в `src`:
 
 ```ts
 import {bootstrap} from "angular2/platform/browser";
@@ -344,7 +346,7 @@ import {MyApp} from "./app";
 bootstrap(MyApp);
 ```
 
-Finally, change the code in `index.html` to the following:
+Теперь измените код в `index.html` на следующий:
 
 ```html
 <!DOCTYPE html>
@@ -369,10 +371,10 @@ Finally, change the code in `index.html` to the following:
     <title></title>
 </head>
 <body>
-    <my-app>Loading...</my-app>
+    <my-app>Загрузка...</my-app>
 </body>
 </html>
 ```
 
-This loads the app.
-When you run the ASP.NET application you should see a div that says "Loading..." and then updates to say "Hello from TypeScript".
+Этот код загружает приложение.
+При запуске приложения ASP.NET должен появиться элемент `div` с текстом "Загрузка...", который затем изменяется на "Привет от TypeScript".
