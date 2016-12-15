@@ -1,18 +1,18 @@
-This quick start guide will teach you how to wire up TypeScript with [React](http://facebook.github.io/react/) and [webpack](http://webpack.github.io/).
+Это руководство призвано научить связывать TypeScript с [React](http://facebook.github.io/react/) и [webpack](http://webpack.github.io/).
 
-We assume that you're already using [Node.js](https://nodejs.org/) with [npm](https://www.npmjs.com/).
+Предполагается, что вы уже используете [Node.js](https://nodejs.org/) и [npm](https://www.npmjs.com/).
 
-# Lay out the project
+# Создание структуры проекта
 
-Let's start out with a new directory.
-We'll name it `proj` for now, but you can change it to whatever you want.
+Начнем с создания новой папки.
+Мы назовем ее `proj`, однако ей можно дать любое необходимое имя.
 
 ```shell
 mkdir proj
 cd proj
 ```
 
-To start, we're going to structure our project in the following way:
+Наш проект будет иметь следующую структуру:
 
 ```text
 proj/
@@ -22,10 +22,10 @@ proj/
    +- dist/
 ```
 
-TypeScript files will start out in your `src` folder, run through the TypeScript compiler, then webpack, and end up in a `bundle.js` file in `dist`.
-Any components that we write will go in the `src/components` folder.
+Файлы TypeScript будут находиться в папке `src`, обрабатываться компилятором TypeScript, затем webpack, и в итоге будет получен файл `bundle.js` в папке `dist`.
+Все создаваемые нами компоненты будут находиться в папке `src/components`.
 
-Let's scaffold this out:
+Давайте создадим эту структуру:
 
 ```shell
 mkdir src
@@ -35,68 +35,68 @@ cd ..
 mkdir dist
 ```
 
-# Initialize the project
+# Инициализация проекта
 
-Now we'll turn this folder into an npm package.
+Давайте сделаем из этой папки npm-пакет.
 
 ```shell
 npm init
 ```
 
-You'll be given a series of prompts.
-You can use the defaults except for your entry point.
-For your entry point, use `./dist/bundle.js`.
-You can always go back and change these in the `package.json` file that's been generated for you.
+Вам зададут несколько вопросов.
+Для всех можно использовать вариант ответа по умолчанию, кроме вопроса о точке входа (`entry point:`).
+В качестве точки входа используйте `./dist/bundle.js`.
+Вы всегда можете вернуться и изменить все, что указали, в сгенерированном файле `package.json`.
 
-# Install our dependencies
+# Установка зависимостей
 
-First ensure TypeScript, Typings, and webpack are installed globally.
+Для начала убедимся, что TypeScript, Typings и webpack установлены глобально.
 
 ```shell
 npm install -g typescript typings webpack
 ```
 
-Webpack is a tool that will bundle your code and optionally all of its dependencies into a single `.js` file.
-[Typings](https://www.npmjs.com/package/typings) is a package manager for grabbing definition files.
+Webpack — это инструмент, который упаковывает код и, опционально, все его зависимости в единый `.js`-файл.
+[Typings](https://www.npmjs.com/package/typings) — это менеджер пакетов для получения файлов объявлений.
 
-Let's now add React and React-DOM as dependencies to your `package.json` file:
+Добавим зависимости от React и React-DOM в файл `package.json`:
 
 ```shell
 npm install --save react react-dom
 ```
 
-Next, we'll add development-time dependencies on [ts-loader](https://www.npmjs.com/package/ts-loader) and [source-map-loader](https://www.npmjs.com/package/source-map-loader).
+Затем добавим зависимости времени разработки от [ts-loader](https://www.npmjs.com/package/ts-loader) и [source-map-loader](https://www.npmjs.com/package/source-map-loader).
 
 ```shell
 npm install --save-dev ts-loader source-map-loader
 npm link typescript
 ```
 
-Both of these dependencies will let TypeScript and webpack play well together.
-ts-loader helps webpack compile your TypeScript code using the TypeScript's standard configuration file named `tsconfig.json`.
-source-map-loader uses any sourcemap outputs from TypeScript to inform webpack when generating *its own* sourcemaps.
-This will allow you to debug your final output file as if you were debugging your original TypeScript source code.
+Обе эти зависимости призваны связать TypeScript и webpack друг с другом.
+ts-loader помогает webpack собирать файлы TypeScript, используя стандартный файл конфигурации под именем `tsconfig.json`.
+source-map-loader использует сгенерированные TypeScript карты кода, чтобы помочь webpack создать *свои собственные* карты кода.
+Это позволит отлаживать итоговый выходной файл, словно исходный код на TypeScript.
 
-Linking TypeScript allows ts-loader to use your global installation of TypeScript instead of needing a separate local copy.
-If you want a local copy, just run `npm install typescript`.
+Связывание пакета TypeScript (с помощью команды `npm link`) позволяет использовать глобальную версию TypeScript вместо отдельной локальной копии.
+Если требуется именно локальная копия, запустите `npm install typescript`.
 
-Finally, we'll use Typings to grab the declaration files for React and ReactDOM:
+И, наконец, используем Typings, чтобы получить файлы объявлений для React и ReactDOM:
 
 ```shell
 typings install --global --save dt~react
 typings install --global --save dt~react-dom
 ```
 
-The `--global` flag, along with the `dt~` prefix tells Typings to grab any declaration files from [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped), a repository of community-authored `.d.ts` files.
+Опция `--global`, вместе с префиксом `dt~`, сообщает Typings, что файлы объявлений нужно получить из [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped), репозитория с созданными сообществом файлами `.d.ts`.
 
-This command will create a file called `typings.json` and a folder called `typings` in the current directory.
+Данная команда создаст файл под именем `typings.json`, и добавит в текущую директорию папку `typings`.
 
-# Add a TypeScript configuration file
+# Добавление файла конфигурации TypeScript
 
-You'll want to bring your TypeScript files together - both the code you'll be writing as well as any necessary declaration files.
+Файлы TypeScript придется объединить — и написанный вами код, и необходимые файлы объявлений.
 
-To do this, you'll need to create a `tsconfig.json` which contains a list of your input files as well as all your compilation settings.
-Simply create a new file in your project root named `tsconfig.json` and fill it with the following contents:
+Для этого нужно создать файл `tsconfig.json`, содержащий список входных файлов и все настройки компиляции.
+Просто создайте новый файл под именем `tsconfig.json` в корневой директории проекта, и вставьте в него следующий код:
 
 ```json
 {
@@ -116,15 +116,15 @@ Simply create a new file in your project root named `tsconfig.json` and fill it 
 }
 ```
 
-We're including `typings/index.d.ts`, which Typings created for us.
-That file automatically includes all of your installed dependencies.
+Здесь включается файл `typings/index.d.ts`, который был создан Typings.
+Этот файл автоматически включает все установленные зависимости.
 
-You can learn more about `tsconfig.json` files [here](../tsconfig.json.md).
+Больше узнать о файлах `tsconfig.json` можно [здесь](../tsconfig.json.md).
 
-# Write some code
+# Написание кода
 
-Let's write our first TypeScript file using React.
-First, create a file named `Hello.tsx` in `src/components` and write the following:
+Напишем наш первый TypeScript-файл с использованием React.
+Сначала создадим файл под именем `Hello.tsx` в `src/components` и напишем следующее:
 
 ```ts
 import * as React from "react";
@@ -133,15 +133,15 @@ export interface HelloProps { compiler: string; framework: string; }
 
 export class Hello extends React.Component<HelloProps, {}> {
     render() {
-        return <h1>Hello from {this.props.compiler} and {this.props.framework}!</h1>;
+        return <h1>Привет от {this.props.compiler} и {this.props.framework}!</h1>;
     }
 }
 ```
 
-Note that while this example is quite *classy*, we didn't need to use a class.
-Other methods of using React (like [stateless functional components](https://facebook.github.io/react/docs/reusable-components.html#stateless-functions)) should work just as well.
+Обратите внимание, что хотя в этом примере были применены классы, это не обязательно.
+Иные способы использования React (например, [функциональные компоненты без состояния](https://facebook.github.io/react/docs/reusable-components.html#stateless-functions)) также должны работать.
 
-Next, let's create an `index.tsx` in `src` with the following source:
+Теперь создадим в `src` файл `index.tsx` со следующим кодом:
 
 ```ts
 import * as React from "react";
@@ -155,19 +155,19 @@ ReactDOM.render(
 );
 ```
 
-We just imported our `Hello` component into `index.tsx`.
-Notice that unlike with `"react"` or `"react-dom"`, we used a *relative path* to `index.tsx` - this is important.
-If we hadn't, TypeScript would've instead tried looking in our `node_modules` folder.
+Мы импортировали наш компонент `Hello` в `index.tsx`.
+Обратите внимание, что в отличие от `"react"` и `"react-dom"`, здесь используется *относительный путь* к `index.tsx` — это важно.
+Если бы это было не так, то TypeScript искал бы этот файл в папке `node_modules`.
 
-We'll also need a page to display our `Hello` component.
-Create a file at the root of `proj` named `index.html` with the following contents:
+Еще необходима страница, которая будет отображать компонент `Hello`.
+Создайте в корне проекта файл `index.html` со следующим содержимым:
 
 ```html
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>Hello React!</title>
+        <title>Привет, React!</title>
     </head>
     <body>
         <div id="example"></div>
@@ -182,14 +182,14 @@ Create a file at the root of `proj` named `index.html` with the following conten
 </html>
 ```
 
-Notice that we're including files from within `node_modules`.
-React and React-DOM's npm packages include standalone `.js` files that you can include in a web page, and we're referencing them directly to get things moving faster.
-Feel free to copy these files to another directory, or alternatively, host them on a content delivery network (CDN).
-Facebook makes CDN-hosted versions of React available, and you can [read more about that here](http://facebook.github.io/react/downloads.html#development-vs.-production-builds).
+Обратите внимание, что здесь мы включаем файлы из `node_modules`.
+В пакетах React и React-DOM присутствуют `.js`-файлы, которые можно включать прямо на веб-страницу, и мы ссылаемся на них напрямую, чтобы не тратить времени.
+Но можно было бы скопировать эти файлы в другую директорию, или же разместить их в системе доставки контента (CDN).
+Facebook предоставляет доступные через CDN версии React; подробнее от этом можно [прочесть здесь](http://facebook.github.io/react/downloads.html#development-vs.-production-builds).
 
-# Create a webpack configuration file
+# Создание файла конфигурации webpack
 
-Create a `webpack.config.js` file at the root of the project directory.
+Создайте файл `webpack.config.js` в корневой директории проекта.
 
 ```js
 module.exports = {
@@ -198,30 +198,30 @@ module.exports = {
         filename: "./dist/bundle.js",
     },
 
-    // Enable sourcemaps for debugging webpack's output.
+    // Включить карты кода для отладки вывода webpack
     devtool: "source-map",
 
     resolve: {
-        // Add '.ts' and '.tsx' as resolvable extensions.
+        // Добавить разрешения '.ts' и '.tsx' к обрабатываемым
         extensions: ["", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
     },
 
     module: {
         loaders: [
-            // All files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'.
+            // Все файлы с разрешениями '.ts' или '.tsx' будет обрабатывать 'ts-loader'
             { test: /\.tsx?$/, loader: "ts-loader" }
         ],
 
         preLoaders: [
-            // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
+            // Все карты кода для выходных '.js'-файлов будет дополнительно обрабатывать `source-map-loader`
             { test: /\.js$/, loader: "source-map-loader" }
         ]
     },
 
-    // When importing a module whose path matches one of the following, just
-    // assume a corresponding global variable exists and use that instead.
-    // This is important because it allows us to avoid bundling all of our
-    // dependencies, which allows browsers to cache those libraries between builds.
+    // При импортировании модуля, чей путь совпадает с одним из указанных ниже,
+    // предположить, что соответствующая глобальная переменная существует, и использовать
+    // ее взамен. Это важно, так как позволяет избежать добавления в сборку всех зависимостей,
+    // что дает браузерам возможность кэшировать файлы библиотек между различными сборками.
     externals: {
         "react": "React",
         "react-dom": "ReactDOM"
@@ -229,23 +229,23 @@ module.exports = {
 };
 ```
 
-You might be wondering about that `externals` field.
-We want to avoid bundling all of React into the same file, since this increases compilation time and browsers will typically be able to cache a library if it doesn't change.
+Поле `externals` может показаться интересным.
+Дело в том, что мы хотим избежать добавления в итоговый файл всех файлов React, поскольку это увеличило бы время сборки, и не позволило бы браузеру кешировать не изменившиеся библиотеки.
 
-Ideally, we'd just import the React module from within the browser, but most browsers still don't quite support modules yet.
-Instead libraries have traditionally made themselves available using a single global variable like `jQuery` or `_`.
-This is called the "namespace pattern", and webpack allows us to continue leveraging libraries written that way.
-With our entry for `"react": "React"`, webpack will work its magic to make any import of `"react"` load from the `React` variable.
+В идеале можно было бы просто импортировать модуль React прямо в браузере, но большинство браузеров на сегодняшний день не поддерживают модулей.
+Вместо этого библиотеки используют традиционный подход с предоставлением одной глобальной переменой, например `jQuery` или `_`.
+Это называется шаблоном организации пространства имен ("namespace pattern"), и webpack позволяет использовать библиотеки, созданные на основе этого шаблона.
+Указав `"react": "React"`, мы позволяем webpack совершить некие магические действия, которые дадут возможность импортировать `"react"` из переменной `React`.
 
-You can learn more about configuring webpack [here](http://webpack.github.io/docs/configuration.html).
+Больше о настройке webpack можно узнать [здесь](http://webpack.github.io/docs/configuration.html).
 
-# Putting it all together
+# Собираем все вместе
 
-Just run:
+Просто запустите:
 
 ```shell
 webpack
 ```
 
-Now open up `index.html` in your favorite browser and everything should be ready to use!
-You should see a page that says "Hello from TypeScript and React!"
+Теперь откройте `index.html` в любимом браузере, и все должно быть готово!
+Вы должны увидеть страницу с текстом "Привет от TypeScript и React!".

@@ -1,18 +1,18 @@
-This quick start guide will teach you how to wire up TypeScript with [Knockout.js](http://knockoutjs.com/).
+Это руководство призвано научить связывать TypeScript и [Knockout.js](http://knockoutjs.com/).
 
-We assume that you're already using [Node.js](https://nodejs.org/) with [npm](https://www.npmjs.com/).
+Предполагается, что вы уже используете [Node.js](https://nodejs.org/) и [npm](https://www.npmjs.com/).
 
-# Lay out the project
+# Создание структуры проекта
 
-Let's start out with a new directory.
-We'll name it `proj` for now, but you can change it to whatever you want.
+Начнем с создания новой папки.
+Мы назовем ее `proj`, однако ей можно дать любое необходимое имя.
 
 ```shell
 mkdir proj
 cd proj
 ```
 
-To start, we're going to structure our project in the following way:
+Наш проект будет иметь следующую структуру:
 
 ```text
 proj/
@@ -20,62 +20,62 @@ proj/
    +- built/
 ```
 
-TypeScript files will start out in your `src` folder, run through the TypeScript compiler, and end up in `built`.
+Файлы TypeScript будут находиться в папке `src`, обрабатываться компилятором TypeScript, а результат помещаться в `build`.
 
-Let's scaffold this out:
+Давайте создадим эту структуру:
 
 ```shell
 mkdir src
 mkdir built
 ```
 
-# Install our build dependencies
+# Установка зависимостей для сборки
 
-First ensure TypeScript and Typings are installed globally.
+Для начала убедимся, что TypeScript и Typings установлены глобально.
 
 ```shell
 npm install -g typescript typings
 ```
 
-You obviously know about TypeScript, but you might not know about Typings.
-[Typings](https://www.npmjs.com/package/typings) is a package manager for grabbing definition files.
-We'll now use Typings to grab declaration files for Knockout:
+Очевидно, что вы знаете, что такое TypeScript, но можете не знать о Typings.
+[Typings](https://www.npmjs.com/package/typings) — это менеджер пакетов для получения файлов объявлений.
+Теперь используем Typings, чтобы получить файлы объявлений для Knockout:
 
 ```shell
 typings install --global --save dt~knockout
 ```
 
-The `--global` flag will tell Typings to grab any declaration files from [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped), a repository of community-authored `.d.ts` files.
-This command will create a file called `typings.json` and a folder called `typings` in the current directory.
+Опция `--global` сообщает Typings, что файлы объявлений нужно получить из [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped), репозитория с созданными сообществом файлами `.d.ts`.
+Данная команда создаст файл под именем `typings.json`, и добавит папку `typings` в текущую директорию.
 
-# Grab our runtime dependencies
+# Получение зависимостей времени выполнения
 
-We'll need to grab Knockout itself, as well as something called RequireJS.
-[RequireJS](http://www.requirejs.org/) is a library that enables us to load modules at runtime asynchronously.
+Нам необходимо получить саму библиотеку Knockout, а также нечто, называемое RequireJS.
+[RequireJS](http://www.requirejs.org/) — это библиотека, которая позволяет асинхронно загружать модули во время выполнения.
 
-There are several ways we can go about this:
+Есть три способа, которыми можно это сделать:
 
-1. Download the files manually and host them.
-2. Download the files through a package manager like [Bower](http://bower.io/) and host them.
-3. Use a Content Delivery Network (CDN) to host both files.
+1. Загрузить файлы вручную и разместить их.
+2. Загрузить файлы через менеджер пакетов, например, [Bower](http://bower.io/), и разместить их.
+3. Использовать систему доставки контента (CDN), чтобы разместить файлы.
 
-We'll keep it simple and go with the first option, but Knockout's documentation has [details on using a CDN](http://knockoutjs.com/downloads/index.html), and more libraries like RequireJS can be searched for on [cdnjs](https://cdnjs.com/).
+Мы не будем усложнять, и выберем первый вариант, но в документации Knockout есть [подробное описание использования CDN](http://knockoutjs.com/downloads/index.html), а другие библиотеки, подобные RequireJS, можно найти на [cdnjs](https://cdnjs.com/).
 
-Let's create an `externals` folder in the root of our project.
+Создадим папку `externals` в корне нашего проекта.
 
 ```shell
 mkdir externals
 ```
 
-Now [download Knockout](http://knockoutjs.com/downloads/index.html) and [download RequireJS](http://www.requirejs.org/docs/download.html#latest) into that folder.
-The latest and minified versions of the files should work just fine.
+Теперь [загрузим Knockout](http://knockoutjs.com/downloads/index.html) и [RequireJS](http://www.requirejs.org/docs/download.html#latest) в эту папку.
+Самые последние и минифицированные версии этих файлов должны подойти.
 
-# Add a TypeScript configuration file
+# Добавление файла конфигурации TypeScript
 
-You'll want to bring your TypeScript files together - both the code you'll be writing as well as any necessary declaration files.
+Файлы TypeScript придется объединить — и написанный вами код, и необходимые файлы объявлений.
 
-To do this, you'll need to create a `tsconfig.json` which contains a list of your input files as well as all your compilation settings.
-Simply create a new file in your project root named `tsconfig.json` and fill it with the following contents:
+Для этого нужно создать файл `tsconfig.json`, содержащий список входных файлов и все настройки компиляции.
+Просто создайте новый файл под именем `tsconfig.json` в корневой директории проекта, и вставьте в него следующий код:
 
 ```json
 {
@@ -94,15 +94,15 @@ Simply create a new file in your project root named `tsconfig.json` and fill it 
 }
 ```
 
-We're including `typings/index.d.ts`, which Typings created for us.
-That file automatically includes all of your installed dependencies.
+Здесь включается файл `typings/index.d.ts`, который был создан Typings.
+Этот файл автоматически включает все установленные зависимости.
 
-You can learn more about `tsconfig.json` files [here](../tsconfig.json.md).
+Больше узнать о файлах `tsconfig.json` можно [здесь](../tsconfig.json.md).
 
-# Write some code
+# Написание кода
 
-Let's write our first TypeScript file using Knockout.
-First, create a new file in your `src` directory named `hello.ts`.
+Напишем наш первый код на TypeScript с использованием Knockout.
+Сначала создадим файл под именем `Hello.ts` в папке `src`.
 
 ```ts
 import * as ko from "knockout";
@@ -120,7 +120,7 @@ class HelloViewModel {
 ko.applyBindings(new HelloViewModel("TypeScript", "Knockout"));
 ```
 
-Next, we'll create a file named `require-config.ts` in `src` as well.
+Затем в той же папке `src` создадим файл `require-config.ts`.
 
 ```ts
 declare var require: any;
@@ -131,30 +131,30 @@ require.config({
 });
 ```
 
-This file will tell RequireJS where to find Knockout when we import it, just like we did in `hello.ts`.
-Any page that you create should include this immediately after RequireJS, but before importing anything else.
-To get a better understanding of this file and how to configure RequireJS, you can [read up on its documentation](http://requirejs.org/docs/api.html#config).
+Этот файл сообщит RequireJS, где искать Knockout, когда мы импортируем его как в файле `hello.ts`.
+Все страницы, которые вы создадите, должны включать этот файл сразу после RequireJS, но до импортирования чего-либо еще.
+Чтобы лучше понять структуру данного файла и то, как настраивать RequireJS, прочтите [документацию](http://requirejs.org/docs/api.html#config).
 
-We'll also need a view to display our `HelloViewModel`.
-Create a file at the root of `proj` named `index.html` with the following contents:
+Чтобы отобразить `HelloViewModel`, понадобится вид.
+Создайте в корне проекта файл `index.html` со следующим содержимым:
 
 ```html
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>Hello Knockout!</title>
+        <title>Привет, Knockout!</title>
     </head>
     <body>
         <p>
-            Hello from
+            Привет от
             <strong data-bind="text: language">todo</strong>
-            and
+            и
             <strong data-bind="text: framework">todo</strong>!
         </p>
 
-        <p>Language: <input data-bind="value: language" /></p>
-        <p>Framework: <input data-bind="value: framework" /></p>
+        <p>Язык: <input data-bind="value: language" /></p>
+        <p>Фреймворк: <input data-bind="value: framework" /></p>
 
         <script src="./externals/require.js"></script>
         <script src="./built/require-config.js"></script>
@@ -165,20 +165,20 @@ Create a file at the root of `proj` named `index.html` with the following conten
 </html>
 ```
 
-Notice there are three script tags.
-First, we're including RequireJS itself.
-Then we're mapping the paths of our external dependencies in `require-config.js` so that RequireJS knows where to look for them.
-Finally, we're calling `require` with a list of modules we'd like to load.
+Обратите внимание, что здесь три тега `script`.
+Сначала мы включаем саму библиотеку RequireJS.
+Затем мы задаем соответствие путям внешних зависимостей в файле `require-config.js`, чтобы RequireJS знала, где искать зависимости.
+И, наконец, мы вызываем `require` со списком загружаемых модулей.
 
-# Putting it all together
+# Собираем все вместе
 
-Just run:
+Просто запустите:
 
 ```shell
 tsc
 ```
 
-Now open up `index.html` in your favorite browser and everything should be ready to use!
-You should see a page that says "Hello from TypeScript and Knockout!"
-Below that, you'll also see two input boxes.
-As you modify their contents and switch focus, you'll see that the original message changes.
+Теперь откройте `index.html` в любимом браузере, и все должно быть готово!
+Вы должны увидеть страницу с текстом "Привет от TypeScript и Knockout!".
+Ниже будут два поля ввода.
+При изменении их содержимого и переводе фокуса исходное сообщение будет изменяться.
