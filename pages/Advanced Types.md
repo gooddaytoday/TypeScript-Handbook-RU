@@ -190,7 +190,7 @@ function padLeft(value: string, padding: string | number) {
 }
 ```
 
-Эти *`typeof` защитники типа* распознаются в двух различных формах: `typeof v === "typename"` и `typeof v !== "typename"`, где `"typename"` - это `"число"`, `"строка"`, `"булев"`, или `"символ"`.
+Эти *`typeof` защитники типа* распознаются в двух различных формах: `typeof v === "typename"` и `typeof v !== "typename"`, где `"typename"` - это `"number"`, `"string"`, `"boolean"`, или `"symbol"`.
 В то время как TypeScript не запрещает сравнение с другими строками или переключение двух сторон сравнения, язык не будет признавать эти формы как защитники типа.
 
 ## Защитники типа `instanceof`

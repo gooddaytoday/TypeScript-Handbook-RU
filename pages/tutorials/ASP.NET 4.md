@@ -1,63 +1,63 @@
-# Setup
+# Настройка
 
-## Install TypeScript
+## Установка TypeScript
 
-If your version of Visual Studio does not already have TypeScript, you can install it for [Visual Studio 2015](http://www.microsoft.com/en-us/download/details.aspx?id=48593) or [Visual Studio 2013](https://www.microsoft.com/en-us/download/details.aspx?id=48739).
-This quickstart uses Visual Studio 2015.
+Если в вашей версии Visual Studio нет TypeScript, его можно установить для [Visual Studio 2015](http://www.microsoft.com/en-us/download/details.aspx?id=48593) или [Visual Studio 2013](https://www.microsoft.com/en-us/download/details.aspx?id=48739).
+В данном руководстве используется Visual Studio 2015.
 
-## Create a new project
+## Создание нового проекта
 
-1. Choose **File**
-2. Choose **New Project**
-3. Choose **Visual C#**
-4. Choose **ASP.NET Web Application**
+1. Выберите **Файл** (**File**)
+2. Выберите **Создать проект** (**New Project**)
+3. Выберите **Visual C#**
+4. Выберите **ASP.NET Web Application**
 
-   ![Create new ASP.NET project](../../assets/images/tutorials/aspnet/new-asp-project.png)
+   ![Создание нового проекта ASP.NET](../../assets/images/tutorials/aspnet/new-asp-project.png)
 
-5. Choose **MVC**
+5. Выберите **MVC**
 
-    I unchecked "Host in the cloud" since this will be a local demo.
-    ![Use MVC template](../../assets/images/tutorials/aspnet/new-asp-project-template.png)
+    Флажок "Разместить в облаке" ("Host in the cloud") здесь снят, так как это пример локального проекта.
+    ![Используйте шаблон MVC](../../assets/images/tutorials/aspnet/new-asp-project-template.png)
 
-Run the application and make sure that it works.
+Запустите приложение, и убедитесь, что оно работает.
 
-# Add TypeScript
+# Добавление TypeScript
 
-The next step is to add a folder for TypeScript.
+Следующий шаг — добавить папку для TypeScript.
 
-![Create new folder](../../assets/images/tutorials/aspnet/new-folder.png)
+![Создание новой папки](../../assets/images/tutorials/aspnet/new-folder.png)
 
-We'll just call it src.
+Назовем ее `src`.
 
-![src folder](../../assets/images/tutorials/aspnet/src-folder.png)
+![папка src](../../assets/images/tutorials/aspnet/src-folder.png)
 
-## Add TypeScript code
+## Добавление кода TypeScript
 
-Right click on `src` and click **New Item**.
-Then choose **TypeScript File** and name the file `app.ts`.
+Щелкните правой кнопкой на `src` и выберите **Создать элемент** (**New Item**).
+Затем выберите **Файл TypeScript** (**TypeScript File**), и назовите файл `app.ts`.
 
-![New item](../../assets/images/tutorials/aspnet/new-item.png)
+![Создание элемента](../../assets/images/tutorials/aspnet/new-item.png)
 
-## Add example code
+## Добавление кода примера
 
-Type the following code into `app.ts`.
+Введите следующий код в `app.ts`.
 
 ```ts
 function sayHello() {
     const compiler = (document.getElementById("compiler") as HTMLInputElement).value;
     const framework = (document.getElementById("framework") as HTMLInputElement).value;
-    return `Hello from ${compiler} and ${framework}!`;
+    return `Привет от ${compiler} и ${framework}!`;
 }
 ```
 
-## Set up the build
+## Настройка сборки
 
-Right click on the project and click **New Item**.
-Then choose **TypeScript Configuration File** and use the default name `tsconfig.json`.
+Щелкните правой кнопкой мыши на проекте и выберите **Создать элемент** (**New Item**).
+Затем выберите **Файл конфигурации TypeScript** (**TypeScript Configuration File**), и используйте имя по умолчанию `tsconfig.json`.
 
-![Create tsconfig.json](../../assets/images/tutorials/aspnet/new-tsconfig.png)
+![Создание tsconfig.json](../../assets/images/tutorials/aspnet/new-tsconfig.png)
 
-Replace the default `tsconfig.json` with the following:
+Замените содержимое файла `tsconfig.json`, которое было по умолчанию, на следующее:
 
 ```json
 {
@@ -69,91 +69,90 @@ Replace the default `tsconfig.json` with the following:
     "outDir": "./Scripts/App"
   },
   "files": [
-    "./src/app.ts",
+    "./src/app.ts"
   ],
   "compileOnSave": true
 }
 ```
 
-This is similar to the default, with the following differences:
+Это похоже на то, что было по умолчанию, но отличается следующим:
 
-1. It sets `"noImplicitAny": true`.
-2. It specifies that `"outDir": "./Scripts/App"`.
-3. It explicitly lists `"files"` instead of relying on `"excludes"`.
-4. It sets `"compileOnSave": true`.
+1. Устанавливается `"noImplicitAny": true`.
+2. Указывается выходная директория `"outDir": "./Scripts/App"`.
+3. Явно перечисляются входные файлы в `"files"`, не полагаясь на `"excludes"`.
+4. Устанавливается `"compileOnSave": true`.
 
-`"noImplicitAny"` is good idea whenever you're writing new code &mdash; you can make sure that you don't write any untyped code by mistake.
-`"compileOnSave"` makes it easy to update your code in a running web app.
-See [the tsconfig.json documentation](../tsconfig.json.md) for more information.
+Указывать `"noImplicitAny"` — неплохая идея, если вы пишете новый код; это поможет удостовериться, что вы по ошибке не напишете нетипизированный код.
+`"compileOnSave"` упрощает обновление кода в запущенном веб-приложении.
+См. [документацию на tsconfig.json](../tsconfig.json.md) для большей информации.
 
-## Call the script from a view
+## Вызов скрипта из вида
 
-1. In the **Solution Explorer**, open **Views** | **Home** | `Index.cshtml`.
+1. В **Обозревателе решений** (**Solution Explorer**), откройте **Views** | **Home** | `Index.cshtml`.
 
-   ![Open Index.cshtml](../../assets/images/tutorials/aspnet/open-index.png)
+   ![Открытие Index.cshtml](../../assets/images/tutorials/aspnet/open-index.png)
 
-2. Change the code to be the following:
+2. Замените код на следующий:
 
    ```html
    @{
-       ViewBag.Title = "Home Page";
+       ViewBag.Title = "Домашняя страница";
    }
    <script src="~/Scripts/App/app.js"></script>
    <div id="message"></div>
    <div>
-       Compiler: <input id="compiler" value="TypeScript" onkeyup="document.getElementById('message').innerText = sayHello()" /><br />
-       Framework: <input id="framework" value="ASP.NET" onkeyup="document.getElementById('message').innerText = sayHello()" />
+       Компилятор: <input id="compiler" value="TypeScript" onkeyup="document.getElementById('message').innerText = sayHello()" /><br />
+       Фреймворк: <input id="framework" value="ASP.NET" onkeyup="document.getElementById('message').innerText = sayHello()" />
    </div>
    ```
 
-## Test
+## Тестирование
 
-1. Run the project.
-2. You should see a message when you type in the input boxes:
+1. Запустите проект.
+2. Вы должны увидеть сообщение при заполнении полей ввода:
 
-![Picture of running demo](../../assets/images/tutorials/aspnet/running-demo.png)
+![Запущенное приложение](../../assets/images/tutorials/aspnet/running-demo.png)
 
-## Debug
+## Отладка
 
-1. In Edge, press F12 and click the **Debugger** tab.
-2. Look in the first localhost folder, then src/app.ts
-3. Put a breakpoint on the line with `return`.
-4. Type in the boxes and confirm that the breakpoint hits in TypeScript code and that inspection works correctly.
+1. Нажмите F12 в браузере Edge и выберите вкладку **Отладчик** (**Debugger**).
+2. Откройте первую папку `localhost`, затем `src/app.ts`.
+3. Поставьте точку останова на строку с `return`.
+4. Заполните поля ввода и убедитесь, что точка останова срабатывает на TypeScript-коде, и все работает правильно.
 
-![Demo paused on breakpoint](../../assets/images/tutorials/aspnet/paused-demo.png)
+![Приложение, остановленное но точке останова](../../assets/images/tutorials/aspnet/paused-demo.png)
 
-That's all you need to know to include basic TypeScript in your ASP.NET project.
-Next we'll include Angular and write a simple Angular app.
+Это все, что нужно знать, чтобы применить TypeScript в проекте ASP.NET.
+Дальше мы задействуем Angular и напишем простое приложение для этого фреймворка.
 
-# Add Angular 2
+# Добавление Angular 2
 
-## Download packages from NPM
+## Загрузка зависимостей из NPM
 
-1. Install [PackageInstaller](https://github.com/madskristensen/PackageInstaller).
+1. Установите [PackageInstaller](https://github.com/madskristensen/PackageInstaller).
 
-2. Use PackageInstaller to install Angular 2, systemjs and Typings.
+2. С помощью PackageInstaller установите Angular 2, systemjs и Typings.
 
-   Right-click on the project, then click on **Quick Install Package**.
+   Щелкните правой кнопкой мыши на проекте и выберите **Quick Install Package**.
 
-   ![Use PackageInstaller to install angular2](../../assets/images/tutorials/aspnet/packageinstaller-angular2.png)
-   ![Use PackageInstaller to install systemjs](../../assets/images/tutorials/aspnet/packageinstaller-systemjs.png)
-   ![Use PackageInstaller to install Typings](../../assets/images/tutorials/aspnet/packageinstaller-typings.png)
+   ![Установка angular2](../../assets/images/tutorials/aspnet/packageinstaller-angular2.png)
+   ![Установка systemjs](../../assets/images/tutorials/aspnet/packageinstaller-systemjs.png)
+   ![Установка Typings](../../assets/images/tutorials/aspnet/packageinstaller-typings.png)
 
-3. Use PackageInstaller to install typings for es6-shim.
+3. С помощью PackageInstaller установите файлы объявлений для es6-shim.
 
-   Angular 2 includes es6-shim for Promise support, but TypeScript still needs the types.
-   In PackageInstaller, choose Typing instead of npm.
-   Then type "es6-shim":
+   Библиотека es6-shim включена в Angular для поддержки обещаний, но TypeScript все же нужны файлы объявлений для нее.
+   В окне PackageInstaller выберите Typing вместо npm, и введите "es6-shim":
 
-   ![Use PackageInstaller to install es6-shim typings](../../assets/images/tutorials/aspnet/packageinstaller-es6-shim.png)
+   ![Установка файлов объявлений es6-shim](../../assets/images/tutorials/aspnet/packageinstaller-es6-shim.png)
 
-## Update tsconfig.json
+## Обновление tsconfig.json
 
-Now that Angular 2 and its dependencies are installed, we need to enable TypeScript's experimental support for decorators and include the es6-shim typings.
-In the future decorators and ES6 will be the default and these settings will not be needed.
-Add `"experimentalDecorators": true, "emitDecoratorMetadata": true` to the `"compilerOptions"` section, and add `"./typings/index.d.ts"` to the `"files"` section.
-Finally, we need to add a new entry in `"files"` for another file, `"./src/model.ts"`, that we will create.
-Our `tsconfig.json` should now look like this:
+Теперь, когда Angular 2 и его зависимости установлены, нужно включить в TypeScript экспериментальную поддержку декораторов, а также включить в код объявления типов для es6-shim.
+В будущем декораторы и ES6 будут включены по умолчанию и данные настройки станут не нужны.
+Добавьте `"experimentalDecorators": true, "emitDecoratorMetadata": true` в `"compilerOptions"`, и `"./typings/index.d.ts"` в `"files"`.
+В последнюю очередь нужно добавить в `"files"` новый элемент для файла `"./src/model.ts"`, который мы создадим.
+Файл `tsconfig.json` теперь должен быть таким:
 
 ```json
 {
@@ -175,11 +174,11 @@ Our `tsconfig.json` should now look like this:
 }
 ```
 
-## Add a CopyFiles target to the build
+## Добавление в сборку цели CopyFiles
 
-Finally, we need to make sure that the Angular files are copied as part of the build.
-To do this, edit the project by right-clicking 'Unload' and then 'Edit csproj'.
-After the TypeScript configuration PropertyGroup, add a new ItemGroup and Target to copy the angular files.
+Теперь нужно убедиться, что в процессе сборки будут копироваться файлы Angular.
+Для этого отредактируйте проект, щелкнув правой мышкой и выбрав 'Выгрузить проект' ('Unload'), а затем 'Изменить csproj' ('Edit csproj').
+После элемента PropertyGroup с параметрами TypeScript добавьте ItemGroup и Target для копирования файлов Angular.
 
 ```xml
 <ItemGroup>
@@ -193,12 +192,12 @@ After the TypeScript configuration PropertyGroup, add a new ItemGroup and Target
 </Target>
 ```
 
-Now right-click on the project and reload it.
-You should now see `node_modules` in the Solution Explorer.
+Теперь щелкните правой кнопкой мыши на проекте и перезагрузите его ('Reload project').
+В Обозревателе Решений должна появиться папка `node_modules`.
 
-## Write a simple Angular app in TypeScript
+## Написание простого Angular-приложения на TypeScript
 
-First, change the code in `app.ts` to:
+Для начала измените код в `app.ts` на следующий:
 
 ```ts
 import {Component} from "angular2/core"
@@ -206,7 +205,7 @@ import {MyModel} from "./model"
 
 @Component({
     selector: `my-app`,
-    template: `<div>Hello from {{getCompiler()}}</div>`
+    template: `<div>Привет от {{getCompiler()}}</div>`
 })
 class MyApp {
     model = new MyModel();
@@ -216,7 +215,7 @@ class MyApp {
 }
 ```
 
-Then add another TypeScript file in `src` named `model.ts`:
+Затем добавьте еще один файл TypeScript под именем `model.ts` в папку `src`.
 
 ```ts
 export class MyModel {
@@ -224,7 +223,7 @@ export class MyModel {
 }
 ```
 
-And then another TypeScript file in `src` named `main.ts`:
+И файл `main.ts` в `src`:
 
 ```ts
 import {bootstrap} from "angular2/platform/browser";
@@ -232,11 +231,11 @@ import {MyApp} from "./app";
 bootstrap(MyApp);
 ```
 
-Finally, change the code in `Views/Home/Index.cshtml` to the following:
+Теперь измените код в `Views/Home/Index.cshtml` на следующий:
 
 ```html
 @{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Домашняя страница";
 }
 <script src="~/Scripts/angular2-polyfills.js"></script>
 <script src="~/Scripts/system.src.js"></script>
@@ -253,8 +252,8 @@ Finally, change the code in `Views/Home/Index.cshtml` to the following:
     });
     System.import('/Scripts/App/main').then(null, console.error.bind(console));
 </script>
-<my-app>Loading...</my-app>
+<my-app>Загрузка...</my-app>
 ```
 
-This loads the app.
-When you run the ASP.NET application you should see a div that says "Loading..." and then updates to say "Hello from TypeScript".
+Этот код загружает приложение.
+При запуске приложения ASP.NET должен появиться элемент `div` с текстом "Загрузка...", который затем изменяется на "Привет от TypeScript".
