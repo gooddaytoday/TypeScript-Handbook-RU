@@ -450,3 +450,5 @@ let v = new ScientificCalculator(2)
 Без типа `this` класс `ScientificCalculator` не смог бы расширить (унаследовать) `BasicCalculator` и сохранить плавающий интерфейс.
 `multiply` возвратил бы `BasicCalculator`, который не имеет метода `sin`.
 Однако, с типом  `this` метод `multiply` возвращает `this`, являющимся `ScientificCalculator`.
+
+[Источник](http://typescript-lang.ru/docs/Advanced%20Types.html)

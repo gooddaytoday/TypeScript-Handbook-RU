@@ -98,3 +98,5 @@ define(["require", "exports", "legacy/moduleA"], function (require, exports, mod
     moduleA.callStuff()
 });
 ```
+
+[Источник](http://typescript-lang.ru/docs/Triple-Slash%20Directives.html)

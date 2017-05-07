@@ -99,3 +99,5 @@ let className = c[getClassNameSymbol](); // "C"
 ## `Symbol.unscopables`
 
 Объект, имена собственных свойств которого — это имена свойств, привязки к которым не включаются в окружение, создаваемое конструкцией `with` для соответствующих объектов.
+
+[Источник](http://typescript-lang.ru/docs/Symbols.html)

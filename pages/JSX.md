@@ -282,3 +282,5 @@ class MyComponent extends React.Component<Props, {}> {
 <MyComponent foo="bar" />; // ok
 <MyComponent foo={0} />; // ошибка
 ```
+
+[Источник](http://typescript-lang.ru/docs/JSX.html)

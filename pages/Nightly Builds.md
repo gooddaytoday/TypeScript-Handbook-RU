@@ -69,3 +69,5 @@ The nightly build currently does not include the full plugin setup, but we are w
   ```posh
   VSDevMode.ps1 12 -tsScript <path to your folder>/node_modules/typescript/lib
   ```
+
+  [Источник](http://typescript-lang.ru/docs/Nightly%20Builds.html)

@@ -216,3 +216,6 @@ type X = string;
 ## Использование с `export = ` или `import`
 
 Важно, что объявления `export` и `import` экспортируют или импортируют *все смыслы* того, на что ссылаются.
+
+
+[Источник](http://typescript-lang.ru/docs/declaration%20files/Deep%20Dive.html)

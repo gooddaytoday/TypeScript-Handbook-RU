@@ -214,3 +214,5 @@ function fn(x: number|string) {
     return moment().utcOffset(x);
 }
 ```
+
+[Источник](http://typescript-lang.ru/docs/declaration%20files/Do's%20and%20Don'ts.html)

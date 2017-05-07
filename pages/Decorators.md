@@ -479,3 +479,5 @@ class Line {
 ```
 
 > NOTE&emsp; Decorator metadata is an experimental feature and may introduce breaking changes in future releases.
+
+[Источник](http://typescript-lang.ru/docs/Decorators.html)

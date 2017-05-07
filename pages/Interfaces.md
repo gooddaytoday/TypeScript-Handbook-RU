@@ -543,3 +543,5 @@ class Location {
 Внутри кода `Control` можно получить доступ к приватному члену `state` через экземпляр `SelectableControl`.
 По сути, `SelectableControl` ведет себя так же, как `Control`, о котором известно, что у него есть метод `select`.
 Классы `Button` и `TextBox` — подтипы `SelectableControl` (так как оба унаследованы от `Control` и у них есть метод `select`), однако `Image` и `Location` таковыми не являются.
+
+[Источник](http://typescript-lang.ru/docs/Interfaces.html)

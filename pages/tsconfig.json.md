@@ -114,3 +114,5 @@
 ## Структура
 
 Описание структуры находится по адресу: [http://json.schemastore.org/tsconfig](http://json.schemastore.org/tsconfig)
+
+[Источник](http://typescript-lang.ru/docs/tsconfig.json.html)

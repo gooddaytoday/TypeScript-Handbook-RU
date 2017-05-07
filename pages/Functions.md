@@ -469,3 +469,5 @@ alert("card: " + pickedCard2.card + " of " + pickedCard2.suit);
 
 Обратите внимание, что участок кода `function pickCard(x): any` не входит в список перегрузок; в этом списке всего два элемента, один из которых принимает `object`, а другой — число.
 Вызов `pickCard` с параметрами любых других типов приведет к ошибке.
+
+[Источник](http://typescript-lang.ru/docs/Functions.html)

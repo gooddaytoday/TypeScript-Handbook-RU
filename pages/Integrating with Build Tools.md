@@ -200,3 +200,5 @@ module.exports = {
 * Когда установка закончится, пересобрать проект!
 
 Больше информации: [Управление пакетами](http://docs.nuget.org/Consume/Package-Manager-Dialog) и [Использование ночных сборок с NuGet](https://github.com/Microsoft/TypeScript/wiki/Nightly-drops#using-nuget-with-msbuild)
+
+[Источник](http://typescript-lang.ru/docs/Integrating%20with%20Build%20Tools.html)

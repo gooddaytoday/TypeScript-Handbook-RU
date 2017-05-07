@@ -249,3 +249,5 @@ webpack
 
 Теперь откройте `index.html` в любимом браузере, и все должно быть готово!
 Вы должны увидеть страницу с текстом "Привет от TypeScript и React!".
+
+[Источник](http://typescript-lang.ru/docs/tutorials/React%20&%20Webpack.html)

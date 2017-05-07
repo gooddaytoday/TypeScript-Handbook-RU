@@ -265,3 +265,5 @@ declare namespace D3 {
 
 declare var d3: D3.Base;
 ```
+
+[Источник](http://typescript-lang.ru/docs/Namespaces.html)

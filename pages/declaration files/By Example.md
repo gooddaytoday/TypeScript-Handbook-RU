@@ -250,3 +250,4 @@ declare class Greeter {
 }
 ```
 
+[Источник](http://typescript-lang.ru/docs/declaration%20files/Introduction.html)

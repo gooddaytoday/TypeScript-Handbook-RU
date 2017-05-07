@@ -86,3 +86,5 @@ function createZoo(): Animal[] {
 
 Здесь есть четыре кандидата на роль наилучшего общего типа: `Animal`, `Rhino`, `Elephant` и `Snake`.
 Алгоритм поиска наилучшего общего типа способен выбрать из них `Animal`.
+
+[Источник](http://typescript-lang.ru/docs/Type%20Inference.html)

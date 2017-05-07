@@ -326,3 +326,5 @@ function findKeeper<A extends Animal, K> (a: {new(): A;
 
 findKeeper(Lion).nametag;  // проверка типов!
 ```
+
+[Источник](http://typescript-lang.ru/docs/Generics.html)

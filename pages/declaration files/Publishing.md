@@ -94,3 +94,5 @@
 Пакеты организации [@types](https://www.npmjs.com/~types) автоматически публикуются из репозитория [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) с помощью [инструмента types-publisher](https://github.com/Microsoft/types-publisher).
 Чтобы опубликовать свои объявления как пакет в организации @types, отправьте запрос на включение изменений (pull request) в репозиторий [https://github.com/DefinitelyTyped/DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped).
 Больше информации можно найти на странице [руководства по участию](http://definitelytyped.org/guides/contributing.html).
+
+[Источник](http://typescript-lang.ru/docs/declaration%20files/Publishing.html)

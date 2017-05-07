@@ -80,3 +80,5 @@ for (var _i = 0; _i < numbers.length; _i++) {
 #### Соответствие ECMAScript 2015 и выше
 
 В том случае, если целевым стандартом является ECMAScipt 2015, компилятор сгенерирует циклы `for..of` в соответствии со встроенной в движок реализацией итераторов.
+
+[Источник](http://typescript-lang.ru/docs/Iterators%20and%20Generators.html)

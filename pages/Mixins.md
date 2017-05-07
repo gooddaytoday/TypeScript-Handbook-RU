@@ -137,3 +137,5 @@ function applyMixins(derivedCtor: any, baseCtors: any[]) {
 }
 
 ```
+
+[Источник](http://typescript-lang.ru/docs/Mixins.html)

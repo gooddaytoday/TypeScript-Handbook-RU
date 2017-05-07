@@ -310,3 +310,5 @@ Array.prototype.toObservable = function () {
 ```
 
 Глобальные дополнения ведут себя так же, как и дополнения модулей, и имеют такие же ограничения.
+
+[Источник](http://typescript-lang.ru/docs/Declaration%20Merging.html)

@@ -454,3 +454,5 @@ gulp.task('default', ['copyHtml'], function () {
 ```
 
 Для столь простого скрипта созданный Babel ES5-код должен быть очень похож на код, созданный TypeScript.
+
+[Источник](http://typescript-lang.ru/docs/tutorials/Gulp.html)

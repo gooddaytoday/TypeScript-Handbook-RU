@@ -35,3 +35,5 @@ _.padStart("Привет, TypeScript!", 20, " ");
 
 > Замечание: если необходимого файла объявлений нет, то вы всегда можете сделать свой вклад и помочь следующему разработчику, которому понадобится эта библиотека.
 > См. [руководство по принятию участия в DefinitelyTyped](http://definitelytyped.org/guides/contributing.html) для большей информации.
+
+[Источник](http://typescript-lang.ru/docs/declaration%20files/Consumption.html)
