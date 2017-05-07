@@ -521,8 +521,8 @@ x(y);
 
 ### Объявления модулей с использованием знаков подстановки
 
-Некоторые загрузчики модулей, такие как [SystemJS](https://github.com/systemjs/systemjs/blob/master/docs/overview.md#plugin-syntax)
-и [AMD](https://github.com/amdjs/amdjs-api/blob/master/LoaderPlugins.md), позволяют импортировать контент, отличный от JavaScript.
+Некоторые загрузчики модулей, такие как [SystemJS](https://github.com/systemjs/systemjs/blob/master/docs/overview.html#plugin-syntax)
+и [AMD](https://github.com/amdjs/amdjs-api/blob/master/LoaderPlugins.html), позволяют импортировать контент, отличный от JavaScript.
 В таких случаях обычно используется префикс или суффикс, чтобы обозначить специальную семантику загрузки.
 Объявления модулей с использованием знаков подстановки могут использоваться для организации загрузок такого типа.
 
@@ -820,7 +820,7 @@ test(c, "001+010="); // выведет 3
 Нет серьёзных оснований для создания двух объектов с одинаковым именем внутри модуля.
 С точки зрения пользователя, он может выбрать любое имя для импортируемого модуля, поэтому случайные конфликты имен невозможны.
 
-> Более подробная информация о пространствах имен и модулях [Namespaces and Modules](./Namespaces and Modules.md).
+> Более подробная информация о пространствах имен и модулях [Namespaces and Modules](./Namespaces and Modules.html).
 
 ## Индикаторы опасности
 

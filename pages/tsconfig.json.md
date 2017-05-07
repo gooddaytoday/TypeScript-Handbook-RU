@@ -69,7 +69,7 @@
 
 ## Подробности
 
-Свойство `"compilerOptions"` можно пропускать, в этом случае компилятор использует значения по умолчанию. Смотрите полный список [опций компилятора](./Compiler Options.md).
+Свойство `"compilerOptions"` можно пропускать, в этом случае компилятор использует значения по умолчанию. Смотрите полный список [опций компилятора](./Compiler Options.html).
 
 Свойство `"files"` принимает список относительных или абсолютных путей к файлам.
 Свойства `"include"` и `"exclude"` принимают  список файловых масок.
@@ -109,7 +109,7 @@
 }
 ```
 
-Эта возможность на данный момент поддерживается в Visual Studio 2015 с TypeScript 1.8.4 и выше и дополнением [atom-typescript](https://github.com/TypeStrong/atom-typescript/blob/master/docs/tsconfig.md#compileonsave).
+Эта возможность на данный момент поддерживается в Visual Studio 2015 с TypeScript 1.8.4 и выше и дополнением [atom-typescript](https://github.com/TypeStrong/atom-typescript/blob/master/docs/tsconfig.html#compileonsave).
 
 ## Структура
 

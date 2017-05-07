@@ -119,7 +119,7 @@ typings install --global --save dt~react-dom
 Здесь включается файл `typings/index.d.ts`, который был создан Typings.
 Этот файл автоматически включает все установленные зависимости.
 
-Больше узнать о файлах `tsconfig.json` можно [здесь](../tsconfig.json.md).
+Больше узнать о файлах `tsconfig.json` можно [здесь](../tsconfig.json.html).
 
 # Написание кода
 

@@ -239,7 +239,7 @@ namespace Color {
 
 Не все слияния допустимы.
 На данный момент классы не могут объединяться с другими классами или с переменными.
-Для информации о том, как можно эмулировать слияние классов, см. раздел [Примеси в TypeScript](./Mixins.md).
+Для информации о том, как можно эмулировать слияние классов, см. раздел [Примеси в TypeScript](./Mixins.html).
 
 # Дополнения модулей
 
@@ -268,7 +268,7 @@ Observable.prototype.map = function (f) {
 import { Observable } from "./observable";
 declare module "./observable" {
     interface Observable<T> {
-        map<U>(f: (x: T) => U): Observable<U>;
+        map &lt;U&gt;(f: (x: T) => U): Observable &lt;U&gt;;
     }
 }
 Observable.prototype.map = function (f) {

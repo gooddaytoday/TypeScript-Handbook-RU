@@ -245,7 +245,7 @@ let identity = function<T>(x: T): T {
     // ...
 }
 
-let reverse = function<U>(y: U): U {
+let reverse = function&lt;U&gt;(y: U): U {
     // ...
 }
 
