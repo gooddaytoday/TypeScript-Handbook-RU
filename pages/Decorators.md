@@ -1,14 +1,14 @@
-# Introduction
+# Введение
 
-With the introduction of Classes in TypeScript and ES6, there now exist certain scenarios that require additional features to support annotating or modifying classes and class members.
-Decorators provide a way to add both annotations and a meta-programming syntax for class declarations and members.
-Decorators are a [stage 1 proposal](https://github.com/wycats/javascript-decorators/blob/master/README.md) for JavaScript and are available as an experimental feature of TypeScript.
+С момента введения классов в TypeScript и ES6 существуют определённые случаи, требующие дополнительных функций для поддержки аннотирующих или модифицирующих классов, а также членов класса.
+Декораторы предоставляют способ добавления аннотаций и метапрограммного синтаксиса для объявлений класса, их членов.
+Декораторы -- это [предложение 1-ой стадии](https://github.com/wycats/javascript-decorators/blob/master/README.md) для JavaScript и экспериментальная функциональность TypeScript.
 
-> NOTE&emsp; Decorators are an experimental feature that may change in future releases.
+> ЗАМЕТКА&emsp; Декораторы -- экспериментальная функция, которая может измениться в будущих релизах.
 
-To enable experimental support for decorators, you must enable the `experimentalDecorators` compiler option either on the command line or in your `tsconfig.json`:
+Чтобы включить экспериментальную поддерржку декораторов Вы должны включить опцию компилятора `experimentalDecorators` либо в командной строке, либо в файле `tsconfig.json`.
 
-**Command Line**:
+**Командная Строка**:
 
 ```shell
 tsc --target ES5 --experimentalDecorators
@@ -25,49 +25,49 @@ tsc --target ES5 --experimentalDecorators
 }
 ```
 
-# Decorators
+# Декораторы
 
-A *Decorator* is a special kind of declaration that can be attached to a [class declaration](#class-decorators), [method](#method-decorators), [accessor](#accessor-decorators), [property](#property-decorators), or [parameter](#parameter-decorators).
-Decorators use the form `@expression`, where `expression` must evaluate to a function that will be called at runtime with information about the decorated declaration.
+*Декоратор* -- это особый вид объявления, который может быть прикреплён к [объявлению класса](#Декораторы-Класса), [методу](#Декораторы-Методов), [акцессору](#Декоратор-Акцессора), [свойству](#Декораторы-Свойства) или [параметру](#Декораторы-Параметров).
+Декораторы используют форму `@expression`, где `expression` должно вычислиться в функцию, которая будет вызвана во время исполнения, вместе с информацией декорированного объявления.
 
-For example, given the decorator `@sealed` we might write the `sealed` function as follows:
+Например, учитывая декоратор `@sealed` мы могли бы написать функцию `sealed` следующим образом:
 
 ```ts
 function sealed(target) {
-    // do something with 'target' ...
+    // что-то сделать с переменной 'target' ...
 }
 ```
 
-> NOTE&emsp; You can see a more detailed example of a decorator in [Class Decorators](#class-decorators), below.
+> ЗАМЕТКА&emsp; Увидеть более подробный пример декоратора можно в разделе [Декораторы Класса](#Декораторы-Класса).
 
-## Decorator Factories
+## Фабрика Декораторов
 
-If we want to customize how a decorator is applied to a declaration, we can write a decorator factory.
-A *Decorator Factory* is simply a function that returns the expression that will be called by the decorator at runtime.
+Если мы захотим настроить то, как декоратор применяется к объявлению, мы можем написать фабрику декораторов.
+*Фабрика Декораторов* -- это функция, возвращающая выражение, которая будет вызвана декоратором во время исполнения программы.
 
-We can write a decorator factory in the following fashion:
+Мы можем написать фабрику декораторов следующим образом:
 
 ```ts
-function color(value: string) { // this is the decorator factory
-    return function (target) { // this is the decorator
-        // do something with 'target' and 'value'...
+function color(value: string) { // это фабрика декораторов
+    return function (target) { // это декоратор
+        // сделать что-то с переменными 'target' и 'value'...
     }
 }
 ```
 
-> NOTE&emsp; You can see a more detailed example of a decorator factory in [Method Decorators](#method-decorators), below.
+> ЗАМЕТКА&emsp; Более подробный пример фабрики декораторов можно увидеть в разделе [Декораторы Методов](#Декораторы-Методов).
 
-## Decorator Composition
+## Композиция Декоратора
 
-Multiple decorators can be applied to a declaration, as in the following examples:
+К объявлению могут быть применены несколько декораторов, как в следующем примере:
 
-* On a single line:
+* На одной строке:
 
   ```ts
   @f @g x
   ```
 
-* On multiple lines:
+* На несколько строк:
 
   ```ts
   @f
@@ -75,27 +75,27 @@ Multiple decorators can be applied to a declaration, as in the following example
   x
   ```
 
-When multiple decorators apply to a single declaration, their evaluation is similar to [function composition in mathematics](http://en.wikipedia.org/wiki/Function_composition). In this model, when composing functions *f* and *g*, the resulting composite (*f* ∘ *g*)(*x*) is equivalent to *f*(*g*(*x*)).
+Когда несколько декораторов применяются к одному объявлению, их вычисление похоже на [композицию функции в математике](http://en.wikipedia.org/wiki/Function_composition). В этой модели, при композиции функций *f* и *g*, результирующий композит (*f* ∘ *g*)(*x*) эквивалентен *f*(*g*(*x*)).
 
-As such, the following steps are performed when evaluating multiple decorators on a single declaration in TypeScript:
+Так, при вычислении нескольких декораторов на одном объявлении, выполняются следующие шаги:
 
-1. The expressions for each decorator are evaluated top-to-bottom.
-2. The results are then called as functions from bottom-to-top.
+1. Выражения для каждого декоратора вычисляются сверху вниз.
+2. Результаты затем вызываются как функции снизу вверх.
 
-If we were to use [decorator factories](#decorator-factories), we can observe this evaluation order with the following example:
+Если мы будем использовать [фабрику декораторов](#Фабрика-Декораторов), мы можем наблюдать этот порядок вычисления вместе с следующим примером:
 
 ```ts
 function f() {
-    console.log("f(): evaluated");
+    console.log("f(): вычисляется");
     return function (target, propertyKey: string, descriptor: PropertyDescriptor) {
-        console.log("f(): called");
+        console.log("f(): вызван");
     }
 }
 
 function g() {
-    console.log("g(): evaluated");
+    console.log("g(): вычисляется");
     return function (target, propertyKey: string, descriptor: PropertyDescriptor) {
-        console.log("g(): called");
+        console.log("g(): вызван");
     }
 }
 
@@ -106,38 +106,38 @@ class C {
 }
 ```
 
-Which would print this output to the console:
+Что вывело бы в консоль:
 
 ```shell
-f(): evaluated
-g(): evaluated
-g(): called
-f(): called
+f(): вычисляется
+g(): вычисляется
+g(): вызван
+f(): вызван
 ```
 
-## Decorator Evaluation
+## Вычисление Декоратора
 
-There is a well defined order to how decorators applied to various declarations inside of a class are applied:
+Есть определённый порядок применения декораторов к различным объявлениям внутри класса:
 
-1. *Parameter Decorators*, followed by *Method*, *Accessor*, or *Property Decorators* are applied for each instance member.
-2. *Parameter Decorators*, followed by *Method*, *Accessor*, or *Property Decorators* are applied for each static member.
-3. *Parameter Decorators* are applied for the constructor.
-4. *Class Decorators* are applied for the class.
+1. *Декораторы Параметров* с последующими *Декораторами Методов*, *Акцессоров* или *Свойств* применяются для каждого члена экземпляра.
+2. *Декораторы Параметров* с последующими *Декораторами Методов*, *Акцессоров* или *Свойств* применяются для каждого статического члена.
+3. *Декораторы Параметров* применяются для конструкторов.
+4. *Декораторы Класса* применяются для класса.
 
-## Class Decorators
+## Декораторы Класса
 
-A *Class Decorator* is declared just before a class declaration.
-The class decorator is applied to the constructor of the class and can be used to observe, modify, or replace a class definition.
-A class decorator cannot be used in a declaration file, or in any other ambient context (such as on a `declare` class).
+*Декоратор Класса* объявляется перед объявлением класса.
+Декоратор класса применяется к конструктору класса и может быть использован для наблюдения, модифицирования или замещения определения класса.
+Декоратор класса не может быть использован в файле объявлений или в любом другом окружающем контексте (например, в классе `declare`).
 
-The expression for the class decorator will be called as a function at runtime, with the constructor of the decorated class as its only argument.
+Выражение декоратора класса будет вызываться как функция во время исполнения, а конструктор отдекарированного класса -- как его единственный аргумент.
 
-If the class decorator returns a value, it will replace the class declaration with the provided constructor function.
+Если декоратор класса возвратит значение, он заменит объявление класса с помощью предоставленного конструктора.
 
-> NOTE&nbsp; Should you chose to return a new constructor function, you must take care to maintain the original prototype.
-The logic that applies decorators at runtime will **not** do this for you.
+> ЗАМЕТКА&nbsp; Если Вы решите вернуться к новому конструктору, тогда Вы должны позаботиться о сохранении исходного прототипа.
+Логика, использующая декораторы во время выполнения программы, не сделает это за Вас.
 
-The following is an example of a class decorator (`@sealed`) applied to the `Greeter` class:
+Дальше -- пример декоратора класса (`@sealed`), применённый к классу `Greeter`:
 
 ```ts
 @sealed
@@ -147,12 +147,12 @@ class Greeter {
         this.greeting = message;
     }
     greet() {
-        return "Hello, " + this.greeting;
+        return "Привет, " + this.greeting;
     }
 }
 ```
 
-We can define the `@sealed` decorator using the following function declaration:
+Мы можем определить декоратор `@sealed`, используя следующее объявление функции:
 
 ```ts
 function sealed(constructor: Function) {
@@ -161,27 +161,27 @@ function sealed(constructor: Function) {
 }
 ```
 
-When `@sealed` is executed, it will seal both the constructor and its prototype.
+Когда декоратор `@sealed` будет выполнен, он 'запечатает' (seal - печать) конструктор, и его прототип.
 
-## Method Decorators
+## Декораторы Методов
 
-A *Method Decorator* is declared just before a method declaration.
-The decorator is applied to the *Property Descriptor* for the method, and can be used to observe, modify, or replace a method definition.
-A method decorator cannot be used in a declaration file, on an overload, or in any other ambient context (such as in a `declare` class).
+*Декоратор Метода* объявляется перед объявлением метода.
+Декоратор применяется к *Дескриптору Свойства* метода, также может быть использован для наблюдения, модифицирования или замещения определения метода.
+Декоратор метода не может быть использован в файле объявления, при перегрузке или в любом другом окружающем контексте (например, в классе `declare`).
 
-The expression for the method decorator will be called as a function at runtime, with the following three arguments:
+Выражение для декоратора метода будет вызываться как функция во время исполнения программы со следующими тремя аргументами:
 
-1. Either the constructor function of the class for a static member, or the prototype of the class for an instance member.
-2. The name of the member.
-3. The *Property Descriptor* for the member.
+1. Либо конструктор класса для статичного члена, либо прототип класса для члена экземпляра.
+2. Имя члена.
+3. *Дескриптор Свойства* члена.
 
-> NOTE&emsp; The *Property Descriptor* will be `undefined` if your script target is less than `ES5`.
+> ЗАМЕТКА&emsp; *Дескриптор Свойства* будет `undefined`, если цель Вашего скрипта меньше, чем стандарт `ES5`.
 
-If the method decorator returns a value, it will be used as the *Property Descriptor* for the method.
+Если декоратор метода возвратит значение, это значение будет использоваться как *Дескриптор Свойства* для метода.
 
-> NOTE&emsp; The return value is ignored if your script target is less than `ES5`.
+> ЗАМЕТКА&emsp; Возвращаемое значение игнорируется, если цель вашего скрипта меньше, чем стандарт `ES5`.
 
-The following is an example of a method decorator (`@enumerable`) applied to a method on the `Greeter` class:
+Дальше -- пример декоратора метода (`@enumerable`), применённый к методу класса `Greeter`:
 
 ```ts
 class Greeter {
@@ -192,12 +192,12 @@ class Greeter {
 
     @enumerable(false)
     greet() {
-        return "Hello, " + this.greeting;
+        return "Привет, " + this.greeting;
     }
 }
 ```
 
-We can define the `@enumerable` decorator using the following function declaration:
+Мы можем определить декоратор `@enumerable`, используя следующее объявление функции:
 
 ```ts
 function enumerable(value: boolean) {
@@ -207,32 +207,32 @@ function enumerable(value: boolean) {
 }
 ```
 
-The `@enumerable(false)` decorator here is a [decorator factory](#decorator-factories).
-When the `@enumerable(false)` decorator is called, it modifies the `enumerable` property of the property descriptor.
+Декоратор `@enumerable(false)` -- это [фабричный декоратор](#Фабрика-Декораторов).
+Когда будет вызван декоратор `@enumerable(false)`, он изменит свойство `enumerable` дескриптора свойства.
 
-## Accessor Decorators
+## Декоратор Акцессора
 
-An *Accessor Decorator* is declared just before an accessor declaration.
-The accessor decorator is applied to the *Property Descriptor* for the accessor and can be used to observe, modify, or replace an accessor's definitions.
-An accessor decorator cannot be used in a declaration file, or in any other ambient context (such as in a `declare` class).
+*Декоратор Акцессора* объявляется перед объявлением акцессора.
+Декоратор акцессора применяется к *Дескриптору Свойства* и может быть использован для наблюдения, модифицирования или замещения определения акцессора.
+Декоратор акцессора не может быть использован в файле объявления или в любом другом окружающем контексте (например, класс `declare`).
 
-> NOTE&emsp; TypeScript disallows decorating both the `get` and `set` accessor for a single member.
-Instead, all decorators for the member must be applied to the first accessor specified in document order.
-This is because decorators apply to a *Property Descriptor*, which combines both the `get` and `set` accessor, not each declaration separately.
+> ЗАМЕТКА&emsp; TypeScript запрещает декорирование `get` и `set` акцессоров для одного члена.
+Вместо этого, все декораторы члена должны быть применены к первому акцессору, указанному в текстовом порядке.
+Это потому, что декораторы применяются к *Дескриптору Свойства*, который комбинирует оба метода доступа `get` и `set`, а не каждое объявление в отдельности.
 
-The expression for the accessor decorator will be called as a function at runtime, with the following three arguments:
+Выражение для декоратора акцессора будет вызвано как функция во время исполнения со следующими тремя аргументами:
 
-1. Either the constructor function of the class for a static member, or the prototype of the class for an instance member.
-2. The name of the member.
-3. The *Property Descriptor* for the member.
+1. Либо конструктор класса для статичного члена, либо прототип класса для члена экземпляра.
+2. Имя члена.
+3. *Дескриптор Свойства* для члена.
 
-> NOTE&emsp; The *Property Descriptor* will be `undefined` if your script target is less than `ES5`.
+> ЗАМЕТКА&emsp; *Дескриптор Свойства* будет `undefined`, если цель вашего скрипта меньше, чем стандарт `ES5`.
 
-If the accessor decorator returns a value, it will be used as the *Property Descriptor* for the member.
+Если декоратор акцессора возвратит значение, это значение будет использоваться как *Дексриптор Свойства* для члена.
 
-> NOTE&emsp; The return value is ignored if your script target is less than `ES5`.
+> ЗАМЕТКА&emsp; Возвращаемое значение игнорируется, если цель вашего скрипта меньше, чем стандарт `ES5`.
 
-The following is an example of an accessor decorator (`@configurable`) applied to a member of the `Point` class:
+Дальше -- пример декоратора акцессора (`@configurable`), применённый к члену класса `Point`:
 
 ```ts
 class Point {
@@ -251,7 +251,7 @@ class Point {
 }
 ```
 
-We can define the `@configurable` decorator using the following function declaration:
+Мы можем определить декоратор `@configurable`, используя следующее объявление функции:
 
 ```ts
 function configurable(value: boolean) {
@@ -261,25 +261,25 @@ function configurable(value: boolean) {
 }
 ```
 
-## Property Decorators
+## Декораторы Свойства
 
-A *Property Decorator* is declared just before a property declaration.
-A property decorator cannot be used in a declaration file, or in any other ambient context (such as in a `declare` class).
+*Декоратор Свойства* объявляется перед объявлением свойства.
+Декоратор свойства не может быть использован в файле объявления или в любом другом окружающем контексте (например, в классе `declare`).
 
-The expression for the property decorator will be called as a function at runtime, with the following two arguments:
+Выражение декоратора свойства будет вызвано как функция во время исполнения со следующими аргументами:
 
-1. Either the constructor function of the class for a static member, or the prototype of the class for an instance member.
-2. The name of the member.
+1. Либо конструктор класса для статичного члена, либо прототип класса для члена экземпляра.
+2. Имя члена.
 
-> NOTE&emsp; A *Property Descriptor* is not provided as an argument to a property decorator due to how property decorators are initialized in TypeScript.
-This is because there is currently no mechanism to describe an instance property when defining members of a prototype, and no way to observe or modify the initializer for a property.
-As such, a property decorator can only be used to observe that a property of a specific name has been declared for a class.
+> ЗАМЕТКА&emsp; *Дескриптор Свойства* не предоставляется в качестве аргумента для декоратора свойства из-за того, как декораторы свойства инициализируются в TypeScript.
+Это потому, что на текущий момент не существует механизма описать свойство экзмепляра при определении членов прототипа, также нет способа наблюдения или модифицирования инициализатора для свойства.
+Так, дескриптор свойства может быть использован только для наблюдения того, что для класса было объявлено свойство.
 
-If the property decorator returns a value, it will be used as the *Property Descriptor* for the member.
+Если декоратор свойства возвращает значение, это значение будет использоваться в качестве *Дескриптора Свойства* для члена.
 
-> NOTE&emsp; The return value is ignored if your script target is less than `ES5`.
+> ЗАМЕТКА&emsp; Возвращаемое значение игнорируется, если цель вашего скрипта меньше, чем стандарт `ES5`.
 
-We can use this information to record metadata about the property, as in the following example:
+Мы можем использовать эту информцию для записи метаинформации о свойстве, как в следующем примере:
 
 ```ts
 class Greeter {
@@ -296,7 +296,7 @@ class Greeter {
 }
 ```
 
-We can then define the `@format` decorator and `getFormat` functions using the following function declarations:
+Мы можем затем определить декоратор `@format` и `getFormat`, используя следующие объявления функции:
 
 ```ts
 import "reflect-metadata";
@@ -312,30 +312,30 @@ function getFormat(target: any, propertyKey: string) {
 }
 ```
 
-The `@format("Hello, %s")` decorator here is a [decorator factory](#decorator-factories).
-When `@format("Hello, %s")` is called, it adds a metadata entry for the property using the `Reflect.metadata` function from the `reflect-metadata` library.
-When `getFormat` is called, it reads the metadata value for the format.
+Декоратор `@format("Привет, %s")` [фабричный декоратор](#Фабрика-Декораторов).
+При вызове `@format("Привет, %s")`, декоратор добавляет метаданные для свойства используя функцию `Reflect.metadata` из библиотеки `reflect-metadata`.
+При вызове `getFormat`, функция считывает значение метаданных.
 
-> NOTE&emsp; This example requires the `reflect-metadata` library.
-See [Metadata](#metadata) for more information about the `reflect-metadata` library.
+> ЗАМЕТКА&emsp; Этот пример требует библиотеки `reflect-metadata`.
+Смотрите раздел [Метаданные](#Метаинформация) для большей информации о библиотеке `reflect-metadata`.
 
-## Parameter Decorators
+## Декораторы Параметров
 
-A *Parameter Decorator* is declared just before a parameter declaration.
-The parameter decorator is applied to the function for a class constructor or method declaration.
-A parameter decorator cannot be used in a declaration file, an overload, or in any other ambient context (such as in a `declare` class).
+*Декоратор Параметра* объявляется перед объявлением параметра.
+Декоратор параметра применяется к объявлению конструктора или методу класса.
+Декоратор параметра не может быть использован в файле объявлений, при перегрузке или в любом другом окружающем контексте (например, в классе `declare`).
 
-The expression for the parameter decorator will be called as a function at runtime, with the following three arguments:
+Выражение декоратора параметра будет вызвано как функция во время исполнения, со следующими тремя аргументами:
 
-1. Either the constructor function of the class for a static member, or the prototype of the class for an instance member.
-2. The name of the member.
-3. The ordinal index of the parameter in the function's parameter list.
+1. Либо конструктор класса для статичного члена, либо прототип класса для члена экземпляра.
+2. Имя члена.
+3. Порядковый индекс параметра в списке параметров функции.
 
-> NOTE&emsp; A parameter decorator can only be used to observe that a parameter has been declared on a method.
+> ЗАМЕТКА%emsp; Декоратор параметра может быть использован только для наблюдения того, что параметр был объявлен у метода.
 
-The return value of the parameter decorator is ignored.
+Возвращаемое значение декоратора параметра игнорируется.
 
-The following is an example of a parameter decorator (`@required`) applied to parameter of a member of the `Greeter` class:
+Дальше -- пример декоратора параметра (`@required`), применённый к параметру члена класса `Greeter`:
 
 ```ts
 class Greeter {
@@ -347,12 +347,12 @@ class Greeter {
 
     @validate
     greet(@required name: string) {
-        return "Hello " + name + ", " + this.greeting;
+        return "Привет " + name + ", " + this.greeting;
     }
 }
 ```
 
-We can then define the `@required` and `@validate` decorators using the following function declarations:
+Мы затем можем определить декораторы `@required` и `@validate`, используя следующие объявления функций:
 
 ```ts
 import "reflect-metadata";
@@ -372,7 +372,7 @@ function validate(target: any, propertyName: string, descriptor: TypedPropertyDe
         if (requiredParameters) {
             for (let parameterIndex of requiredParameters) {
                 if (parameterIndex >= arguments.length || arguments[parameterIndex] === undefined) {
-                    throw new Error("Missing required argument.");
+                    throw new Error("Отсутствуют требуемые аргументы.");
                 }
             }
         }
@@ -382,28 +382,28 @@ function validate(target: any, propertyName: string, descriptor: TypedPropertyDe
 }
 ```
 
-The `@required` decorator adds a metadata entry that marks the parameter as required.
-The `@validate` decorator then wraps the existing `greet` method in a function that validates the arguments before invoking the original method.
+Декоратор `@required` добавляет метаинформацию, которая помечает параметр как обязательный.
+Декоратор `@validate` затем обёртывает существующий метод `greet` в функцию, которая проводит проверку аргументов перед вызовом исходного метода.
 
-> NOTE&emsp; This example requires the `reflect-metadata` library.
-See [Metadata](#metadata) for more information about the `reflect-metadata` library.
+> ЗАМЕТКА&emsp; Этот пример требует библиотеку `reflect-metadata`.
+Смотрите [метаинформация](#metadata) для большей информации о библиотеке `reflect-metadata`.
 
-## Metadata
+## Метаинформация
 
-Some examples use the `reflect-metadata` library which adds a polyfill for an [experimental metadata API](https://github.com/rbuckton/ReflectDecorators).
-This library is not yet part of the ECMAScript (JavaScript) standard.
-However, once decorators are officially adopted as part of the ECMAScript standard these extensions will be proposed for adoption.
+Некоторые примеры используют библиотеку `reflect-metadata`, которая добавляет полифилл для [экспериментального API метаданных](https://github.com/rbuckton/ReflectDecorators).
+Эта библиотека ещё не является частью стандарта ECMAScript (JavaScript).
+Однако после того, как декораторы официально примут в состав стандарта ECMAScript, эти расширения будут предложены к принятию.
 
-You can install this library via npm:
+Вы можете установить эту библиотеку через npm:
 
 ```shell
 npm i reflect-metadata --save
 ```
 
-TypeScript includes experimental support for emitting certain types of metadata for declarations that have decorators.
-To enable this experimental support, you must set the `emitDecoratorMetadata` compiler option either on the command line or in your `tsconfig.json`:
+TypeScript включает экспериментальную поддержку генерации определённых типов метаданных для объявлений, у которых есть декоратор.
+Чтобы включить эту экспериментальную поддержку, Вы должны установить опцию компилятора `emitDecoratorMetadata` либо в командной строке, либо в вашем `tsconfig.json`.
 
-**Command Line**:
+**Командная Строка**:
 
 ```shell
 tsc --target ES5 --experimentalDecorators --emitDecoratorMetadata
@@ -421,9 +421,9 @@ tsc --target ES5 --experimentalDecorators --emitDecoratorMetadata
 }
 ```
 
-When enabled, as long as the `reflect-metadata` library has been imported, additional design-time type information will be exposed at runtime.
+Когда эта опция включена, во время исполнения будет доступна информация о типе, при условии, что импортирована библиотека `reflect-metadata`.
 
-We can see this in action in the following example:
+Мы можем увидеть это в действии в следующем примере:
 
 ```ts
 import "reflect-metadata";
@@ -451,14 +451,14 @@ function validate<T>(target: any, propertyKey: string, descriptor: TypedProperty
     descriptor.set = function (value: T) {
         let type = Reflect.getMetadata("design:type", target, propertyKey);
         if (!(value instanceof type)) {
-            throw new TypeError("Invalid type.");
+            throw new TypeError("Недопустимый тип.");
         }
     }
 }
 ```
 
-The TypeScript compiler will inject design-time type information using the `@Reflect.metadata` decorator.
-You could consider it the equivalent of the following TypeScript:
+TypeScript компилятор внедрит информацию о типе, используя декоратор `@Reflect.metadata`.
+Вы могли бы его считать эквивалентным следующему коду:
 
 ```ts
 class Line {
@@ -478,6 +478,6 @@ class Line {
 
 ```
 
-> NOTE&emsp; Decorator metadata is an experimental feature and may introduce breaking changes in future releases.
+> ЗАМЕТКА&emsp; Декоратор метаинформации -- это экспериментальная функциональность, а также может внести критические изменения в будущих релизах.
 
 [Источник](http://typescript-lang.ru/docs/Decorators.html)
