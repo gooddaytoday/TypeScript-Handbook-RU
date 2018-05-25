@@ -231,8 +231,8 @@ interface SearchFunc {
 
 ```ts
 let mySearch: SearchFunc;
-mySearch = function(src: string, sub: string): boolean {
-    let result = src.search(sub);
+mySearch = function(source: string, subString: string) {
+    let result = source.search(subString);
     return result > -1;
 }
 ```
@@ -244,12 +244,7 @@ mySearch = function(src: string, sub: string): boolean {
 let mySearch: SearchFunc;
 mySearch = function(src: string, sub: string): boolean {
     let result = src.search(sub);
-    if (result == -1) {
-        return false;
-    }
-    else {
-        return true;
-    }
+    return result > -1;
 }
 ```
 
@@ -262,12 +257,7 @@ mySearch = function(src: string, sub: string): boolean {
 let mySearch: SearchFunc;
 mySearch = function(src, sub) {
     let result = src.search(sub);
-    if (result == -1) {
-        return false;
-    }
-    else {
-        return true;
-    }
+    return result > -1;
 }
 ```
 
