@@ -505,7 +505,7 @@ interface SelectableControl extends Control {
     select(): void;
 }
 
-class Button extends Control {
+class Button extends Control implements SelectableControl {
     select() { }
 }
 
@@ -513,15 +513,17 @@ class TextBox extends Control {
     select() { }
 }
 
-class Image extends Control {
+// Ошибка: Свойство 'state' отстутствует в типе 'Image'.
+class Image implements SelectableControl {
+    select() { }
 }
 
 class Location {
-    select() { }
+
 }
 ```
 
-В этом примере `SelectableControl` содержит все члены класса `Control`, включая приватное свойство `state`.
+В этом примере интерфейс `SelectableControl` содержит все члены класса `Control`, включая приватное свойство `state`.
 Так как `state` — приватный член, реализовать интерфейс `SelectableControl` смогут только наследники `Control`.
 Так будет потому, что для совместимости приватных членов необходимо, чтобы они были объявлены в одном и том же базовом классе, а это возможно лишь для наследников `Control`.
 
