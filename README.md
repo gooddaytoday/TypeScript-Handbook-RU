@@ -10,3 +10,8 @@
 
 
 [Официальная спецификация языка](https://github.com/Microsoft/TypeScript/blob/master/doc/spec.md).
+
+### Todo
+* Базовые типы
+    * Null и Undefined
+    * Never
