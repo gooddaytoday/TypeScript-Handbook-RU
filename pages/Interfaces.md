@@ -233,12 +233,7 @@ interface SearchFunc {
 let mySearch: SearchFunc;
 mySearch = function(source: string, subString: string) {
     let result = source.search(subString);
-    if (result == -1) {
-        return false;
-    }
-    else {
-        return true;
-    }
+    return result > -1;
 }
 ```
 
@@ -249,12 +244,7 @@ mySearch = function(source: string, subString: string) {
 let mySearch: SearchFunc;
 mySearch = function(src: string, sub: string): boolean {
     let result = src.search(sub);
-    if (result == -1) {
-        return false;
-    }
-    else {
-        return true;
-    }
+    return result > -1;
 }
 ```
 
@@ -267,12 +257,7 @@ mySearch = function(src: string, sub: string): boolean {
 let mySearch: SearchFunc;
 mySearch = function(src, sub) {
     let result = src.search(sub);
-    if (result == -1) {
-        return false;
-    }
-    else {
-        return true;
-    }
+    return result > -1;
 }
 ```
 
@@ -520,7 +505,7 @@ interface SelectableControl extends Control {
     select(): void;
 }
 
-class Button extends Control {
+class Button extends Control implements SelectableControl {
     select() { }
 }
 
@@ -528,15 +513,17 @@ class TextBox extends Control {
     select() { }
 }
 
-class Image extends Control {
+// Ошибка: Свойство 'state' отстутствует в типе 'Image'.
+class Image implements SelectableControl {
+    select() { }
 }
 
 class Location {
-    select() { }
+
 }
 ```
 
-В этом примере `SelectableControl` содержит все члены класса `Control`, включая приватное свойство `state`.
+В этом примере интерфейс `SelectableControl` содержит все члены класса `Control`, включая приватное свойство `state`.
 Так как `state` — приватный член, реализовать интерфейс `SelectableControl` смогут только наследники `Control`.
 Так будет потому, что для совместимости приватных членов необходимо, чтобы они были объявлены в одном и том же базовом классе, а это возможно лишь для наследников `Control`.
 
